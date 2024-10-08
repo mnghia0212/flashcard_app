@@ -23,7 +23,7 @@ class DisplayListOfFlashcardSets extends ConsumerWidget {
                 final flashcardSet = flashcardSets[index];
 
                 return InkWell(
-                  onTap: () => context.push('/flashcard'),
+                  onTap: () => context.push('/flashcard/${flashcardSet.setId}'),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,

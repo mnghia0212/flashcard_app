@@ -87,16 +87,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
             //button sign up
             ElevatedButton(
-              onPressed: () async {
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colorScheme.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.all(16),
+              ),
+              onPressed: () {
                 signup();
               },
               child: const DisplayText(
                 text: "Đăng ký",
-                color: Colors.black,
               ),
             ),
 
-            const Gap(100),
+            const Gap(200),
             richTextNavigateLogin(context),
           ],
         ),
@@ -133,7 +139,7 @@ Future<void> signup() async {
     log("sign up success");
 
     //navigate home screen
-    context.push('/bottomNavigator');
+    context.go('/bottomNavigator');
   } 
 
   //catch error

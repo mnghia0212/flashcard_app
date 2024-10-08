@@ -45,6 +45,7 @@ class FlashcardSets extends Equatable {
   @override
   List<Object> get props {
     return [
+      setId,
       userId,
       title,
       description,

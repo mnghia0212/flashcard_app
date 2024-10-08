@@ -10,6 +10,6 @@ class RouteLocation {
   static String get signUp => '/signUp';
   static String get firstLogIn => '/firstLogIn';
   static String get flashcardSet => '/flashcardSet';
-  static String get flashcard => '/flashcard';
+  static String get flashcard => '/flashcard/:setId';
   static String get splash => '/splash';
 }

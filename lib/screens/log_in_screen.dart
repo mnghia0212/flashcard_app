@@ -65,24 +65,6 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
               controller: passwordController,
               isPassword: true,
             ),
-            const Gap(5),
-
-            //check box remember login info
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Checkbox(
-                  value: isRemember,
-                  onChanged: (value) {
-                    value = !isRemember;
-                  },
-                ),
-                const DisplayText(
-                  text: "Nhớ thông tin đăng nhập",
-                  color: Colors.black,
-                )
-              ],
-            ),
 
             const Gap(10),
 
@@ -96,8 +78,7 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
                   style: TextStyle(color: colorScheme.primary))
             ])),
 
-            const Gap(30),
-
+            const Gap(20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: colorScheme.primary,
@@ -114,8 +95,7 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
               ),
             ),
 
-            const Gap(310),
-
+            const Gap(390),
             RichText(
               textAlign: TextAlign.left,
               text: TextSpan(
@@ -188,7 +168,7 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
             log("login success");
 
             // Điều hướng sang màn hình chính
-            context.push('/bottomNavigator');
+            context.go('/bottomNavigator');
           } else {
             log("Missing fields in Firestore data");
           }

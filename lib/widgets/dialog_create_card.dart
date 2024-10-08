@@ -9,24 +9,24 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class DialogCreateSet extends ConsumerStatefulWidget {
-  const DialogCreateSet({super.key});
+class DialogCreateCard extends ConsumerStatefulWidget {
+  const DialogCreateCard({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _DialogCreateSetState();
+      _DialogCreateCardState();
 }
 
-class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
+class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
   final supabase = Supabase.instance.client;
 
-  final TextEditingController setNameController = TextEditingController();
-  final TextEditingController setDesController = TextEditingController();
+  final TextEditingController questionController = TextEditingController();
+  final TextEditingController answerController = TextEditingController();
 
   @override
   void dispose() {
-    setNameController.dispose();
-    setDesController.dispose();
+    questionController.dispose();
+    answerController.dispose();
     super.dispose();
   }
 
@@ -37,14 +37,13 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
         textButton(
             context: context,
             text: "Hủy bỏ",
-            onPressed: () {
-              context.pop();
-            }),
+            onPressed: () => context.pop()
+        ),
         textButton(
             context: context,
             text: "Tạo",
             onPressed: () {
-              createCardSet();
+              
             }),
       ],
       title: rowTitleDialogCreateSet(context),
@@ -54,18 +53,18 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
         child: Column(
           children: [
             CommonTextFormField(
-              labelText: "Tên bộ thẻ",
+              labelText: "Định nghĩa",
               icon: const Icon(Icons.abc),
-              controller: setNameController,
+              controller: questionController,
             ),
             const Gap(10),
             CommonTextFormField(
               maxLines: 3,
-              labelText: "Mô tả",
+              labelText: "Câu trả lời",
               icon: const Icon(
                 Icons.description,
               ),
-              controller: setDesController,
+              controller: answerController,
             ),
           ],
         ),
@@ -73,41 +72,18 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
     );
   }
 
-  void createCardSet() async {
-  final setName = setNameController.text.trim();
-  final setDes = setDesController.text.trim();
-  final userId = supabase.auth.currentUser?.id;
+  void createCard() async {
 
-  if (userId == null) {
-    SessionService().checkSession(context);
-    return;
-  }
+    
 
-  if (setName.isNotEmpty) {
-    final newSetDoc = FirebaseFirestore.instance.collection('flashcardSets').doc();
-    final setId = newSetDoc.id;
-
-    final flashcardSet = FlashcardSets(
-      setId: setId, 
-      userId: userId,
-      title: setName,
-      description: setDes,
-      isFavorite: false,
-      createdAt: DateTime.now().toString(),
+    await ref.read(flashcardsProvider.notifier).createCardInSet(flashcard, context, setId)
+    context.pop();
+    AppAlerts.showFlushBar(
+        context, 
+        "Tạo thẻ thành công", 
+        AlertType.success
     );
-
-    await ref
-        .read(flashcardSetsProvider.notifier)
-        .createFlashcardSet(flashcardSet, context)
-        .then((value) {
-      context.pop();
-      AppAlerts.showFlushBar(context, "Tạo bộ thẻ thành công", AlertType.success);
-    });
-  } else {
-    AppAlerts.showFlushBar(context, "Bộ thẻ phải có tên", AlertType.error);
   }
-}
-
 
   TextButton textButton(
       {required BuildContext context,
@@ -130,7 +106,7 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
             const Icon(Icons.folder),
             const Gap(5),
             DisplayText(
-              text: "Bộ thẻ mới",
+              text: "Tạo thẻ mới",
               fontWeight: FontWeight.bold,
               color: context.colorScheme.primary,
             ),

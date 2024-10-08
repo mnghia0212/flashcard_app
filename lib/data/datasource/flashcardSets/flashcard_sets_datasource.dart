@@ -11,21 +11,21 @@ class FlashcardSetsDatasource {
   final supabase = Supabase.instance.client;
 
   Future<void> createSet(
-      FlashcardSets flashcardSets, BuildContext context) async {
-    try {
-      final now = DateTime.now().toString();
-      await SessionService().checkSession(context);
+    FlashcardSets flashcardSets, BuildContext context) async {
+  try {
+    await SessionService().checkSession(context);
 
-      await _firestore
-          .collection("flashcardSets")
-          .doc(now)
-          .set(flashcardSets.toMap());
+    final newSetDoc = FirebaseFirestore.instance.collection("flashcardSets").doc();
+    final newSetId = newSetDoc.id; 
 
-      log("success create set db");
-    } catch (e) {
-      log("error create set db: $e");
-    }
+    await newSetDoc.set(flashcardSets.copyWith(setId: newSetId).toMap());
+
+    log("Success: flashcard set created in db");
+  } catch (e) {
+    log("Error creating set in db: $e");
   }
+}
+
 
   Future<void> updateSet(
       FlashcardSets flashcardSets, BuildContext context) async {

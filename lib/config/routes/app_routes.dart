@@ -10,37 +10,34 @@ final appRoutes = [
     parentNavigatorKey: navigationKey,
     builder: (context, state) => const HomeScreen(),
   ),
-
   GoRoute(
     path: RouteLocation.logIn,
     parentNavigatorKey: navigationKey,
     builder: (context, state) => const LogInScreen(),
   ),
-
   GoRoute(
     path: RouteLocation.signUp,
     parentNavigatorKey: navigationKey,
     builder: (context, state) => const SignUpScreen(),
   ),
-
   GoRoute(
     path: RouteLocation.firstLogIn,
     parentNavigatorKey: navigationKey,
     builder: (context, state) => const FirstLoginScreen(),
   ),
-
   GoRoute(
     path: RouteLocation.bottomNavigator,
     parentNavigatorKey: navigationKey,
     builder: (context, state) => const BottomNavigator(),
   ),
-
   GoRoute(
     path: RouteLocation.flashcard,
     parentNavigatorKey: navigationKey,
-    builder: (context, state) => const FlashcardScreen(),
+    builder: (context, state) {
+      final  setId = state.pathParameters['setId'];
+      return FlashcardScreen(setId: setId);
+    },
   ),
-
   GoRoute(
     path: RouteLocation.splash,
     parentNavigatorKey: navigationKey,
