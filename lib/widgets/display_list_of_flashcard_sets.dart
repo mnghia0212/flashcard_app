@@ -14,7 +14,7 @@ class DisplayListOfFlashcardSets extends ConsumerWidget {
 
     return flashcardSetsAsync.when(
       data: (flashcardSets) => flashcardSets.isEmpty
-          ? const EmptyContainer()
+          ? const EmptyContainer(emptyType: EmptyType.set,)
           : ListView.separated(
               physics: const NeverScrollableScrollPhysics(),
               itemCount: flashcardSets.length,

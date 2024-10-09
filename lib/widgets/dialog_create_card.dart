@@ -10,7 +10,8 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DialogCreateCard extends ConsumerStatefulWidget {
-  const DialogCreateCard({super.key});
+  final String? setId;
+  const DialogCreateCard({super.key, required this.setId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -19,7 +20,6 @@ class DialogCreateCard extends ConsumerStatefulWidget {
 
 class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
   final supabase = Supabase.instance.client;
-
   final TextEditingController questionController = TextEditingController();
   final TextEditingController answerController = TextEditingController();
 
@@ -35,25 +35,24 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
     return AlertDialog(
       actions: [
         textButton(
-            context: context,
-            text: "Hủy bỏ",
-            onPressed: () => context.pop()
-        ),
+            context: context, text: "Hủy bỏ", onPressed: () => context.pop()),
         textButton(
-            context: context,
-            text: "Tạo",
-            onPressed: () {
-              
-            }),
+          onPressed: () {
+            createCard(widget.setId);
+          },
+          context: context,
+          text: "Tạo",
+        ),
       ],
       title: rowTitleDialogCreateSet(context),
       contentPadding: const EdgeInsets.all(15),
       content: SizedBox(
-        height: 180,
+        height: 230,
         child: Column(
           children: [
             CommonTextFormField(
-              labelText: "Định nghĩa",
+              maxLines: 3,
+              labelText: "Câu hỏi",
               icon: const Icon(Icons.abc),
               controller: questionController,
             ),
@@ -72,17 +71,46 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
     );
   }
 
-  void createCard() async {
+  void createCard(String? setId) async {
+    final answer = answerController.text;
+    final question = questionController.text;
+    final userId = supabase.auth.currentUser?.id;
 
-    
+    if (userId == null) {
+      SessionService().checkSession(context);
+      return;
+    }
 
-    await ref.read(flashcardsProvider.notifier).createCardInSet(flashcard, context, setId)
-    context.pop();
-    AppAlerts.showFlushBar(
-        context, 
-        "Tạo thẻ thành công", 
-        AlertType.success
-    );
+     if (setId == null) {
+        AppAlerts.showFlushBar(
+            context, "Lỗi: Không thể tạo thẻ vì thiếu thông tin bộ thẻ", AlertType.error);
+        return;
+    }
+
+    if (answer.isNotEmpty && question.isNotEmpty) {
+      final newCardDoc =
+          FirebaseFirestore.instance.collection("flashcards").doc();
+
+      final flashcardId = newCardDoc.id;
+      final flashcard = Flashcards(
+          flashcardId: flashcardId,
+          userId: userId,
+          frontContent: question,
+          backContent: answer,
+          createdAt: DateTime.now().toString());
+
+      await ref
+          .read(flashcardsProvider.notifier)
+          .createCardInSet(flashcard, context, setId)
+          .then((value) {
+        context.pop();
+        AppAlerts.showFlushBar(
+            context, "Tạo thẻ thành công", AlertType.success);
+      });
+    } else {
+      AppAlerts.showFlushBar(
+          context, "Thẻ phải có đủ mặt trước và sau", AlertType.error);
+    }
   }
 
   TextButton textButton(

@@ -20,14 +20,16 @@ class FlashcardSetsScreen extends StatelessWidget {
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                const Gap(10),
-                rowTextFieldMenuDropDown(dropdownItems, selectedItem),
-                const Gap(15),
-                const DisplayListOfFlashcardSets(),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  const Gap(10),
+                  rowTextFieldMenuDropDown(dropdownItems, selectedItem),
+                  const Gap(15),
+                  const DisplayListOfFlashcardSets(),
+                ],
+              ),
             ),
           ),
         ));

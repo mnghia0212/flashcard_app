@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -23,9 +25,9 @@ class FlashcardsDatasource {
         'flashcardId': newFlashcardId,
       });
 
-      print("Flashcard created and linked to set successfully");
+      log("Flashcard created and linked to set successfully");
     } catch (e) {
-      print("Error creating flashcard in set: $e");
+      log("Error creating flashcard in set: $e");
     }
   }
 
