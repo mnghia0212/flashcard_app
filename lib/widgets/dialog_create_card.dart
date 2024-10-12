@@ -97,7 +97,10 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
           userId: userId,
           frontContent: question,
           backContent: answer,
-          createdAt: DateTime.now().toString());
+          createdAt: DateTime.now().toString(),
+          // correctStreak: 0,
+          // incorrectStreak: 0
+      );
 
       await ref
           .read(flashcardsProvider.notifier)

@@ -20,6 +20,15 @@ class FlashcardsNotifier extends StateNotifier<FlashcardsState> {
     }
   }
 
+  Future<void> updateCard(
+      Flashcards flashcard) async {
+    try {
+      await repository.updateCard(flashcard);
+    } catch (e) {
+      log("error: $e");
+    }
+  }
+
   void getCardsForSet(String setId) async {
     try {
       final flashcards = await repository.getCardsForSet(setId);

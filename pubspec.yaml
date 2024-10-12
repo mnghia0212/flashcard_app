@@ -78,6 +78,7 @@ flutter:
     - lib/assets/images/empty_groups_screen.png
     - lib/assets/images/flashcard_sets.png
     - lib/assets/images/ava1.jpeg
+    - lib/assets/images/ava2.jpg
     - lib/assets/images/regular_study_mode.png
     - lib/assets/images/combination_study_mode.png
     - lib/assets/images/write_study_mode.png

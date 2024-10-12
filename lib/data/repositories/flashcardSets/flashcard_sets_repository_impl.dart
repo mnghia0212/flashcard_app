@@ -29,12 +29,21 @@ class FlashcardSetsRepositoryImpl implements FlashcardSetsRepositories {
   }
 
   @override
-  Stream<List<FlashcardSets>> listenToFlashcardSets()  {
+  Stream<List<FlashcardSets>> listenToFlashcardSets() {
     try {
       return datasource.listenToFlashcardSets();
     } catch (e) {
       log("$e");
       return Stream.value([]);
+    }
+  }
+
+  @override
+  Stream<int?> getCardNumber(String setId) {
+    try {
+      return datasource.getCardNumber(setId);
+    } catch (e) {
+      throw '$e';
     }
   }
 }

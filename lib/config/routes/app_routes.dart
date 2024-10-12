@@ -39,6 +39,14 @@ final appRoutes = [
     },
   ),
   GoRoute(
+    path: RouteLocation.writeModeStudy,
+    parentNavigatorKey: navigationKey,
+    builder: (context, state) {
+      final  setId = state.pathParameters['setId'];
+      return WriteModeStudy(setId: setId);
+    },
+  ),
+  GoRoute(
     path: RouteLocation.splash,
     parentNavigatorKey: navigationKey,
     builder: (context, state) => const SplashScreen(),

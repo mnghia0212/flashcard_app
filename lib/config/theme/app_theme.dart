@@ -10,7 +10,7 @@ class AppTheme {
     scheme: FlexScheme.blueM3,
     surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
     blendLevel: 7,
-    fontFamily: GoogleFonts.roboto().fontFamily,
+    fontFamily: GoogleFonts.montserrat().fontFamily,
     subThemesData: const FlexSubThemesData(
       blendOnLevel: 10,
       blendOnColors: false,

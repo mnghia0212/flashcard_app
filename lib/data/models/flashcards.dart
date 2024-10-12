@@ -12,16 +12,19 @@ class Flashcards extends Equatable {
   final String? videoPath;
   final String createdAt;
   final String? updatedAt;
-  const Flashcards({
-    required this.flashcardId,
-    required this.userId,
-    required this.frontContent,
-    required this.backContent,
-    this.audioPath,
-    this.videoPath,
-    required this.createdAt,
-    this.updatedAt,
-  });
+  final int correctStreak;
+  final int incorrectStreak;
+  const Flashcards(
+      {required this.flashcardId,
+      required this.userId,
+      required this.frontContent,
+      required this.backContent,
+      this.audioPath,
+      this.videoPath,
+      required this.createdAt,
+      this.updatedAt,
+      this.correctStreak = 0,
+      this.incorrectStreak = 0});
 
   @override
   List<Object?> get props {
@@ -31,8 +34,12 @@ class Flashcards extends Equatable {
       frontContent,
       backContent,
       createdAt,
+      correctStreak,
+      incorrectStreak
     ];
   }
+
+  bool isMaster() => correctStreak >= 2;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -44,6 +51,8 @@ class Flashcards extends Equatable {
       'videoPath': videoPath,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'correctStreak': correctStreak,
+      'incorrectStreak': incorrectStreak
     };
   }
 
@@ -57,6 +66,8 @@ class Flashcards extends Equatable {
       videoPath: map['videoPath'] != null ? map['videoPath'] as String : null,
       createdAt: map['createdAt'] as String,
       updatedAt: map['updatedAt'] != null ? map['updatedAt'] as String : null,
+      correctStreak: map['correctStreak'] as int,
+      incorrectStreak: map['incorrectStreak'] as int,
     );
   }
 
@@ -74,6 +85,8 @@ class Flashcards extends Equatable {
     String? videoPath,
     String? createdAt,
     String? updatedAt,
+    int? correctStreak,
+    int? incorrectStreak
   }) {
     return Flashcards(
       flashcardId: flashcardId ?? this.flashcardId,
@@ -84,6 +97,8 @@ class Flashcards extends Equatable {
       videoPath: videoPath ?? this.videoPath,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      correctStreak: correctStreak ?? this.correctStreak,
+      incorrectStreak: incorrectStreak ?? this.incorrectStreak
     );
   }
 }

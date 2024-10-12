@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flashcard_app/data/models/flashcards.dart';
+import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/utils/extensions.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
@@ -52,84 +52,99 @@ class FlashcardScreen extends ConsumerWidget {
     }
   }
 
-  Padding _listviewCard(List<Flashcards> flashcards) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: ListView.separated(
-        itemCount: flashcards.length,
-        itemBuilder: (context, index) {
-          final flashcard = flashcards[index];
-          final colors = context.colorScheme;
-          final devideSize = context.deviceSize;
-          return Container(
-            height: 230,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              // border: Border.all(
-              //   width: 1,
-              //   color: Colors.grey
-              // )
-            ),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  height: 50,
-                  decoration: BoxDecoration(
-                      color: colors.primary,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
-                      )),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      DisplayText(
-                          text: (index + 1).toString(),
-                          fontWeight: FontWeight.bold),
-                      const Icon(
-                        Icons.more_vert,
-                        color: Colors.white,
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  height: 180,
-                  width: devideSize.width,
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(15),
-                        bottomRight: Radius.circular(15),
-                      ),
-                      border: Border.all(width: 1, color: Colors.grey)),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      DisplayTitle(
-                        text: flashcard.frontContent, 
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                      const Gap(5),
-                      DisplayText(
-                        text: flashcard.backContent, 
-                        color: Colors.black,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return const Gap(20);
-        },
-      ),
+  ListView _listviewCard(List<Flashcards> flashcards) {
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+      itemCount: flashcards.length,
+      itemBuilder: (context, index) {
+        final flashcard = flashcards[index];
+        const titleContainerBackground = Color(0xfff1f1f1);
+        const titleContainerTheme = Color(0xff808080);
+        final deviceSize = context.deviceSize;
+        return Container(
+          height: 240,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Column(
+            children: [
+              _cartTitle(titleContainerBackground, index, titleContainerTheme),
+              _cardContent(deviceSize, flashcard),
+            ],
+          ),
+        );
+      },
+      separatorBuilder: (context, index) {
+        return const Gap(20);
+      },
     );
+  }
+
+  Container _cardContent(Size deviceSize, Flashcards flashcard) {
+    return Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                height: 190,
+                width: deviceSize.width,
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(15),
+                      bottomRight: Radius.circular(15),
+                    ),
+                    border: Border.all(
+                      width: 1, 
+                      color: Colors.grey,
+                      style: BorderStyle.solid
+                    ),
+
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DisplayText(
+                      text: flashcard.frontContent,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 19,
+                    ),
+                    const Gap(5),
+                    DisplayText(
+                      text: flashcard.backContent,
+                      color: Colors.black,
+                    ),
+                  ],
+                ),
+              );
+  }
+
+  Container _cartTitle(Color titleContainerBackground, int index, Color titleContainerTheme) {
+    return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                height: 50,
+                decoration:  BoxDecoration(
+                    color: titleContainerBackground,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                    ),
+                  ),
+                    
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    DisplayText(
+                        text: (index + 1).toString(),
+                        fontWeight: FontWeight.bold,
+                        color: titleContainerTheme,
+                      ),
+                    Icon(
+                      Icons.more_vert,
+                      color: titleContainerTheme,
+                    )
+                  ],
+                ),
+              );
   }
 
   Container _floatingActionButtonCreateCard(

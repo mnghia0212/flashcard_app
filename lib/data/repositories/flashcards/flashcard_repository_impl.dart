@@ -36,4 +36,13 @@ class FlashcardRepositoryImpl implements FlashcardRepositories {
       return Stream.value([]);
     }
   }
+  
+  @override
+  Future<void> updateCard(Flashcards flashcard) async {
+    try {
+      await datasource.updateCard(flashcard);
+    } catch (e) {
+      log("$e");
+    }
+  }
 }

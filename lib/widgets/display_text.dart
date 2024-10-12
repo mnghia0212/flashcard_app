@@ -6,7 +6,7 @@ class DisplayText extends StatelessWidget {
       {super.key,
       required this.text,
       this.fontWeight = FontWeight.normal,
-      this.fontSize = 18,
+      this.fontSize = 17,
       this.color = Colors.white,
       this.textAlign = TextAlign.left
     });
@@ -27,6 +27,8 @@ class DisplayText extends StatelessWidget {
         fontSize: fontSize,
         color: color
       ),
+      maxLines: 5,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

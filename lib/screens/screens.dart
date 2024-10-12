@@ -9,3 +9,4 @@ export 'profile_screen.dart';
 export 'bottom_navigator.dart';
 export 'flashcard_screen.dart';
 export 'splash_screen.dart';
+export 'write_mode_study.dart';

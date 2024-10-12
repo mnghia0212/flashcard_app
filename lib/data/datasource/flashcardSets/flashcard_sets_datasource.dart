@@ -11,21 +11,21 @@ class FlashcardSetsDatasource {
   final supabase = Supabase.instance.client;
 
   Future<void> createSet(
-    FlashcardSets flashcardSets, BuildContext context) async {
-  try {
-    await SessionService().checkSession(context);
+      FlashcardSets flashcardSets, BuildContext context) async {
+    try {
+      await SessionService().checkSession(context);
 
-    final newSetDoc = FirebaseFirestore.instance.collection("flashcardSets").doc();
-    final newSetId = newSetDoc.id; 
+      final newSetDoc =
+          FirebaseFirestore.instance.collection("flashcardSets").doc();
+      final newSetId = newSetDoc.id;
 
-    await newSetDoc.set(flashcardSets.copyWith(setId: newSetId).toMap());
+      await newSetDoc.set(flashcardSets.copyWith(setId: newSetId).toMap());
 
-    log("Success: flashcard set created in db");
-  } catch (e) {
-    log("Error creating set in db: $e");
+      log("Success: flashcard set created in db");
+    } catch (e) {
+      log("Error creating set in db: $e");
+    }
   }
-}
-
 
   Future<void> updateSet(
       FlashcardSets flashcardSets, BuildContext context) async {
@@ -60,47 +60,60 @@ class FlashcardSetsDatasource {
     }
   }
 
-  Future<List<FlashcardSets>> getAllSets() async {
-  try {
-    final userId = supabase.auth.currentUser?.id;
+  Stream<int?> getCardNumber(String setId) {
+    try {
+      return FirebaseFirestore.instance
+          .collection('flashcardSetDetails')
+          .where('flashcardSetId', isEqualTo: setId)
+          .snapshots()
+          .map((snapshot) => snapshot.docs.length);
+    } catch (e) {
+      log("Error getting flashcard number: $e");
+      return Stream.value(0);
+    }
+  }
 
-    if (userId == null) {
-      log("No user logged in");
+  Future<List<FlashcardSets>> getAllSets() async {
+    try {
+      final userId = supabase.auth.currentUser?.id;
+
+      if (userId == null) {
+        log("No user logged in");
+        return [];
+      }
+
+      log("Fetching flashcard sets for userId: $userId");
+
+      final querySnapshot = await _firestore
+          .collection('flashcardSets')
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      final sets = querySnapshot.docs.map((doc) {
+        final data = doc.data();
+        return FlashcardSets(
+          setId: data['setId'],
+          userId: data['userId'],
+          title: data['title'],
+          description: data['description'],
+          isFavorite: data['isFavorite'],
+          createdAt: data['createdAt'],
+          updatedAt: data['updatedAt'],
+        );
+      }).toList();
+
+      log("Fetched ${sets.length} sets for userId: $userId");
+
+      return sets;
+    } catch (e) {
+      log("Error getting flashcard sets: $e");
       return [];
     }
-
-    log("Fetching flashcard sets for userId: $userId");
-
-    final querySnapshot = await _firestore
-        .collection('flashcardSets')
-        .where('userId', isEqualTo: userId)
-        .get();
-
-    final sets = querySnapshot.docs.map((doc) {
-      final data = doc.data();
-      return FlashcardSets(
-        setId: data['setId'],
-        userId: data['userId'],
-        title: data['title'],
-        description: data['description'],
-        isFavorite: data['isFavorite'],
-        createdAt: data['createdAt'],
-        updatedAt: data['updatedAt'],
-      );
-    }).toList();
-
-    log("Fetched ${sets.length} sets for userId: $userId");
-
-    return sets;
-  } catch (e) {
-    log("Error getting flashcard sets: $e");
-    return [];
   }
-}
 
   Stream<List<FlashcardSets>> listenToFlashcardSets() {
     final userId = supabase.auth.currentUser?.id;
-    
+
     if (userId == null) {
       return Stream.value([]);
     }
@@ -108,20 +121,20 @@ class FlashcardSetsDatasource {
     return _firestore
         .collection('flashcardSets')
         .where('userId', isEqualTo: userId)
-        .snapshots() 
+        .snapshots()
         .map((snapshot) {
-          return snapshot.docs.map((doc) {
-            final data = doc.data();
-            return FlashcardSets(
-              setId: data['setId'],
-              userId: data['userId'],
-              title: data['title'],
-              description: data['description'],
-              isFavorite: data['isFavorite'],
-              createdAt: data['createdAt'],
-              updatedAt: data['updatedAt'],
-            );
-          }).toList();
-        });
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        return FlashcardSets(
+          setId: data['setId'],
+          userId: data['userId'],
+          title: data['title'],
+          description: data['description'],
+          isFavorite: data['isFavorite'],
+          createdAt: data['createdAt'],
+          updatedAt: data['updatedAt'],
+        );
+      }).toList();
+    });
   }
 }

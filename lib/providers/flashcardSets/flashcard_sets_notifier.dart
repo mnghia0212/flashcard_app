@@ -15,20 +15,37 @@ class FlashcardSetsNotifier extends StateNotifier<FlashcardSetsState> {
 
   Future<void> createFlashcardSet(
       FlashcardSets flashcardSet, BuildContext context) async {
-    getSets();
     try {
       await repository.createSet(flashcardSet, context);
+      getSets();
     } catch (e) {
       log("error: $e");
     }
   }
+  
 
-  void getSets() async{
+  void getSets() async {
     try {
       final flashcardSets = await repository.getAllSets();
       state = state.copyWith(flashcardSets: flashcardSets);
     } catch (e) {
       log("$e");
+    }
+  }
+
+  Stream<int?> getCardNumber(String setId) {
+    try {
+      return repository.getCardNumber(setId);
+    } catch (e) {
+      throw '$e';
+    }
+  }
+
+  void selectFlashcardSet(FlashcardSets? flashcardSet) {
+    if (flashcardSet != null) {
+      state = state.copyWith(selectedFlashcardSet: flashcardSet);
+    } else {
+      state = state.copyWith(selectedFlashcardSet: null);
     }
   }
 }

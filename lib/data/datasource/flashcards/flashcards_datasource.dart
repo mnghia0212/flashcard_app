@@ -13,13 +13,14 @@ class FlashcardsDatasource {
     required String setId,
   }) async {
     try {
-      final newFlashcard =
-          FirebaseFirestore.instance.collection('flashcards').doc();
-      await newFlashcard.set(flashcard.toMap());
-      final newFlashcardId = newFlashcard.id;
+      final newFlashcardDoc = FirebaseFirestore.instance.collection('flashcards').doc();
+      final newFlashcardId = newFlashcardDoc.id;
 
-      final newFlashcardSetDetailRef =
-          FirebaseFirestore.instance.collection('flashcardSetDetails').doc();
+      final updatedFlashcard = flashcard.copyWith(flashcardId: newFlashcardId);
+
+      await newFlashcardDoc.set(updatedFlashcard.toMap());
+
+      final newFlashcardSetDetailRef = FirebaseFirestore.instance.collection('flashcardSetDetails').doc();
       await newFlashcardSetDetailRef.set({
         'flashcardSetId': setId,
         'flashcardId': newFlashcardId,
@@ -28,6 +29,19 @@ class FlashcardsDatasource {
       log("Flashcard created and linked to set successfully");
     } catch (e) {
       log("Error creating flashcard in set: $e");
+    }
+  }
+
+
+  Future<void> updateCard(Flashcards flashcard) async {
+    try {
+      await firestore
+          .collection('flashcards') // Tên collection trong Firestore của bạn
+          .doc(flashcard.flashcardId) // ID của flashcard bạn muốn cập nhật
+          .update(flashcard.toMap()); // Cập nhật dữ liệu dựa trên map của flashcard
+      log("Flashcard updated successfully");
+    } catch (e) {
+      throw Exception("Error updating flashcard: $e");
     }
   }
 
