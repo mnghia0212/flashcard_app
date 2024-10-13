@@ -108,6 +108,7 @@ class ReviseScreen extends ConsumerWidget {
                   text: "Bắt đầu",
                   onPressed: () {
                     if (selectedSet != null) {
+                      //log(selectedSet.setId);
                       learnWriteMode(selectedSet.setId, ref, context);
                     } else {
                       AppAlerts.showFlushBar(context,
@@ -290,6 +291,7 @@ class ReviseScreen extends ConsumerWidget {
   }
 
   void learnWriteMode(String setId, WidgetRef ref, BuildContext context) async {
+
     final cardNumberStream =
         ref.read(flashcardSetsProvider.notifier).getCardNumber(setId);
     final cardNumber = await cardNumberStream.first;
@@ -301,4 +303,5 @@ class ReviseScreen extends ConsumerWidget {
       context.push('/writeModeStudy/$setId');
     }
   }
+
 }

@@ -57,19 +57,20 @@ class Flashcards extends Equatable {
   }
 
   factory Flashcards.fromMap(Map<String, dynamic> map) {
-    return Flashcards(
-      flashcardId: map['flashcardId'] as String,
-      userId: map['userId'] as String,
-      frontContent: map['frontContent'] as String,
-      backContent: map['backContent'] as String,
-      audioPath: map['audioPath'] != null ? map['audioPath'] as String : null,
-      videoPath: map['videoPath'] != null ? map['videoPath'] as String : null,
-      createdAt: map['createdAt'] as String,
-      updatedAt: map['updatedAt'] != null ? map['updatedAt'] as String : null,
-      correctStreak: map['correctStreak'] as int,
-      incorrectStreak: map['incorrectStreak'] as int,
-    );
-  }
+  return Flashcards(
+    flashcardId: map['flashcardId'] as String,
+    userId: map['userId'] as String,
+    frontContent: map['frontContent'] as String,
+    backContent: map['backContent'] as String,
+    audioPath: map['audioPath'] != null ? map['audioPath'] as String : null,
+    videoPath: map['videoPath'] != null ? map['videoPath'] as String : null,
+    createdAt: map['createdAt'] as String,
+    updatedAt: map['updatedAt'] != null ? map['updatedAt'] as String : null,
+    correctStreak: map['correctStreak'] as int,  
+    incorrectStreak: map['incorrectStreak'] as int, 
+  );
+}
+
 
   String toJson() => json.encode(toMap());
 

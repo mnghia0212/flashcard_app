@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flashcard_app/data/data.dart';
-import 'package:flashcard_app/providers/displayed_flashcard_provider.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
@@ -80,18 +79,16 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
     debugPrint('incomplete: $incompleteCards');
     debugPrint('current: $currentCard');
 
-    // Loại bỏ currentCard khỏi danh sách nếu có
+    
     if (currentCard != null) {
       incompleteCards
           .removeWhere((card) => card.flashcardId == currentCard.flashcardId);
     }
 
-    // Nếu chỉ còn một card duy nhất sau khi loại bỏ, trả lại card đó
     if (incompleteCards.isEmpty) {
       return currentCard;
     }
 
-    // Ưu tiên highPriorityCards, nếu không có, chọn lowPriorityCards hoặc random card
     List<Flashcards> highPriorityCards =
         incompleteCards.where((card) => card.incorrectStreak > 0).toList();
 
@@ -109,25 +106,20 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
       return lowPriorityCards[Random().nextInt(lowPriorityCards.length)];
     }
 
-    // Nếu không có ưu tiên, chọn ngẫu nhiên từ incompleteCards
     return incompleteCards[Random().nextInt(incompleteCards.length)];
   }
 
   void updateFlashcardState(Flashcards flashcard, bool isCorrect) async {
-    // Tạo bản sao mới của flashcard với trạng thái được cập nhật
     Flashcards updatedFlashcard = flashcard.copyWith(
       correctStreak: isCorrect ? flashcard.correctStreak + 1 : 0,
       incorrectStreak: isCorrect ? 0 : flashcard.incorrectStreak + 1,
     );
 
     try {
-      // Cập nhật flashcard trong cơ sở dữ liệu
       await ref.read(flashcardsProvider.notifier).updateCard(updatedFlashcard);
 
-      // Cập nhật lại provider với flashcard đã được thay đổi để hiển thị chính xác
       ref.read(displayedFlashcardProvider.notifier).state = updatedFlashcard;
 
-      // Hiển thị thông báo
       if (isCorrect) {
         AppAlerts.showFlushBar(context,
             updatedFlashcard.correctStreak.toString(), AlertType.success);
@@ -247,10 +239,8 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
             final isCorrect = answerController.text.toLowerCase() ==
                 nowCard.backContent.toLowerCase();
 
-            // Cập nhật trạng thái của flashcard
             updateFlashcardState(nowCard, isCorrect);
 
-            // Lấy flashcard tiếp theo
             final newFlashcard = showNextFlashcard(flashcards, nowCard);
 
             if (newFlashcard != null) {
