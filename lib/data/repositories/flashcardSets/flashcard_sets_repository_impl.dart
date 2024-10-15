@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flashcard_app/data/data.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FlashcardSetsRepositoryImpl implements FlashcardSetsRepositories {
   final FlashcardSetsDatasource datasource;

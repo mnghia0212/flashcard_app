@@ -1,11 +1,6 @@
-import 'dart:developer';
 
-import 'package:flashcard_app/data/data.dart';
-import 'package:flashcard_app/providers/displayed_flashcard_provider.dart';
 import 'package:flashcard_app/providers/providers.dart';
-import 'package:flashcard_app/utils/extensions.dart';
 import 'package:flashcard_app/utils/utils.dart';
-import 'package:flashcard_app/widgets/display_text.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -89,7 +84,6 @@ class ReviseScreen extends ConsumerWidget {
       builder: (context) {
         return Consumer(
           builder: (context, ref, child) {
-            final flashcardSetsStream = ref.watch(flashcardSetsStreamProvider);
             final flashcardSetsState = ref.watch(flashcardSetsProvider);
             final selectedSet =
                 ref.watch(flashcardSetsProvider).selectedFlashcardSet;
@@ -120,14 +114,7 @@ class ReviseScreen extends ConsumerWidget {
               title: _rowTitleDialog(context),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-              content: flashcardSetsStream.when(
-                data: (flashcardSets) {
-                  return _contentDialog(context, ref, flashcardSetsState);
-                },
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stackTrace) =>
-                    Center(child: Text('Error: $error')),
-              ),
+              content: _contentDialog(context, ref, flashcardSetsState),
             );
           },
         );
@@ -137,6 +124,7 @@ class ReviseScreen extends ConsumerWidget {
 
   SizedBox _contentDialog(BuildContext context, WidgetRef ref,
       FlashcardSetsState flashcardSetsState) {
+    final flashcardSetsStream = ref.watch(flashcardSetsStreamProvider);
     final flashcardSets = flashcardSetsState.flashcardSets;
     final selectedSet = flashcardSetsState.selectedFlashcardSet;
     final colors = context.colorScheme;
@@ -154,63 +142,71 @@ class ReviseScreen extends ConsumerWidget {
           ),
           const Gap(10),
           Expanded(
-            child: flashcardSets.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-                : ListView.separated(
-                    itemCount: flashcardSets.length,
-                    itemBuilder: (context, index) {
-                      final flashcardSet = flashcardSets[index];
-                      final isSelected =
-                          selectedSet?.setId == flashcardSet.setId;
-                      final cardNumber = ref
-                          .read(flashcardSetsProvider.notifier)
-                          .getCardNumber(flashcardSet.setId);
-
-                      return InkWell(
-                        onTap: () {
-                          ref
+            child: flashcardSetsStream.when(
+              data: (flashcardSets) {
+                return flashcardSets.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView.separated(
+                        itemCount: flashcardSets.length,
+                        itemBuilder: (context, index) {
+                          final flashcardSet = flashcardSets[index];
+                          final isSelected =
+                              selectedSet?.setId == flashcardSet.setId;
+                          final cardNumber = ref
                               .read(flashcardSetsProvider.notifier)
-                              .selectFlashcardSet(flashcardSet);
+                              .getCardNumber(flashcardSet.setId);
+
+                          return InkWell(
+                            onTap: () {
+                              ref
+                                  .read(flashcardSetsProvider.notifier)
+                                  .selectFlashcardSet(flashcardSet);
+                            },
+                            child: Container(
+                              height: 70,
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? colors.primaryContainer
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                    width: 1,
+                                    color:
+                                        const Color.fromRGBO(158, 158, 158, 1)),
+                              ),
+                              child: StreamBuilder(
+                                  stream: cardNumber,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasError) {
+                                      return const Text('Error');
+                                    } else {
+                                      final count = snapshot.data ?? 0;
+                                      return ListTile(
+                                        title: DisplayText(
+                                          text:
+                                              "${flashcardSet.title} - $count thẻ",
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        subtitle: DisplayText(
+                                          text: flashcardSet.description,
+                                          color: Colors.black,
+                                        ),
+                                      );
+                                    }
+                                  }),
+                            ),
+                          );
                         },
-                        child: Container(
-                          height: 70,
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? colors.primaryContainer
-                                : Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                                width: 1,
-                                color: const Color.fromRGBO(158, 158, 158, 1)),
-                          ),
-                          child: StreamBuilder(
-                              stream: cardNumber,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasError) {
-                                  return const Text('Error');
-                                } else {
-                                  final count = snapshot.data ?? 0;
-                                  return ListTile(
-                                    title: DisplayText(
-                                      text:
-                                          "${flashcardSet.title} - $count thẻ",
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    subtitle: DisplayText(
-                                      text: flashcardSet.description,
-                                      color: Colors.black,
-                                    ),
-                                  );
-                                }
-                              }),
-                        ),
+                        separatorBuilder: (context, index) {
+                          return const Gap(10);
+                        },
                       );
-                    },
-                    separatorBuilder: (context, index) {
-                      return const Gap(10);
-                    },
-                  ),
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stackTrace) =>
+                  Center(child: Text('Error: $error')),
+            ),
           )
         ],
       ),
@@ -291,7 +287,6 @@ class ReviseScreen extends ConsumerWidget {
   }
 
   void learnWriteMode(String setId, WidgetRef ref, BuildContext context) async {
-
     final cardNumberStream =
         ref.read(flashcardSetsProvider.notifier).getCardNumber(setId);
     final cardNumber = await cardNumberStream.first;
@@ -303,5 +298,4 @@ class ReviseScreen extends ConsumerWidget {
       context.push('/writeModeStudy/$setId');
     }
   }
-
 }

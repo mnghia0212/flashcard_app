@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flashcard_app/data/models/flashcard_sets.dart';
 import 'package:flashcard_app/providers/providers.dart';

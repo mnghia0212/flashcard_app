@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_app/data/data.dart';
@@ -15,9 +14,6 @@ final flashcardStreamProvider = StreamProvider.family<List<Flashcards>, String>(
         final flashcards = await Future.wait(flashcardIds.map((id) async {
           final flashcardSnapshot = await FirebaseFirestore.instance.collection('flashcards').doc(id).get();
           
-          // In dữ liệu raw trước khi chuyển sang Flashcards model
-          log('Raw data from Firestore: ${flashcardSnapshot.data()}');
-
           return Flashcards.fromMap(flashcardSnapshot.data()!);
         }));
 
