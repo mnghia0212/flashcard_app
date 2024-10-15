@@ -78,12 +78,7 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
     if (initialBox.isNotEmpty) {
       return initialBox[Random().nextInt(initialBox.length)];
     }
-
-    /*
-    case 1: wrongbox ko null, rightbox ko null, rightbox, wrongbox random = flashcard
-    case 2: random wrongbox = flashcard nhưng rightbox []
-     */
-
+    
     /*
     error 1: random lỗi ra số ko có
     error 2: random displayedCard state = card của set học trước
