@@ -8,18 +8,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
-class WriteModeStudy extends ConsumerStatefulWidget {
+class AbcdModeStudy extends ConsumerStatefulWidget {
   final String? setId;
-  const WriteModeStudy({super.key, required this.setId});
+  const AbcdModeStudy({super.key, required this.setId});
 
   @override
-  ConsumerState<WriteModeStudy> createState() => _WriteModeStudyState();
+  ConsumerState<AbcdModeStudy> createState() => _AbcdModeStudyState();
 }
 
-class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
-  final TextEditingController answerController = TextEditingController();
+class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   bool isAnswered = false;
   bool isCorrect = false;
+  String? groupValue;
+  List<String>? shuffledAnswers;
   Flashcards? newFlashcard;
 
   // Card boxes
@@ -37,6 +38,7 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
   void _initializeFlashcardsBox() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final flashcardsAsync = ref.read(flashcardStreamProvider(widget.setId!));
+      final selectedFlashcard = ref.watch(displayedFlashcardProvider);
       flashcardsAsync.whenData((flashcards) {
         if (flashcards.isNotEmpty && initialBox.isEmpty) {
           setState(() {
@@ -44,20 +46,22 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
 
             ref.read(displayedFlashcardProvider.notifier).state =
                 initialBox[Random().nextInt(initialBox.length)];
+
+            List<String> wrongAnswers =
+                _getWrongAnswers(flashcards, selectedFlashcard!);
+            shuffledAnswers =
+                _getShuffledAnswers(selectedFlashcard, wrongAnswers);
+            debugPrint(shuffledAnswers.toString());
           });
         }
       });
     });
   }
 
-  @override
-  void dispose() {
-    answerController.dispose();
-    super.dispose();
-  }
-
-  Flashcards? _getNextFlashcard(bool isCorrect, Flashcards flashcard) {
+  Flashcards? _getNextFlashcard(
+      bool isCorrect, Flashcards flashcard, List<Flashcards> flashcards) {
     _updateBoxes(isCorrect, flashcard);
+
     return _selectNextFlashcard(flashcard);
   }
 
@@ -80,15 +84,11 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
   }
 
   Flashcards? _selectNextFlashcard(Flashcards flashcard) {
-    if (initialBox.isNotEmpty) {
+    if (initialBox.isNotEmpty)
       return initialBox[Random().nextInt(initialBox.length)];
-    }
-    if (wrongBox.isNotEmpty) {
-      return _getRandomFromBox(wrongBox, flashcard);
-    }
-    if (firstRightBox.isNotEmpty) {
+    if (wrongBox.isNotEmpty) return _getRandomFromBox(wrongBox, flashcard);
+    if (firstRightBox.isNotEmpty)
       return _getRandomFromBox(firstRightBox, flashcard);
-    }
     return null;
   }
 
@@ -107,12 +107,38 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
     return newCard;
   }
 
-  //error: displayedFlashcardProvider = null
+  List<String> _getWrongAnswers(
+      List<Flashcards> allFlashcards, Flashcards selectedFlashcard) {
+    List<Flashcards> wrongCards =
+        allFlashcards.where((fc) => fc != selectedFlashcard).toList();
+
+    wrongCards.shuffle();
+
+    List<String> wrongAnswers =
+        wrongCards.take(3).map((fc) => fc.backContent).toList();
+
+    return wrongAnswers;
+  }
+
+  List<String> _getShuffledAnswers(
+      Flashcards selectedFlashcard, List<String> wrongAnswers) {
+    List<String> answers = [...wrongAnswers, selectedFlashcard.backContent];
+
+    answers.shuffle();
+
+    return answers;
+  }
+
   @override
   Widget build(BuildContext context) {
     final flashcardsAsync = ref.watch(flashcardStreamProvider(widget.setId!));
     final colors = context.colorScheme;
     final setName = ref.read(flashcardSetsProvider).selectedFlashcardSet!.title;
+    final selectedFlashcard = ref.watch(displayedFlashcardProvider);
+
+    if (selectedFlashcard == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     ref.listen<AsyncValue<List<Flashcards>>>(
         flashcardStreamProvider(widget.setId!), (previous, next) {
@@ -130,19 +156,15 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
       body: flashcardsAsync.when(
         data: (flashcards) => flashcards.isEmpty
             ? const EmptyContainer(emptyType: EmptyType.card)
-            : _buildCardDisplay(context, colors),
+            : _buildCardDisplay(flashcards, selectedFlashcard, context, colors),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text('Error: $error')),
       ),
     );
   }
 
-  Widget _buildCardDisplay(BuildContext context, ColorScheme colors) {
-    final selectedFlashcard = ref.watch(displayedFlashcardProvider);
-    if (selectedFlashcard == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
+  Widget _buildCardDisplay(List<Flashcards> flashcards,
+      Flashcards selectedFlashcard, BuildContext context, ColorScheme colors) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -156,17 +178,18 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
               child: child,
             );
           },
-          child: _buildCardContainer(selectedFlashcard, colors),
+          child: _buildCardContainer(flashcards, selectedFlashcard, colors),
         ),
       ),
     );
   }
 
-  Container _buildCardContainer(Flashcards flashcard, ColorScheme colors) {
+  Container _buildCardContainer(List<Flashcards> flashcards,
+      Flashcards selectedFlashcard, ColorScheme colors) {
     return Container(
-      key: ValueKey(flashcard.flashcardId),
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 70),
-      height: 450,
+      key: ValueKey(selectedFlashcard.flashcardId),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 30),
+      height: 530,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -177,11 +200,12 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
               blurRadius: 6)
         ],
       ),
-      child: _buildCardContent(flashcard, colors),
+      child: _buildCardContent(flashcards, selectedFlashcard, colors),
     );
   }
 
-  Column _buildCardContent(Flashcards flashcard, ColorScheme colors) {
+  Column _buildCardContent(List<Flashcards> flashcards,
+      Flashcards selectedFlashcard, ColorScheme colors) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,48 +214,63 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
             text: "Câu hỏi / định nghĩa", color: Colors.black, fontSize: 15),
         const Gap(5),
         DisplayText(
-            text: flashcard.frontContent, color: Colors.black, fontSize: 19),
+            text: selectedFlashcard.frontContent,
+            color: Colors.black,
+            fontSize: 19),
         const Gap(20),
         const DisplayText(
-            text: "Câu trả lời", color: Colors.black, fontSize: 15),
-        const Gap(10),
-        _buildAnswerTextField(),
+            text: "Chọn đáp án đúng", color: Colors.black, fontSize: 15),
+        const Gap(5),
+        _buildOptionRatio(flashcards, selectedFlashcard),
         const Spacer(),
-        _buildActionButtons(colors, flashcard)
+        _buildActionButtons(colors, selectedFlashcard, flashcards)
       ],
     );
   }
 
-  TextFormField _buildAnswerTextField() {
-    return TextFormField(
-      controller: answerController,
-      maxLines: 3,
-      decoration: InputDecoration(
-        hintText: "Nhập câu trả lời của bạn",
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: const BorderSide(width: 1, color: Colors.white)),
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide:
-                BorderSide(width: 1, color: context.colorScheme.primary)),
-      ),
-      validator: (value) => value!.isEmpty ? 'Câu trả lời trống' : null,
-      onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+  Widget _buildOptionRatio(
+      List<Flashcards> flashcards, Flashcards selectedFlashcard) {
+    if (shuffledAnswers == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return Column(
+      children: List.generate(shuffledAnswers!.length, (index) {
+        return Container(
+          margin: const EdgeInsets.only(top: 12),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              border: Border.all(width: 1, color: Colors.grey)),
+          child: ListTile(
+            title: Text(shuffledAnswers![index]),
+            leading: Radio<String>(
+              value: shuffledAnswers![index],
+              groupValue: groupValue,
+              onChanged: (value) {
+                setState(() {
+                  groupValue = value;
+                  isAnswered = true;
+                  isCorrect = groupValue == selectedFlashcard.backContent;
+                });
+              },
+            ),
+          ),
+        );
+      }),
     );
   }
 
-  Row _buildActionButtons(ColorScheme colors, Flashcards flashcard) {
+  Row _buildActionButtons(
+      ColorScheme colors, Flashcards flashcard, List<Flashcards> flashcards) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         ElevatedButton(
           onPressed: () {
             setState(() {
-              isAnswered = true;
-              isCorrect = answerController.text.toLowerCase().trim() ==
-                  flashcard.backContent.toLowerCase().trim();
-              newFlashcard = _getNextFlashcard(isCorrect, flashcard);
+              newFlashcard =
+                  _getNextFlashcard(isCorrect, flashcard, flashcards);
+              print("yes/no: $isCorrect");
+              print("new card: $newFlashcard");
             });
           },
           style: ElevatedButton.styleFrom(backgroundColor: colors.primary),
@@ -240,12 +279,12 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
               child: DisplayText(text: "Trả lời")),
         ),
         const Gap(10),
-        _buildNextCardButton(colors)
+        _buildNextCardButton(colors, flashcard, flashcards)
       ],
     );
   }
 
-  ElevatedButton _buildNextCardButton(ColorScheme colors) {
+  ElevatedButton _buildNextCardButton(ColorScheme colors, Flashcards flashcard, List<Flashcards> flashcards) {
     return ElevatedButton(
       onPressed: !isAnswered
           ? null
@@ -253,9 +292,17 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
               if (newFlashcard != null) {
                 ref.read(displayedFlashcardProvider.notifier).state =
                     newFlashcard;
-                answerController.clear();
                 setState(() {
                   isAnswered = false;
+                  Flashcards? newFlashcard = _selectNextFlashcard(flashcard);
+                  if (newFlashcard != null) {
+                    List<String> wrongAnswers =
+                        _getWrongAnswers(flashcards, newFlashcard);
+                    shuffledAnswers =
+                        _getShuffledAnswers(newFlashcard, wrongAnswers);
+                  }
+
+                  groupValue = null;
                 });
               } else {
                 debugPrint("SESSION COMPLETED");
@@ -269,6 +316,6 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
   }
 
   AppBar _buildAppBar(String setName) {
-    return AppBar(title: DisplayTitle(text: "Chế độ viết: $setName"));
+    return AppBar(title: DisplayTitle(text: setName));
   }
 }

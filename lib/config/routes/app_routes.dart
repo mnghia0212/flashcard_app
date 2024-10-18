@@ -31,6 +31,11 @@ final appRoutes = [
     builder: (context, state) => const BottomNavigator(),
   ),
   GoRoute(
+    path: RouteLocation.splash,
+    parentNavigatorKey: navigationKey,
+    builder: (context, state) => const SplashScreen(),
+  ),
+  GoRoute(
     path: RouteLocation.flashcard,
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
@@ -47,8 +52,19 @@ final appRoutes = [
     },
   ),
   GoRoute(
-    path: RouteLocation.splash,
+    path: RouteLocation.flipModeStudy,
     parentNavigatorKey: navigationKey,
-    builder: (context, state) => const SplashScreen(),
+    builder: (context, state) {
+      final  setId = state.pathParameters['setId'];
+      return FlipStudyMode(setId: setId);
+    },
+  ),
+  GoRoute(
+    path: RouteLocation.abcdModeStudy,
+    parentNavigatorKey: navigationKey,
+    builder: (context, state) {
+      final  setId = state.pathParameters['setId'];
+      return AbcdModeStudy(setId: setId);
+    },
   ),
 ];

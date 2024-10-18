@@ -1,4 +1,3 @@
-
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
@@ -7,21 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+enum StudyType { normal, write, combine, abcd }
+
 class ReviseScreen extends ConsumerWidget {
   const ReviseScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Hãy chọn chế độ học ",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      appBar: _buildAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -38,12 +31,14 @@ class ReviseScreen extends ConsumerWidget {
                     title: "Thông thường",
                     description: "Lật thẻ để ôn tập",
                     pathImage: 'lib/assets/images/regular_study_mode.png',
-                    onTap: () {},
+                    onTap: () {
+                      showDialogSelectSet(context, ref, StudyType.normal);
+                    },
                   ),
                   _buildStudyModeCard(
                     context,
-                    title: "Kết hợp",
-                    description: "Kết hợp các bộ thẻ",
+                    title: "Ghi nhớ nhanh",
+                    description: "Tốc độ & phản xạ",
                     pathImage: 'lib/assets/images/combination_study_mode.png',
                     onTap: () {},
                   ),
@@ -53,7 +48,7 @@ class ReviseScreen extends ConsumerWidget {
                     description: "Tự tay nhập kết quả",
                     pathImage: 'lib/assets/images/write_study_mode.png',
                     onTap: () {
-                      showDialogWriteMode(context, ref);
+                      showDialogSelectSet(context, ref, StudyType.write);
                     },
                   ),
                   _buildStudyModeCard(
@@ -62,7 +57,9 @@ class ReviseScreen extends ConsumerWidget {
                     description: "Chọn đáp án đúng",
                     pathImage:
                         'lib/assets/images/multiple_choice_study_mode.png',
-                    onTap: () {},
+                    onTap: () {
+                      showDialogSelectSet(context, ref, StudyType.abcd);
+                    },
                   ),
                 ],
               ),
@@ -78,7 +75,8 @@ class ReviseScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> showDialogWriteMode(BuildContext context, WidgetRef ref) async {
+  Future<void> showDialogSelectSet(
+      BuildContext context, WidgetRef ref, StudyType studyType) async {
     await showDialog(
       context: context,
       builder: (context) {
@@ -102,8 +100,8 @@ class ReviseScreen extends ConsumerWidget {
                   text: "Bắt đầu",
                   onPressed: () {
                     if (selectedSet != null) {
-                      //log(selectedSet.setId);
-                      learnWriteMode(selectedSet.setId, ref, context);
+                      _startStudySession(
+                          selectedSet.setId, ref, context, studyType);
                     } else {
                       AppAlerts.showFlushBar(context,
                           "Bạn hãy chọn 1 thẻ để bắt đầu", AlertType.error);
@@ -286,7 +284,8 @@ class ReviseScreen extends ConsumerWidget {
     );
   }
 
-  void learnWriteMode(String setId, WidgetRef ref, BuildContext context) async {
+  void _startStudySession(String setId, WidgetRef ref, BuildContext context,
+      StudyType studyType) async {
     final cardNumberStream =
         ref.read(flashcardSetsProvider.notifier).getCardNumber(setId);
     final cardNumber = await cardNumberStream.first;
@@ -295,7 +294,30 @@ class ReviseScreen extends ConsumerWidget {
       AppAlerts.showFlushBar(
           context, "Bộ thẻ chưa có thẻ nào", AlertType.error);
     } else {
-      context.push('/writeModeStudy/$setId');
+      _startStudyMode(studyType, context, setId);
     }
+  }
+
+  void _startStudyMode(
+      StudyType studyType, BuildContext context, String setId) {
+    if (studyType == StudyType.normal) {
+      context.push('/flipModeStudy/$setId');
+    } else if (studyType == StudyType.write) {
+      context.push('/writeModeStudy/$setId');
+    } else if (studyType == StudyType.abcd) {
+      context.push('/abcdModeStudy/$setId');
+    }
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: const Text(
+        "Hãy chọn chế độ học ",
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+    );
   }
 }

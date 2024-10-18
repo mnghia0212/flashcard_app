@@ -10,3 +10,5 @@ export 'bottom_navigator.dart';
 export 'flashcard_screen.dart';
 export 'splash_screen.dart';
 export 'write_mode_study.dart';
+export 'flip_study_mode.dart';
+export 'abcd_mode_study.dart';
