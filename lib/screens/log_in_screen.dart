@@ -36,7 +36,6 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    const isRemember = false;
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -71,7 +70,7 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
             RichText(
                 text: TextSpan(style: const TextStyle(fontSize: 17), children: [
               const TextSpan(
-                  text: "Quên mật khẩu ? ",
+                  text: "Quên mật khẩu ?",
                   style: TextStyle(color: Colors.black)),
               TextSpan(
                   text: "Bấm vào đây",
@@ -167,7 +166,6 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
             ref.read(userIdProvider.notifier).state = userId;
             log("login success");
 
-            // Điều hướng sang màn hình chính
             context.go('/bottomNavigator');
           } else {
             log("Missing fields in Firestore data");

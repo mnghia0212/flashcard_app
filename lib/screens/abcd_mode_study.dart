@@ -269,8 +269,8 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
             setState(() {
               newFlashcard =
                   _getNextFlashcard(isCorrect, flashcard, flashcards);
-              print("yes/no: $isCorrect");
-              print("new card: $newFlashcard");
+              debugPrint("yes/no: $isCorrect");
+              debugPrint("new card: $newFlashcard");
             });
           },
           style: ElevatedButton.styleFrom(backgroundColor: colors.primary),
@@ -284,7 +284,8 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
     );
   }
 
-  ElevatedButton _buildNextCardButton(ColorScheme colors, Flashcards flashcard, List<Flashcards> flashcards) {
+  ElevatedButton _buildNextCardButton(
+      ColorScheme colors, Flashcards flashcard, List<Flashcards> flashcards) {
     return ElevatedButton(
       onPressed: !isAnswered
           ? null

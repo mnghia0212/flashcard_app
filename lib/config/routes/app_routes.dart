@@ -67,4 +67,12 @@ final appRoutes = [
       return AbcdModeStudy(setId: setId);
     },
   ),
+  GoRoute(
+    path: RouteLocation.speedRecallModeStudy,
+    parentNavigatorKey: navigationKey,
+    builder: (context, state) {
+      final  setId = state.pathParameters['setId'];
+      return SpeedRecallModeStudy(setId: setId);
+    },
+  ),
 ];

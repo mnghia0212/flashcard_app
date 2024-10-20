@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-enum StudyType { normal, write, combine, abcd }
+enum StudyType { normal, write, speed, abcd }
 
-class ReviseScreen extends ConsumerWidget {
-  const ReviseScreen({super.key});
+class LearnScreen extends ConsumerWidget {
+  const LearnScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,7 +40,9 @@ class ReviseScreen extends ConsumerWidget {
                     title: "Ghi nhớ nhanh",
                     description: "Tốc độ & phản xạ",
                     pathImage: 'lib/assets/images/combination_study_mode.png',
-                    onTap: () {},
+                    onTap: () {
+                      showDialogSelectSet(context, ref, StudyType.speed);
+                    },
                   ),
                   _buildStudyModeCard(
                     context,
@@ -123,7 +125,6 @@ class ReviseScreen extends ConsumerWidget {
   SizedBox _contentDialog(BuildContext context, WidgetRef ref,
       FlashcardSetsState flashcardSetsState) {
     final flashcardSetsStream = ref.watch(flashcardSetsStreamProvider);
-    final flashcardSets = flashcardSetsState.flashcardSets;
     final selectedSet = flashcardSetsState.selectedFlashcardSet;
     final colors = context.colorScheme;
 
@@ -306,6 +307,8 @@ class ReviseScreen extends ConsumerWidget {
       context.push('/writeModeStudy/$setId');
     } else if (studyType == StudyType.abcd) {
       context.push('/abcdModeStudy/$setId');
+    } else {
+      context.push('/speedRecallModeStudy/$setId');
     }
   }
 

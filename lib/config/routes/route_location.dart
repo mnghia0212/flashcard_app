@@ -15,5 +15,6 @@ class RouteLocation {
   static String get writeModeStudy => '/writeModeStudy/:setId';
   static String get flipModeStudy => '/flipModeStudy/:setId';
   static String get abcdModeStudy => '/abcdModeStudy/:setId';
+  static String get speedRecallModeStudy => '/speedRecallModeStudy/:setId';
   
 }

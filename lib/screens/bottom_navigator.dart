@@ -80,7 +80,7 @@ class BottomNavigator extends ConsumerWidget {
             HomeScreen(),
             FlashcardSetsScreen(),
             GroupScreen(),
-            ReviseScreen(),
+            LearnScreen(),
             ProfileScreen()
           ],
         ));

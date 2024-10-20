@@ -1,11 +1,9 @@
 import 'package:flashcard_app/data/data.dart';
-import 'package:flashcard_app/widgets/empty_container.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
-import 'package:gap/gap.dart';
 
 class FlipStudyMode extends ConsumerStatefulWidget {
   final String? setId;
@@ -128,6 +126,6 @@ class _FlipStudyModeState extends ConsumerState<FlipStudyMode> {
   }
 
   AppBar _buildAppBar(String setName) {
-    return AppBar(title: DisplayTitle(text: "Chế độ lật: $setName"));
+    return AppBar(title: DisplayTitle(text: setName));
   }
 }
