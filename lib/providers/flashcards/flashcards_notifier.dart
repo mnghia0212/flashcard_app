@@ -12,18 +12,19 @@ class FlashcardsNotifier extends StateNotifier<FlashcardsState> {
 
   Future<void> createCardInSet(
       Flashcards flashcard, BuildContext context, String setId) async {
-    getCardsForSet(setId);
     try {
       await repository.createCardInSet(flashcard, context, setId);
+      getCardsForSet(setId);
     } catch (e) {
       log("error: $e");
     }
   }
 
   Future<void> updateCard(
-      Flashcards flashcard) async {
+      Flashcards flashcard, String setId) async {
     try {
       await repository.updateCard(flashcard);
+      getCardsForSet(setId);
     } catch (e) {
       log("error: $e");
     }

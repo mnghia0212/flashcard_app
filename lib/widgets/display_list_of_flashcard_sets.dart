@@ -88,7 +88,7 @@ class DisplayListOfFlashcardSets extends ConsumerWidget {
         color: Colors.black,
         fontSize: 16,
       ),
-      leading: Image.asset("lib/assets/images/flashcard_sets.png"),
+      leading: Image.asset("assets/images/flashcard_sets.png"),
       trailing: const Icon(Icons.more_vert),
     );
   }

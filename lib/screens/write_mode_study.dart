@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
@@ -17,6 +18,7 @@ class WriteModeStudy extends ConsumerStatefulWidget {
 }
 
 class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
+  final AudioPlayer audioPlayer = AudioPlayer();
   final TextEditingController answerController = TextEditingController();
   bool isAnswered = false;
   bool isCorrect = false;
@@ -52,6 +54,7 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
 
   @override
   void dispose() {
+    audioPlayer.dispose();
     answerController.dispose();
     super.dispose();
   }
@@ -77,6 +80,14 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
         wrongBox.add(flashcard);
       }
     }
+    debugPrint(
+        "------------------------------------------------------------------------------------------------");
+    debugPrint("initial: $initialBox");
+    debugPrint("wrong: $wrongBox");
+    debugPrint("first: $firstRightBox");
+    debugPrint("second: $secondRightBox");
+    debugPrint(
+        "------------------------------------------------------------------------------------------------");
   }
 
   Flashcards? _selectNextFlashcard(Flashcards flashcard) {
@@ -107,7 +118,6 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
     return newCard;
   }
 
-  //error: displayedFlashcardProvider = null
   @override
   Widget build(BuildContext context) {
     final flashcardsAsync = ref.watch(flashcardStreamProvider(widget.setId!));
@@ -228,9 +238,10 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
         ElevatedButton(
           onPressed: () {
             setState(() {
-              isAnswered = true;
               isCorrect = answerController.text.toLowerCase().trim() ==
                   flashcard.backContent.toLowerCase().trim();
+              AppSounds.playSoundRightWrong(isCorrect, audioPlayer);
+              isAnswered = true;
               newFlashcard = _getNextFlashcard(isCorrect, flashcard);
             });
           },
@@ -259,6 +270,7 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
                 });
               } else {
                 debugPrint("SESSION COMPLETED");
+                AppSounds.playEndSessionSound(audioPlayer);
               }
             },
       style: ElevatedButton.styleFrom(backgroundColor: colors.primary),

@@ -47,7 +47,7 @@ class EmptyContainer extends StatelessWidget {
           color: Colors.black,
         ),
         const Gap(15),
-        Image.asset("lib/assets/images/empty_flashcard_sets_screen.png")
+        Image.asset("assets/images/empty_flashcard_sets_screen.png")
       ],
     );
   }
@@ -62,7 +62,7 @@ class EmptyContainer extends StatelessWidget {
           color: Colors.black,
         ),
         const Gap(15),
-        Image.asset("lib/assets/images/empty_flashcards_screen.png"),
+        Image.asset("assets/images/empty_flashcards_screen.png"),
       ],
     );
   }
@@ -81,7 +81,7 @@ class EmptyContainer extends StatelessWidget {
           color: Colors.black,
         ),
         const Gap(15),
-        Image.asset("lib/assets/images/empty_groups_screen.png")
+        Image.asset("assets/images/empty_groups_screen.png")
       ],
     );
   }

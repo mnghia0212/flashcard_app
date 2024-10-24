@@ -21,7 +21,7 @@ class FirstLoginScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Image.asset(
-                    "lib/assets/images/first_login_screen_1.png",
+                    "assets/images/first_login_screen_1.png",
                   ),
                   DisplayHeading(
                     text: "Flash Card",

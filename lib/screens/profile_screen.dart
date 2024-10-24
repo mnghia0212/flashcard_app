@@ -82,7 +82,7 @@ class ProfileScreen extends ConsumerWidget {
             const CircleAvatar(
               radius: 30,
               backgroundImage: AssetImage(
-                  'lib/assets/images/ava2.jpg'), // Thay bằng ảnh đại diện của người dùng
+                  'assets/images/ava2.jpg'), // Thay bằng ảnh đại diện của người dùng
             ),
             const Gap(15),
             Column(

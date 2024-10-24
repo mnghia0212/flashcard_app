@@ -9,3 +9,4 @@ export 'empty_container.dart';
 export 'row_floating_button_create.dart';
 export 'dialog_create_set.dart';
 export 'dialog_create_card.dart';
+export 'video_player.dart';

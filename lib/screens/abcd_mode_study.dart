@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
@@ -22,12 +23,19 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   String? groupValue;
   List<String>? shuffledAnswers;
   Flashcards? newFlashcard;
+  final AudioPlayer audioPlayer = AudioPlayer();
 
   // Card boxes
   List<Flashcards> initialBox = [];
   List<Flashcards> wrongBox = [];
   List<Flashcards> firstRightBox = [];
   List<Flashcards> secondRightBox = [];
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -81,6 +89,14 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
         wrongBox.add(flashcard);
       }
     }
+    debugPrint(
+        "------------------------------------------------------------------------------------------------");
+    debugPrint("initial: $initialBox");
+    debugPrint("wrong: $wrongBox");
+    debugPrint("first: $firstRightBox");
+    debugPrint("second: $secondRightBox");
+    debugPrint(
+        "------------------------------------------------------------------------------------------------");
   }
 
   Flashcards? _selectNextFlashcard(Flashcards flashcard) {
@@ -267,6 +283,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
         ElevatedButton(
           onPressed: () {
             setState(() {
+              AppSounds.playSoundRightWrong(isCorrect, audioPlayer);
               newFlashcard =
                   _getNextFlashcard(isCorrect, flashcard, flashcards);
               debugPrint("yes/no: $isCorrect");
@@ -307,6 +324,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
                 });
               } else {
                 debugPrint("SESSION COMPLETED");
+                AppSounds.playEndSessionSound(audioPlayer);
               }
             },
       style: ElevatedButton.styleFrom(backgroundColor: colors.primary),

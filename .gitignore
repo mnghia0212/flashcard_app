@@ -6,3 +6,5 @@ build/
 *.apk
 *.bin
 *.dill
+*.wav
+*.mp3

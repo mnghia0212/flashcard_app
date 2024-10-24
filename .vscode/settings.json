@@ -1,8 +1,14 @@
 {
     "cSpell.words": [
+        "audioplayers",
+        "cupertino",
+        "Datasource",
         "firestore",
+        "flushbar",
+        "listview",
         "RGBO",
         "riverpod",
-        "Supabase"
+        "Supabase",
+        "vsync"
     ]
 }

@@ -1,6 +1,6 @@
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/screens/screens.dart';
-import 'package:flashcard_app/utils/extensions.dart';
+import 'package:flashcard_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -28,47 +28,27 @@ class BottomNavigator extends ConsumerWidget {
             items: [
               BottomNavigationBarItem(
                 icon: Icon(iconNavigationItem(
-                  currentIndex, 
-                  0, 
-                  Icons.home,
-                  Icons.home_outlined
-                )), 
+                    currentIndex, 0, Icons.home, Icons.home_outlined)),
                 label: "Home",
               ),
               BottomNavigationBarItem(
-                icon: Icon(iconNavigationItem(
-                  currentIndex, 
-                  1, 
-                  Icons.sticky_note_2,
-                  Icons.sticky_note_2_outlined
-                )), 
+                icon: Icon(iconNavigationItem(currentIndex, 1,
+                    Icons.sticky_note_2, Icons.sticky_note_2_outlined)),
                 label: "Card",
               ),
               BottomNavigationBarItem(
                 icon: Icon(iconNavigationItem(
-                  currentIndex, 
-                  2, 
-                  Icons.group,
-                  Icons.group_outlined
-                )), 
+                    currentIndex, 2, Icons.group, Icons.group_outlined)),
                 label: "Group",
               ),
               BottomNavigationBarItem(
                 icon: Icon(iconNavigationItem(
-                  currentIndex, 
-                  3, 
-                  Icons.school,
-                  Icons.school_outlined
-                )), 
+                    currentIndex, 3, Icons.school, Icons.school_outlined)),
                 label: "Learn",
               ),
               BottomNavigationBarItem(
                 icon: Icon(iconNavigationItem(
-                  currentIndex, 
-                  4, 
-                  Icons.person,
-                  Icons.person_outline
-                )),
+                    currentIndex, 4, Icons.person, Icons.person_outline)),
                 label: "Profile",
               ),
             ],

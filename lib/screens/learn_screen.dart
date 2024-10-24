@@ -30,7 +30,7 @@ class LearnScreen extends ConsumerWidget {
                     context,
                     title: "Thông thường",
                     description: "Lật thẻ để ôn tập",
-                    pathImage: 'lib/assets/images/regular_study_mode.png',
+                    pathImage: 'assets/images/regular_study_mode.png',
                     onTap: () {
                       showDialogSelectSet(context, ref, StudyType.normal);
                     },
@@ -39,7 +39,7 @@ class LearnScreen extends ConsumerWidget {
                     context,
                     title: "Ghi nhớ nhanh",
                     description: "Tốc độ & phản xạ",
-                    pathImage: 'lib/assets/images/combination_study_mode.png',
+                    pathImage: 'assets/images/combination_study_mode.png',
                     onTap: () {
                       showDialogSelectSet(context, ref, StudyType.speed);
                     },
@@ -48,7 +48,7 @@ class LearnScreen extends ConsumerWidget {
                     context,
                     title: "Viết",
                     description: "Tự tay nhập kết quả",
-                    pathImage: 'lib/assets/images/write_study_mode.png',
+                    pathImage: 'assets/images/write_study_mode.png',
                     onTap: () {
                       showDialogSelectSet(context, ref, StudyType.write);
                     },
@@ -58,7 +58,7 @@ class LearnScreen extends ConsumerWidget {
                     title: "ABCD",
                     description: "Chọn đáp án đúng",
                     pathImage:
-                        'lib/assets/images/multiple_choice_study_mode.png',
+                        'assets/images/multiple_choice_study_mode.png',
                     onTap: () {
                       showDialogSelectSet(context, ref, StudyType.abcd);
                     },
