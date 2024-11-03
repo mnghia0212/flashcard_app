@@ -36,6 +36,11 @@ final appRoutes = [
     builder: (context, state) => const SplashScreen(),
   ),
   GoRoute(
+    path: RouteLocation.testMode,
+    parentNavigatorKey: navigationKey,
+    builder: (context, state) => const TestMode(),
+  ),
+  GoRoute(
     path: RouteLocation.flashcard,
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
@@ -76,12 +81,23 @@ final appRoutes = [
     },
   ),
   GoRoute(
+      path: RouteLocation.endStudySessionScreen,
+      parentNavigatorKey: navigationKey,
+      builder: (context, state) {
+        final rightAnswerCount = state.pathParameters['rightAnswerCount'];
+        final wrongAnswerCount = state.pathParameters['wrongAnswerCount'];
+        return EndStudySessionScreen(
+            rightAnswerCount: rightAnswerCount,
+            wrongAnswerCount: wrongAnswerCount);
+      }),
+  
+  GoRoute(
     path: RouteLocation.defaultFlashcardsScreen,
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
       final setId = state.pathParameters['setId'];
       final setName = state.pathParameters['setName'];
-      return DefaultFlashcardsScreen(setId: setId, setName:  setName);
+      return DefaultFlashcardsScreen(setId: setId, setName: setName);
     },
   ),
   GoRoute(

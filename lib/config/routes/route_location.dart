@@ -16,6 +16,8 @@ class RouteLocation {
   static String get flipModeStudy => '/flipModeStudy/:setId';
   static String get abcdModeStudy => '/abcdModeStudy/:setId';
   static String get speedRecallModeStudy => '/speedRecallModeStudy/:setId';
+  static String get endStudySessionScreen => '/endStudySessionScreen/:rightAnswerCount/:wrongAnswerCount';
+  static String get testMode => '/testMode';
   static String get studyGroupScreen => '/studyGroupScreen/:groupId';
   static String get defaultFlashcardsScreen => '/defaultFlashcardsScreen/:setId/:setName';
 }

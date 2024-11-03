@@ -23,11 +23,11 @@ class BottomNavigator extends ConsumerWidget {
       log("server token => $serverToken");
     }
 
-    notificationService.requestNotificationPermission();
-    notificationService.getDeviceToken();
+    //notificationService.requestNotificationPermission();
+    //notificationService.getDeviceToken();
     notificationService.firebaseInit(context);
     notificationService.setupInteractMessage(context);
-    getServiceToken();
+    //getServiceToken();
 
     return Scaffold(
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

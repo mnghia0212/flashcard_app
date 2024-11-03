@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-enum StudyType { normal, write, speed, abcd }
+enum StudyType { normal, write, speed, abcd, test }
 
 class LearnScreen extends ConsumerStatefulWidget {
   const LearnScreen({super.key});
@@ -29,7 +29,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: 500,
+              height: 550,
               child: GridView.count(
                 crossAxisCount: 2,
                 mainAxisSpacing: 20,
@@ -69,6 +69,76 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                     pathImage: 'assets/images/multiple_choice_study_mode.png',
                     onTap: () {
                       showDialogSelectLearnSet(context, ref, StudyType.abcd);
+                    },
+                  ),
+                  _buildStudyModeCard(
+                    context,
+                    title: "Kiểm tra",
+                    description: "Bài kiểm tra ngẫu nhiên",
+                    pathImage: 'assets/images/combination_study_mode.png',
+                    onTap: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                              actions: [
+                                _textButton(
+                                  context: context,
+                                  text: "Hủy bỏ",
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                _textButton(
+                                  context: context,
+                                  text: "Bắt đầu",
+                                  onPressed: () => context.push('/testMode'),
+                                ),
+                              ],
+                              title: Row(
+                                children: [
+                                  const DisplayText(
+                                    text: "Bài kiểm tra ngẫu nhiên",
+                                    color: Colors.black,
+                                  ),
+                                  const Spacer(),
+                                  IconButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      icon: const Icon(Icons.close))
+                                ],
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 25, vertical: 15),
+                              content: const Column(
+                                children: [
+                                  DisplayText(
+                                    text: "Lưu ý khi làm kiểm tra",
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  Gap(10),
+                                  DisplayText(
+                                    text:
+                                        "- Khi bắt đầu làm bài kiểm tra, hệ thống sẽ chọ ngẫu nhiên 30 câu từ kiến thức các bộ thẻ có sẵn",
+                                    color: Colors.black,
+                                  ),
+                                  Gap(10),
+                                  DisplayText(
+                                    text:
+                                        "- Học sinh có 20 phút để hoàn thành 30 câu đó",
+                                    color: Colors.black,
+                                  ),
+                                  Gap(10),
+                                  DisplayText(
+                                    text:
+                                        "- Trong lúc làm bài, học sinh không được thoát khỏi phiên làm bài hoặc khỏi ứng dụng",
+                                    color: Colors.black,
+                                  ),
+                                ],
+                              ));
+                        },
+                      );
                     },
                   ),
                 ],
