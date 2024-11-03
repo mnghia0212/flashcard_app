@@ -1,0 +1,14 @@
+# Bỏ qua thư mục build và .dart_tool
+build/
+.dart_tool/
+
+# Bỏ qua tệp APK
+*.apk
+*.bin
+*.dill
+*.wav
+*.mp3
+
+# Bỏ qua các file nhạy cảm
+flashcard--app-firebase-adminsdk.json
+lib/services/get_server_key.dart

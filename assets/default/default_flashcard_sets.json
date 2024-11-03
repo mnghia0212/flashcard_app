@@ -1,0 +1,68 @@
+{
+    "defaultFlashcardSets": [
+        {
+            "setId": "unit1",
+            "title": "Unit 1: FRIENDSHIP"
+        },
+        {
+            "setId": "unit2",
+            "title": "Unit 2: PERSONAL EXPERIENCES"
+        },
+        {
+            "setId": "unit3",
+            "title": "Unit 3: A PARTY"
+        },
+        {
+            "setId": "unit4",
+            "title": "Unit 4: VOLUNTEER WORK"
+        },
+        {
+            "setId": "unit5",
+            "title": "Unit 5: ILLITERACY"
+        },
+        {
+            "setId": "unit6",
+            "title": "Unit 6: COMPETITIONS"
+        },
+        {
+            "setId": "unit7",
+            "title": "Unit 7: WORLD POPULATION"
+        },
+        {
+            "setId": "unit8",
+            "title": "Unit 8: CELEBRATIONS"
+        },
+        {
+            "setId": "unit9",
+            "title": "Unit 9: THE POST OFFICE"
+        },
+        {
+            "setId": "unit10",
+            "title": "Unit 10: NATURE IN DANGER"
+        },
+        {
+            "setId": "unit11",
+            "title": "Unit 11: SOURCES OF ENERGY"
+        },
+        {
+            "setId": "unit12",
+            "title": "Unit 12: THE ASIAN GAMES"
+        },
+        {
+            "setId": "unit13",
+            "title": "Unit 13: HOBBIES"
+        },
+        {
+            "setId": "unit14",
+            "title": "Unit 14: RECREATION"
+        },
+        {
+            "setId": "unit15",
+            "title": "Unit 15: SPACE CONQUEST"
+        },
+        {
+            "setId": "unit16",
+            "title": "Unit 16: THE WONDERS OF THE WORLD"
+        }
+    ]
+}

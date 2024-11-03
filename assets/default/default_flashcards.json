@@ -1,0 +1,1045 @@
+{
+    "defaultFlashcards": [
+        {
+        "flashcardId": "unit1_fc1",
+        "setId": "unit1",
+        "frontContent": "acquaintance (n)",
+        "backContent": "người quen"
+        },
+        {
+        "flashcardId": "unit1_fc2",
+        "setId": "unit1",
+        "frontContent": "apartment (n)",
+        "backContent": "căn hộ (khép kín)"
+        },
+        {
+        "flashcardId": "unit1_fc3",
+        "setId": "unit1",
+        "frontContent": "brighten up (v)",
+        "backContent": "làm rạng rỡ, làm bừng sáng"
+        },
+        {
+        "flashcardId": "unit1_fc4",
+        "setId": "unit1",
+        "frontContent": "constancy (n)",
+        "backContent": "sự kiên định"
+        },
+        {
+        "flashcardId": "unit1_fc5",
+        "setId": "unit1",
+        "frontContent": "enthusiasm (n)",
+        "backContent": "lòng nhiệt tình"
+        },
+        {
+        "flashcardId": "unit1_fc6",
+        "setId": "unit1",
+        "frontContent": "give-and-take (n)",
+        "backContent": "sự nhường nhịn (sự cho và nhận)"
+        },
+        {
+        "flashcardId": "unit1_fc7",
+        "setId": "unit1",
+        "frontContent": "loyalty (n)",
+        "backContent": "lòng trung thành"
+        },
+        {
+        "flashcardId": "unit1_fc8",
+        "setId": "unit1",
+        "frontContent": "residential area (n)",
+        "backContent": "khu dân cư"
+        },
+        {
+        "flashcardId": "unit1_fc9",
+        "setId": "unit1",
+        "frontContent": "two-sided (a)",
+        "backContent": "hai mặt, hai phía"
+        },
+        {
+        "flashcardId": "unit1_fc10",
+        "setId": "unit1",
+        "frontContent": "unselfishness (n)",
+        "backContent": "tính không ích kỉ"
+        },
+
+
+
+
+
+            {
+            "flashcardId": "unit2_fc1",
+            "setId": "unit2",
+            "frontContent": "affect (v)",
+            "backContent": "ảnh hưởng"
+            },
+            {
+            "flashcardId": "unit2_fc2",
+            "setId": "unit2",
+            "frontContent": "appreciate (v)",
+            "backContent": "coi trọng, đánh giá cao"
+            },
+            {
+            "flashcardId": "unit2_fc3",
+            "setId": "unit2",
+            "frontContent": "attitude (n)",
+            "backContent": "thái độ"
+            },
+            {
+            "flashcardId": "unit2_fc4",
+            "setId": "unit2",
+            "frontContent": "confidence (n)",
+            "backContent": "sự tự tin, lòng tin"
+            },
+            {
+            "flashcardId": "unit2_fc5",
+            "setId": "unit2",
+            "frontContent": "embarrassing (a)",
+            "backContent": "ngượng ngùng, lúng túng"
+            },
+            {
+            "flashcardId": "unit2_fc6",
+            "setId": "unit2",
+            "frontContent": "embrace (v)",
+            "backContent": "ôm, ôm ấp"
+            },
+            {
+            "flashcardId": "unit2_fc7",
+            "setId": "unit2",
+            "frontContent": "floppy (hat) (a)",
+            "backContent": "(mũ) mềm"
+            },
+            {
+            "flashcardId": "unit2_fc8",
+            "setId": "unit2",
+            "frontContent": "glance at (v)",
+            "backContent": "liếc nhanh, nhìn qua"
+            },
+            {
+            "flashcardId": "unit2_fc9",
+            "setId": "unit2",
+            "frontContent": "idol (n)",
+            "backContent": "thần tượng"
+            },
+            {
+            "flashcardId": "unit2_fc10",
+            "setId": "unit2",
+            "frontContent": "make a fuss (v)",
+            "backContent": "làm ầm ĩ lên"
+            },
+
+
+
+
+
+
+
+                {
+                "flashcardId": "unit3_fc1",
+                "setId": "unit3",
+                "frontContent": "anniversary (n)",
+                "backContent": "ngày kỉ niệm"
+                },
+                {
+                "flashcardId": "unit3_fc2",
+                "setId": "unit3",
+                "frontContent": "celebrate (v)",
+                "backContent": "làm lễ kỉ niệm"
+                },
+                {
+                "flashcardId": "unit3_fc3",
+                "setId": "unit3",
+                "frontContent": "childish (a)",
+                "backContent": "của trẻ con, như trẻ con"
+                },
+                {
+                "flashcardId": "unit3_fc4",
+                "setId": "unit3",
+                "frontContent": "clap (v)",
+                "backContent": "vỗ, vỗ tay"
+                },
+                {
+                "flashcardId": "unit3_fc5",
+                "setId": "unit3",
+                "frontContent": "cosy (a)",
+                "backContent": "ấm cúng"
+                },
+                {
+                "flashcardId": "unit3_fc6",
+                "setId": "unit3",
+                "frontContent": "enthusiastic (a)",
+                "backContent": "hăng hái, nhiệt tình"
+                },
+                {
+                "flashcardId": "unit3_fc7",
+                "setId": "unit3",
+                "frontContent": "helicopter (n)",
+                "backContent": "máy bay trực thăng"
+                },
+                {
+                "flashcardId": "unit3_fc8",
+                "setId": "unit3",
+                "frontContent": "host (n)",
+                "backContent": "chủ nhà (nam)"
+                },
+                {
+                "flashcardId": "unit3_fc9",
+                "setId": "unit3",
+                "frontContent": "hostess (n)",
+                "backContent": "chủ nhà (nữ)"
+                },
+                {
+                "flashcardId": "unit3_fc10",
+                "setId": "unit3",
+                "frontContent": "icing (n)",
+                "backContent": "lớp kem phủ trên mặt bánh"
+                },
+
+
+
+
+
+
+                    {
+                        "flashcardId": "unit4_fc1",
+                        "setId": "unit4",
+                        "frontContent": "charity (n)",
+                        "backContent": "lòng bác ái, nhân đức, từ thiện"
+                    },
+                    {
+                        "flashcardId": "unit4_fc2",
+                        "setId": "unit4",
+                        "frontContent": "clear (v)",
+                        "backContent": "dọn, dọn dẹp"
+                    },
+                    {
+                        "flashcardId": "unit4_fc3",
+                        "setId": "unit4",
+                        "frontContent": "co-operate (v)",
+                        "backContent": "hợp tác, cộng tác, giúp đỡ"
+                    },
+                    {
+                        "flashcardId": "unit4_fc4",
+                        "setId": "unit4",
+                        "frontContent": "co-ordinate (v)",
+                        "backContent": "phối hợp, xếp đặt"
+                    },
+                    {
+                        "flashcardId": "unit4_fc5",
+                        "setId": "unit4",
+                        "frontContent": "craft (n)",
+                        "backContent": "thủ công"
+                    },
+                    {
+                        "flashcardId": "unit4_fc6",
+                        "setId": "unit4",
+                        "frontContent": "disadvantaged (a)",
+                        "backContent": "bị thiệt thòi"
+                    },
+                    {
+                        "flashcardId": "unit4_fc7",
+                        "setId": "unit4",
+                        "frontContent": "donation (n)",
+                        "backContent": "sự đóng góp, dâng hiến"
+                    },
+                    {
+                        "flashcardId": "unit4_fc8",
+                        "setId": "unit4",
+                        "frontContent": "gratitude (n)",
+                        "backContent": "sự biết ơn"
+                    },
+                    {
+                        "flashcardId": "unit4_fc9",
+                        "setId": "unit4",
+                        "frontContent": "handicapped (a)",
+                        "backContent": "tàn tật, bị tật nguyền"
+                    },
+                    {
+                        "flashcardId": "unit4_fc10",
+                        "setId": "unit4",
+                        "frontContent": "issue (v)",
+                        "backContent": "phát, phát hành"
+                    },
+
+
+
+
+
+
+                        {
+                        "flashcardId": "unit5_fc1",
+                        "setId": "unit5",
+                        "frontContent": "campaign (n)",
+                        "backContent": "chiến dịch"
+                        },
+                        {
+                        "flashcardId": "unit5_fc2",
+                        "setId": "unit5",
+                        "frontContent": "effective (a)",
+                        "backContent": "có hiệu quả"
+                        },
+                        {
+                        "flashcardId": "unit5_fc3",
+                        "setId": "unit5",
+                        "frontContent": "eradicate (v)",
+                        "backContent": "xóa bỏ"
+                        },
+                        {
+                        "flashcardId": "unit5_fc4",
+                        "setId": "unit5",
+                        "frontContent": "ethnic minority (n)",
+                        "backContent": "dân tộc thiểu số"
+                        },
+                        {
+                        "flashcardId": "unit5_fc5",
+                        "setId": "unit5",
+                        "frontContent": "expand (v)",
+                        "backContent": "mở rộng"
+                        },
+                        {
+                        "flashcardId": "unit5_fc6",
+                        "setId": "unit5",
+                        "frontContent": "illiteracy (n)",
+                        "backContent": "mù chữ"
+                        },
+                        {
+                        "flashcardId": "unit5_fc7",
+                        "setId": "unit5",
+                        "frontContent": "mutual respect (n)",
+                        "backContent": "tôn trọng lẫn nhau"
+                        },
+                        {
+                        "flashcardId": "unit5_fc8",
+                        "setId": "unit5",
+                        "frontContent": "performance (n)",
+                        "backContent": "sự thể hiện, thành tích"
+                        },
+                        {
+                        "flashcardId": "unit5_fc9",
+                        "setId": "unit5",
+                        "frontContent": "rate (n)",
+                        "backContent": "tỉ lệ"
+                        },
+                        {
+                        "flashcardId": "unit5_fc10",
+                        "setId": "unit5",
+                        "frontContent": "strategy (n)",
+                        "backContent": "chiến lược"
+                        },
+
+
+
+
+
+
+                            {
+                            "flashcardId": "unit6_fc1",
+                            "setId": "unit6",
+                            "frontContent": "activity (n)",
+                            "backContent": "hoạt động"
+                            },
+                            {
+                            "flashcardId": "unit6_fc2",
+                            "setId": "unit6",
+                            "frontContent": "aim (n)",
+                            "backContent": "mục đích, ý định"
+                            },
+                            {
+                            "flashcardId": "unit6_fc3",
+                            "setId": "unit6",
+                            "frontContent": "annual (a)",
+                            "backContent": "xảy ra hàng năm"
+                            },
+                            {
+                            "flashcardId": "unit6_fc4",
+                            "setId": "unit6",
+                            "frontContent": "announce (v)",
+                            "backContent": "tuyên bố, thông báo"
+                            },
+                            {
+                            "flashcardId": "unit6_fc5",
+                            "setId": "unit6",
+                            "frontContent": "athletics meeting (n)",
+                            "backContent": "cuộc thi điền kinh"
+                            },
+                            {
+                            "flashcardId": "unit6_fc6",
+                            "setId": "unit6",
+                            "frontContent": "clock (v)",
+                            "backContent": "đạt được, ghi được (thời gian)"
+                            },
+                            {
+                            "flashcardId": "unit6_fc7",
+                            "setId": "unit6",
+                            "frontContent": "disappointed (a)",
+                            "backContent": "thất vọng"
+                            },
+                            {
+                            "flashcardId": "unit6_fc8",
+                            "setId": "unit6",
+                            "frontContent": "formally (adv)",
+                            "backContent": "một cách chính thức"
+                            },
+                            {
+                            "flashcardId": "unit6_fc9",
+                            "setId": "unit6",
+                            "frontContent": "general knowledge (n)",
+                            "backContent": "kiến thức phổ thông/ đại cương"
+                            },
+                            {
+                            "flashcardId": "unit6_fc10",
+                            "setId": "unit6",
+                            "frontContent": "marathon (n)",
+                            "backContent": "chạy đua đường dài"
+                            },
+
+
+
+
+
+                                {
+                                "flashcardId": "unit7_fc1",
+                                "setId": "unit7",
+                                "frontContent": "birth-control method (n)",
+                                "backContent": "phương pháp hạn chế sinh đẻ"
+                                },
+                                {
+                                "flashcardId": "unit7_fc2",
+                                "setId": "unit7",
+                                "frontContent": "decrease (v)",
+                                "backContent": "giảm đi"
+                                },
+                                {
+                                "flashcardId": "unit7_fc3",
+                                "setId": "unit7",
+                                "frontContent": "double (v)",
+                                "backContent": "gấp đôi"
+                                },
+                                {
+                                "flashcardId": "unit7_fc4",
+                                "setId": "unit7",
+                                "frontContent": "family planning (n)",
+                                "backContent": "kế hoạch hóa gia đình"
+                                },
+                                {
+                                "flashcardId": "unit7_fc5",
+                                "setId": "unit7",
+                                "frontContent": "figure (n)",
+                                "backContent": "con số"
+                                },
+                                {
+                                "flashcardId": "unit7_fc6",
+                                "setId": "unit7",
+                                "frontContent": "increase (v)",
+                                "backContent": "gia tăng, tăng lên"
+                                },
+                                {
+                                "flashcardId": "unit7_fc7",
+                                "setId": "unit7",
+                                "frontContent": "limit (v)",
+                                "backContent": "hạn chế, giới hạn"
+                                },
+                                {
+                                "flashcardId": "unit7_fc8",
+                                "setId": "unit7",
+                                "frontContent": "overpopulation (n)",
+                                "backContent": "sự đông dân quá mức"
+                                },
+                                {
+                                "flashcardId": "unit7_fc9",
+                                "setId": "unit7",
+                                "frontContent": "probably (adv)",
+                                "backContent": "có lẽ, có thể"
+                                },
+                                {
+                                "flashcardId": "unit7_fc10",
+                                "setId": "unit7",
+                                "frontContent": "raise animals (v)",
+                                "backContent": "nuôi động vật"
+                                },
+
+
+
+
+
+                                    {
+                                        "flashcardId": "unit8_fc1",
+                                        "setId": "unit8",
+                                        "frontContent": "agrarian (a)",
+                                        "backContent": "thuộc về nghề nông, nông dân"
+                                    },
+                                    {
+                                        "flashcardId": "unit8_fc2",
+                                        "setId": "unit8",
+                                        "frontContent": "comment (n)",
+                                        "backContent": "lời nhận xét"
+                                    },
+                                    {
+                                        "flashcardId": "unit8_fc3",
+                                        "setId": "unit8",
+                                        "frontContent": "dress up (v)",
+                                        "backContent": "ăn mặc đẹp"
+                                    },
+                                    {
+                                        "flashcardId": "unit8_fc4",
+                                        "setId": "unit8",
+                                        "frontContent": "fireworks (n)",
+                                        "backContent": "pháo hoa"
+                                    },
+                                    {
+                                        "flashcardId": "unit8_fc5",
+                                        "setId": "unit8",
+                                        "frontContent": "get together (v)",
+                                        "backContent": "tụ tập, đoàn tụ"
+                                    },
+                                    {
+                                        "flashcardId": "unit8_fc6",
+                                        "setId": "unit8",
+                                        "frontContent": "grand (a)",
+                                        "backContent": "hoành tráng, quan trọng"
+                                    },
+                                    {
+                                        "flashcardId": "unit8_fc7",
+                                        "setId": "unit8",
+                                        "frontContent": "green bean (n)",
+                                        "backContent": "đỗ xanh"
+                                    },
+                                    {
+                                        "flashcardId": "unit8_fc8",
+                                        "setId": "unit8",
+                                        "frontContent": "influence (v)",
+                                        "backContent": "ảnh hưởng"
+                                    },
+                                    {
+                                        "flashcardId": "unit8_fc9",
+                                        "setId": "unit8",
+                                        "frontContent": "kumquat tree (n)",
+                                        "backContent": "cây quất"
+                                    },
+                                    {
+                                        "flashcardId": "unit8_fc10",
+                                        "setId": "unit8",
+                                        "frontContent": "longevity (n)",
+                                        "backContent": "trường thọ"
+                                    },
+
+
+
+
+
+                                        {
+                                            "flashcardId": "unit9_fc1",
+                                            "setId": "unit9",
+                                            "frontContent": "bother (v)",
+                                            "backContent": "làm phiền, gây khó chịu"
+                                        },
+                                        {
+                                            "flashcardId": "unit9_fc2",
+                                            "setId": "unit9",
+                                            "frontContent": "commune (n)",
+                                            "backContent": "xã"
+                                        },
+                                        {
+                                            "flashcardId": "unit9_fc3",
+                                            "setId": "unit9",
+                                            "frontContent": "courteous (a)",
+                                            "backContent": "lịch sự"
+                                        },
+                                        {
+                                            "flashcardId": "unit9_fc4",
+                                            "setId": "unit9",
+                                            "frontContent": "coward (n)",
+                                            "backContent": "kẻ hèn nhát"
+                                        },
+                                        {
+                                            "flashcardId": "unit9_fc5",
+                                            "setId": "unit9",
+                                            "frontContent": "digit (n)",
+                                            "backContent": "con số"
+                                        },
+                                        {
+                                            "flashcardId": "unit9_fc6",
+                                            "setId": "unit9",
+                                            "frontContent": "dissatisfaction (n)",
+                                            "backContent": "sự không hài lòng"
+                                        },
+                                        {
+                                            "flashcardId": "unit9_fc7",
+                                            "setId": "unit9",
+                                            "frontContent": "Express Mail Service (n)",
+                                            "backContent": "dịch vụ thư chuyển phát nhanh"
+                                        },
+                                        {
+                                            "flashcardId": "unit9_fc8",
+                                            "setId": "unit9",
+                                            "frontContent": "Express Money Transfer (n)",
+                                            "backContent": "dịch vụ chuyển phát tiền nhanh"
+                                        },
+                                        {
+                                            "flashcardId": "unit9_fc9",
+                                            "setId": "unit9",
+                                            "frontContent": "facsimile (fax) (n)",
+                                            "backContent": "bản sao, máy fax"
+                                        },
+                                        {
+                                            "flashcardId": "unit9_fc10",
+                                            "setId": "unit9",
+                                            "frontContent": "Flower Telegram Service (n)",
+                                            "backContent": "dịch vụ điện hoa"
+                                        },
+
+
+
+
+
+                                            {
+                                            "flashcardId": "unit10_fc1",
+                                            "setId": "unit10",
+                                            "frontContent": "capture (v)",
+                                            "backContent": "bắt, bắt giữ"
+                                            },
+                                            {
+                                            "flashcardId": "unit10_fc2",
+                                            "setId": "unit10",
+                                            "frontContent": "co-exist (v)",
+                                            "backContent": "sống chung, cùng tồn tại"
+                                            },
+                                            {
+                                            "flashcardId": "unit10_fc3",
+                                            "setId": "unit10",
+                                            "frontContent": "cultivation (n)",
+                                            "backContent": "sự canh tác"
+                                            },
+                                            {
+                                            "flashcardId": "unit10_fc4",
+                                            "setId": "unit10",
+                                            "frontContent": "destroy (v)",
+                                            "backContent": "phá hủy, tàn phá"
+                                            },
+                                            {
+                                            "flashcardId": "unit10_fc5",
+                                            "setId": "unit10",
+                                            "frontContent": "devastate (v)",
+                                            "backContent": "tàn phá, phá hủy"
+                                            },
+                                            {
+                                            "flashcardId": "unit10_fc6",
+                                            "setId": "unit10",
+                                            "frontContent": "discharge (v)",
+                                            "backContent": "đổ ra, chảy ra, phóng ra"
+                                            },
+                                            {
+                                            "flashcardId": "unit10_fc7",
+                                            "setId": "unit10",
+                                            "frontContent": "endangered (a)",
+                                            "backContent": "bị nguy hiểm, bị tàn phá"
+                                            },
+                                            {
+                                            "flashcardId": "unit10_fc8",
+                                            "setId": "unit10",
+                                            "frontContent": "extinct (a)",
+                                            "backContent": "bị tiêu diệt, bị diệt chủng"
+                                            },
+                                            {
+                                            "flashcardId": "unit10_fc9",
+                                            "setId": "unit10",
+                                            "frontContent": "fertilizer (n)",
+                                            "backContent": "phân bón"
+                                            },
+                                            {
+                                            "flashcardId": "unit10_fc10",
+                                            "setId": "unit10",
+                                            "frontContent": "landscape (n)",
+                                            "backContent": "phong cảnh"
+                                            },
+
+
+
+
+
+                                                {
+                                                "flashcardId": "unit11_fc1",
+                                                "setId": "unit11",
+                                                "frontContent": "alternative (a)",
+                                                "backContent": "thay thế"
+                                                },
+                                                {
+                                                "flashcardId": "unit11_fc2",
+                                                "setId": "unit11",
+                                                "frontContent": "consumption (n)",
+                                                "backContent": "sự tiêu thụ"
+                                                },
+                                                {
+                                                "flashcardId": "unit11_fc3",
+                                                "setId": "unit11",
+                                                "frontContent": "ecologist (n)",
+                                                "backContent": "nhà nghiên cứu sinh thái học"
+                                                },
+                                                {
+                                                "flashcardId": "unit11_fc4",
+                                                "setId": "unit11",
+                                                "frontContent": "exhausted (a)",
+                                                "backContent": "cạn kiệt"
+                                                },
+                                                {
+                                                "flashcardId": "unit11_fc5",
+                                                "setId": "unit11",
+                                                "frontContent": "fossil fuel (n)",
+                                                "backContent": "nhiên liệu hóa thạch"
+                                                },
+                                                {
+                                                "flashcardId": "unit11_fc6",
+                                                "setId": "unit11",
+                                                "frontContent": "geothermal heat (n)",
+                                                "backContent": "địa nhiệt"
+                                                },
+                                                {
+                                                "flashcardId": "unit11_fc7",
+                                                "setId": "unit11",
+                                                "frontContent": "infinite (a)",
+                                                "backContent": "không giới hạn"
+                                                },
+                                                {
+                                                "flashcardId": "unit11_fc8",
+                                                "setId": "unit11",
+                                                "frontContent": "make use of (v)",
+                                                "backContent": "tận dụng, sử dụng"
+                                                },
+                                                {
+                                                "flashcardId": "unit11_fc9",
+                                                "setId": "unit11",
+                                                "frontContent": "potential (n)",
+                                                "backContent": "tiềm năng"
+                                                },
+                                                {
+                                                "flashcardId": "unit11_fc10",
+                                                "setId": "unit11",
+                                                "frontContent": "release (v)",
+                                                "backContent": "nhả ra, phóng ra"
+                                                },
+
+
+
+
+
+                                                    {
+                                                    "flashcardId": "unit12_fc1",
+                                                    "setId": "unit12",
+                                                    "frontContent": "advance (v)",
+                                                    "backContent": "tiến bộ"
+                                                    },
+                                                    {
+                                                    "flashcardId": "unit12_fc2",
+                                                    "setId": "unit12",
+                                                    "frontContent": "aquatic sports (n)",
+                                                    "backContent": "thể thao dưới nước"
+                                                    },
+                                                    {
+                                                    "flashcardId": "unit12_fc3",
+                                                    "setId": "unit12",
+                                                    "frontContent": "appreciate (v)",
+                                                    "backContent": "đánh giá cao"
+                                                    },
+                                                    {
+                                                    "flashcardId": "unit12_fc4",
+                                                    "setId": "unit12",
+                                                    "frontContent": "Asian (a)",
+                                                    "backContent": "thuộc châu Á"
+                                                    },
+                                                    {
+                                                    "flashcardId": "unit12_fc5",
+                                                    "setId": "unit12",
+                                                    "frontContent": "athlete (n)",
+                                                    "backContent": "vận động viên"
+                                                    },
+                                                    {
+                                                    "flashcardId": "unit12_fc6",
+                                                    "setId": "unit12",
+                                                    "frontContent": "bar (n)",
+                                                    "backContent": "thanh, xà"
+                                                    },
+                                                    {
+                                                    "flashcardId": "unit12_fc7",
+                                                    "setId": "unit12",
+                                                    "frontContent": "bodybuilding (n)",
+                                                    "backContent": "thể dục thể hình"
+                                                    },
+                                                    {
+                                                    "flashcardId": "unit12_fc8",
+                                                    "setId": "unit12",
+                                                    "frontContent": "bronze (n)",
+                                                    "backContent": "đồng (huy chương)"
+                                                    },
+                                                    {
+                                                    "flashcardId": "unit12_fc9",
+                                                    "setId": "unit12",
+                                                    "frontContent": "effort (n)",
+                                                    "backContent": "cố gắng"
+                                                    },
+                                                    {
+                                                    "flashcardId": "unit12_fc10",
+                                                    "setId": "unit12",
+                                                    "frontContent": "fencing (n)",
+                                                    "backContent": "môn đấu kiếm"
+                                                    },
+
+
+
+
+
+                                                        {
+                                                        "flashcardId": "unit13_fc1",
+                                                        "setId": "unit13",
+                                                        "frontContent": "accompany (v)",
+                                                        "backContent": "đệm đàn, đệm nhạc"
+                                                        },
+                                                        {
+                                                        "flashcardId": "unit13_fc2",
+                                                        "setId": "unit13",
+                                                        "frontContent": "accomplished (a)",
+                                                        "backContent": "có tài, tài hoa, cừ khôi"
+                                                        },
+                                                        {
+                                                        "flashcardId": "unit13_fc3",
+                                                        "setId": "unit13",
+                                                        "frontContent": "avid (a)",
+                                                        "backContent": "khao khát, thèm thuồng"
+                                                        },
+                                                        {
+                                                        "flashcardId": "unit13_fc4",
+                                                        "setId": "unit13",
+                                                        "frontContent": "continually (adv)",
+                                                        "backContent": "liên tục, không ngớt"
+                                                        },
+                                                        {
+                                                        "flashcardId": "unit13_fc5",
+                                                        "setId": "unit13",
+                                                        "frontContent": "discarded (a)",
+                                                        "backContent": "loại bỏ"
+                                                        },
+                                                        {
+                                                        "flashcardId": "unit13_fc6",
+                                                        "setId": "unit13",
+                                                        "frontContent": "fascinating (a)",
+                                                        "backContent": "hấp dẫn"
+                                                        },
+                                                        {
+                                                        "flashcardId": "unit13_fc7",
+                                                        "setId": "unit13",
+                                                        "frontContent": "fish tank (n)",
+                                                        "backContent": "bể cá"
+                                                        },
+                                                        {
+                                                        "flashcardId": "unit13_fc8",
+                                                        "setId": "unit13",
+                                                        "frontContent": "gigantic (a)",
+                                                        "backContent": "khổng lồ, kếch xù"
+                                                        },
+                                                        {
+                                                        "flashcardId": "unit13_fc9",
+                                                        "setId": "unit13",
+                                                        "frontContent": "ignorantly (adv)",
+                                                        "backContent": "ngu dốt"
+                                                        },
+                                                        {
+                                                        "flashcardId": "unit13_fc10",
+                                                        "setId": "unit13",
+                                                        "frontContent": "indeed (adv)",
+                                                        "backContent": "quả thực, quả vậy"
+                                                        },
+
+
+
+
+
+                                                            {
+                                                            "flashcardId": "unit14_fc1",
+                                                            "setId": "unit14",
+                                                            "frontContent": "athletics (n)",
+                                                            "backContent": "điền kinh"
+                                                            },
+                                                            {
+                                                            "flashcardId": "unit14_fc2",
+                                                            "setId": "unit14",
+                                                            "frontContent": "average (n)",
+                                                            "backContent": "trung bình"
+                                                            },
+                                                            {
+                                                            "flashcardId": "unit14_fc3",
+                                                            "setId": "unit14",
+                                                            "frontContent": "bricklaying (n)",
+                                                            "backContent": "xây dựng"
+                                                            },
+                                                            {
+                                                            "flashcardId": "unit14_fc4",
+                                                            "setId": "unit14",
+                                                            "frontContent": "campground (n)",
+                                                            "backContent": "bãi cắm trại"
+                                                            },
+                                                            {
+                                                            "flashcardId": "unit14_fc5",
+                                                            "setId": "unit14",
+                                                            "frontContent": "dirt bike (n)",
+                                                            "backContent": "xe mô tô địa hình"
+                                                            },
+                                                            {
+                                                            "flashcardId": "unit14_fc6",
+                                                            "setId": "unit14",
+                                                            "frontContent": "entry qualification (n)",
+                                                            "backContent": "điều kiện nhập học"
+                                                            },
+                                                            {
+                                                            "flashcardId": "unit14_fc7",
+                                                            "setId": "unit14",
+                                                            "frontContent": "fee (n)",
+                                                            "backContent": "học phí"
+                                                            },
+                                                            {
+                                                            "flashcardId": "unit14_fc8",
+                                                            "setId": "unit14",
+                                                            "frontContent": "glass engraving (n)",
+                                                            "backContent": "khắc kính"
+                                                            },
+                                                            {
+                                                            "flashcardId": "unit14_fc9",
+                                                            "setId": "unit14",
+                                                            "frontContent": "home-based (a)",
+                                                            "backContent": "ở nhà"
+                                                            },
+                                                            {
+                                                            "flashcardId": "unit14_fc10",
+                                                            "setId": "unit14",
+                                                            "frontContent": "improvement (n)",
+                                                            "backContent": "sự cải thiện, sang, tu bổ"
+                                                            },
+
+
+
+
+
+                                                                {
+                                                                "flashcardId": "unit15_fc1",
+                                                                "setId": "unit15",
+                                                                "frontContent": "appoint (v)",
+                                                                "backContent": "bổ nhiệm"
+                                                                },
+                                                                {
+                                                                "flashcardId": "unit15_fc2",
+                                                                "setId": "unit15",
+                                                                "frontContent": "artificial (a)",
+                                                                "backContent": "nhân tạo"
+                                                                },
+                                                                {
+                                                                "flashcardId": "unit15_fc3",
+                                                                "setId": "unit15",
+                                                                "frontContent": "aspiration (n)",
+                                                                "backContent": "khát vọng"
+                                                                },
+                                                                {
+                                                                "flashcardId": "unit15_fc4",
+                                                                "setId": "unit15",
+                                                                "frontContent": "astronaut (n)",
+                                                                "backContent": "nhà du hành vũ trụ"
+                                                                },
+                                                                {
+                                                                "flashcardId": "unit15_fc5",
+                                                                "setId": "unit15",
+                                                                "frontContent": "bid goodbye (v)",
+                                                                "backContent": "chào tạm biệt"
+                                                                },
+                                                                {
+                                                                "flashcardId": "unit15_fc6",
+                                                                "setId": "unit15",
+                                                                "frontContent": "biography (n)",
+                                                                "backContent": "tiểu sử, lý lịch"
+                                                                },
+                                                                {
+                                                                "flashcardId": "unit15_fc7",
+                                                                "setId": "unit15",
+                                                                "frontContent": "breakthrough (n)",
+                                                                "backContent": "bước đột phá"
+                                                                },
+                                                                {
+                                                                "flashcardId": "unit15_fc8",
+                                                                "setId": "unit15",
+                                                                "frontContent": "caption (n)",
+                                                                "backContent": "lời chú thích"
+                                                                },
+                                                                {
+                                                                "flashcardId": "unit15_fc9",
+                                                                "setId": "unit15",
+                                                                "frontContent": "challenge (v)",
+                                                                "backContent": "thách thức, thử thách"
+                                                                },
+                                                                {
+                                                                "flashcardId": "unit15_fc10",
+                                                                "setId": "unit15",
+                                                                "frontContent": "Congress (n)",
+                                                                "backContent": "Nghị viện, Quốc hội (ở Hoa Kỳ)"
+                                                                },
+
+
+
+                                                                    {
+                                                                        "flashcardId": "unit16_fc1",
+                                                                        "setId": "unit16",
+                                                                        "frontContent": "belongings (n)",
+                                                                        "backContent": "đồ dùng, đồ đạc"
+                                                                    },
+                                                                    {
+                                                                        "flashcardId": "unit16_fc2",
+                                                                        "setId": "unit16",
+                                                                        "frontContent": "burial (n)",
+                                                                        "backContent": "sự mai táng, chôn cất"
+                                                                    },
+                                                                    {
+                                                                        "flashcardId": "unit16_fc3",
+                                                                        "setId": "unit16",
+                                                                        "frontContent": "chamber (n)",
+                                                                        "backContent": "gian buồng, phòng"
+                                                                    },
+                                                                    {
+                                                                        "flashcardId": "unit16_fc4",
+                                                                        "setId": "unit16",
+                                                                        "frontContent": "dedicate (v)",
+                                                                        "backContent": "biếu, cống hiến"
+                                                                    },
+                                                                    {
+                                                                        "flashcardId": "unit16_fc5",
+                                                                        "setId": "unit16",
+                                                                        "frontContent": "enlist (v)",
+                                                                        "backContent": "đăng kí, ghi sổ"
+                                                                    },
+                                                                    {
+                                                                        "flashcardId": "unit16_fc6",
+                                                                        "setId": "unit16",
+                                                                        "frontContent": "eternal (a)",
+                                                                        "backContent": "vĩnh cửu, vĩnh hằng"
+                                                                    },
+                                                                    {
+                                                                        "flashcardId": "unit16_fc7",
+                                                                        "setId": "unit16",
+                                                                        "frontContent": "ground (n)",
+                                                                        "backContent": "khoảng đất, bãi đất"
+                                                                    },
+                                                                    {
+                                                                        "flashcardId": "unit16_fc8",
+                                                                        "setId": "unit16",
+                                                                        "frontContent": "impressive (a)",
+                                                                        "backContent": "gây ấn tượng mạnh mẽ"
+                                                                    },
+                                                                    {
+                                                                        "flashcardId": "unit16_fc9",
+                                                                        "setId": "unit16",
+                                                                        "frontContent": "ramp (n)",
+                                                                        "backContent": "đường dốc"
+                                                                    },
+                                                                    {
+                                                                        "flashcardId": "unit16_fc10",
+                                                                        "setId": "unit16",
+                                                                        "frontContent": "represent (v)",
+                                                                        "backContent": "tiêu biểu, đại diện"
+                                                                    }
+
+
+
+    ]
+}
