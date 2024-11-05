@@ -9,16 +9,15 @@ import 'package:just_audio/just_audio.dart';
 
 class FlashcardScreen extends ConsumerWidget {
   final String? setId;
-  const FlashcardScreen({super.key, required this.setId});
+  final String? setName;
+  const FlashcardScreen({super.key, required this.setId, required this.setName});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final flashcardsAsync = ref.watch(flashcardStreamProvider(setId!));
-    final cardNumber =
-        ref.read(flashcardSetsProvider.notifier).getSetNameById(setId!);
 
     return Scaffold(
-      appBar: _appBar(cardNumber),
+      appBar: CommonAppBar(title: "$setName"),
       floatingActionButton: FloatingActionButtonCreate(
           dialogCreate: DialogCreateCard(setId: setId)),
       body: flashcardsAsync.when(
@@ -173,33 +172,6 @@ class FlashcardScreen extends ConsumerWidget {
                         child: DisplayText(text: "Xóa", color: Colors.black)),
                   ])
         ],
-      ),
-    );
-  }
-
-  AppBar _appBar(Future<String> cardNumber) {
-    return AppBar(
-      title: FutureBuilder(
-        future: cardNumber,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const DisplayTitle(
-              text: "Loading...",
-              color: Colors.black,
-            );
-          }
-          if (snapshot.hasError) {
-            return const DisplayTitle(
-              text: "Error loading set name",
-              color: Colors.black,
-            );
-          } else {
-            return DisplayTitle(
-              text: snapshot.data ?? "Set name not found",
-              color: Colors.black,
-            );
-          }
-        },
       ),
     );
   }

@@ -46,7 +46,8 @@ class DisplayListOfFlashcardSets extends ConsumerWidget {
   InkWell _inkWellListTile(BuildContext context, FlashcardSets flashcardSet,
       Stream<int?> cardNumber) {
     return InkWell(
-      onTap: () => context.push('/flashcard/${flashcardSet.setId}'),
+      onTap: () => context
+          .push('/flashcard/${flashcardSet.setId}/${flashcardSet.title}'),
       child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -68,31 +69,46 @@ class DisplayListOfFlashcardSets extends ConsumerWidget {
   ListTile _streamListTile(
       Stream<int?> cardNumber, FlashcardSets flashcardSet) {
     return ListTile(
-      title: StreamBuilder<int?>(
-        stream: cardNumber,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return const Text('Error');
-          } else {
-            final count = snapshot.data ?? 0;
-            return DisplayText(
-              text: "${flashcardSet.title} - $count thẻ",
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            );
-          }
-        },
-      ),
-      subtitle: DisplayText(
-        text: flashcardSet.description,
-        color: Colors.black,
-        fontSize: 16,
-      ),
-      leading: Image.asset("assets/images/flashcard_sets.png"),
-      trailing: const Icon(Icons.more_vert),
-    );
+        title: StreamBuilder<int?>(
+          stream: cardNumber,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return const Text('Error');
+            } else {
+              final count = snapshot.data ?? 0;
+              return DisplayText(
+                text: "${flashcardSet.title} - $count thẻ",
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              );
+            }
+          },
+        ),
+        subtitle: DisplayText(
+          text: flashcardSet.description,
+          color: Colors.black,
+          fontSize: 16,
+        ),
+        leading: Image.asset("assets/images/flashcard_sets.png"),
+        trailing: PopupMenuButton(
+            itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: const DisplayText(text: "Sửa", color: Colors.black),
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return const DialogCreateSet();
+                          });
+                    },
+                  ),
+                  const PopupMenuItem(
+                      child: DisplayText(text: "Xóa", color: Colors.black)),
+                  const PopupMenuItem(
+                      child: DisplayText(text: "Chia sẻ", color: Colors.black)),
+                ]));
   }
 }

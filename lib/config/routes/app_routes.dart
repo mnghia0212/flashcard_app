@@ -45,7 +45,8 @@ final appRoutes = [
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
       final setId = state.pathParameters['setId'];
-      return FlashcardScreen(setId: setId);
+      final setName = state.pathParameters['setName'];
+      return FlashcardScreen(setId: setId, setName: setName);
     },
   ),
   GoRoute(
@@ -53,7 +54,8 @@ final appRoutes = [
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
       final setId = state.pathParameters['setId'];
-      return WriteModeStudy(setId: setId);
+      final setName = state.pathParameters['setName'];
+      return WriteModeStudy(setId: setId, setName: setName);
     },
   ),
   GoRoute(
@@ -61,7 +63,8 @@ final appRoutes = [
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
       final setId = state.pathParameters['setId'];
-      return FlipStudyMode(setId: setId);
+      final setName = state.pathParameters['setName'];
+      return FlipStudyMode(setId: setId, setName: setName);
     },
   ),
   GoRoute(
@@ -69,7 +72,8 @@ final appRoutes = [
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
       final setId = state.pathParameters['setId'];
-      return AbcdModeStudy(setId: setId);
+      final setName = state.pathParameters['setName'];
+      return AbcdModeStudy(setId: setId, setName: setName);
     },
   ),
   GoRoute(
@@ -77,7 +81,8 @@ final appRoutes = [
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
       final setId = state.pathParameters['setId'];
-      return SpeedRecallModeStudy(setId: setId);
+      final setName = state.pathParameters['setName'];
+      return SpeedRecallModeStudy(setId: setId, setName: setName);
     },
   ),
   GoRoute(
@@ -90,7 +95,6 @@ final appRoutes = [
             rightAnswerCount: rightAnswerCount,
             wrongAnswerCount: wrongAnswerCount);
       }),
-  
   GoRoute(
     path: RouteLocation.defaultFlashcardsScreen,
     parentNavigatorKey: navigationKey,

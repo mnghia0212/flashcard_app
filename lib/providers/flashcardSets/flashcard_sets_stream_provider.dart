@@ -13,6 +13,7 @@ final flashcardSetsStreamProvider = StreamProvider<List<FlashcardSets>>((ref) {
 
   return FirebaseFirestore.instance
       .collection('flashcardSets')
+      .orderBy('createdAt', descending: true)
       .where('userId', isEqualTo: userId)
       .snapshots()
       .map((snapshot) {

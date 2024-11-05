@@ -11,11 +11,11 @@ class RouteLocation {
   static String get signUp => '/signUp';
   static String get firstLogIn => '/firstLogIn';
   static String get flashcardSet => '/flashcardSet';
-  static String get flashcard => '/flashcard/:setId';
-  static String get writeModeStudy => '/writeModeStudy/:setId';
-  static String get flipModeStudy => '/flipModeStudy/:setId';
-  static String get abcdModeStudy => '/abcdModeStudy/:setId';
-  static String get speedRecallModeStudy => '/speedRecallModeStudy/:setId';
+  static String get flashcard => '/flashcard/:setId/:setName';
+  static String get writeModeStudy => '/writeModeStudy/:setId/:setName';
+  static String get flipModeStudy => '/flipModeStudy/:setId/:setName';
+  static String get abcdModeStudy => '/abcdModeStudy/:setId/:setName';
+  static String get speedRecallModeStudy => '/speedRecallModeStudy/:setId/:setName';
   static String get endStudySessionScreen => '/endStudySessionScreen/:rightAnswerCount/:wrongAnswerCount';
   static String get testMode => '/testMode';
   static String get studyGroupScreen => '/studyGroupScreen/:groupId';

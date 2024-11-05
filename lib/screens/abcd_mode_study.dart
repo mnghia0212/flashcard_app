@@ -11,7 +11,8 @@ import 'package:gap/gap.dart';
 
 class AbcdModeStudy extends ConsumerStatefulWidget {
   final String? setId;
-  const AbcdModeStudy({super.key, required this.setId});
+  final String? setName;
+  const AbcdModeStudy({super.key, required this.setId, required this.setName});
 
   @override
   ConsumerState<AbcdModeStudy> createState() => _AbcdModeStudyState();
@@ -149,7 +150,6 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   Widget build(BuildContext context) {
     final flashcardsAsync = ref.watch(flashcardStreamProvider(widget.setId!));
     final colors = context.colorScheme;
-    final setName = ref.read(flashcardSetsProvider).selectedFlashcardSet!.title;
     final selectedFlashcard = ref.watch(displayedFlashcardProvider);
 
     if (selectedFlashcard == null) {
@@ -168,7 +168,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
     });
 
     return Scaffold(
-      appBar: _buildAppBar(setName),
+      appBar: CommonAppBar(title: "Bộ ôn tập: ${widget.setName}"),
       body: flashcardsAsync.when(
         data: (flashcards) => flashcards.isEmpty
             ? const EmptyContainer(emptyType: EmptyType.card)
@@ -332,9 +332,5 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
           padding: EdgeInsets.symmetric(vertical: 15),
           child: Icon(Icons.arrow_right_alt, color: Colors.white)),
     );
-  }
-
-  AppBar _buildAppBar(String setName) {
-    return AppBar(title: DisplayTitle(text: setName));
   }
 }

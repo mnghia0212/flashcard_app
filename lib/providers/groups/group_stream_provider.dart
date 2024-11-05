@@ -18,17 +18,15 @@ final groupStreamProvider = StreamProvider<List<Groups>>((ref) {
     final groupIds =
         snapshot.docs.map((doc) => doc['groupId'] as String).toList();
 
-    final groups = await Future.wait(groupIds.map((id) async {
-      final groupSnapshot =
-          await FirebaseFirestore.instance.collection('groups').doc(id).get();
-
-      final groupData = groupSnapshot.data();
-      if (groupData != null) {
-        return Groups.fromMap(groupData);
-      } else {
-        throw Exception("Group data is null for id: $id");
-      }
-    }));
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('groups')
+        .orderBy('createdAt', descending: true)
+        .get();
+    
+    final groups = querySnapshot.docs
+        .where((doc) => groupIds.contains(doc.id))
+        .map((doc) => Groups.fromMap(doc.data()))
+        .toList();
 
     return groups;
   });

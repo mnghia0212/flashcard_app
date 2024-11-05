@@ -71,9 +71,8 @@ class GroupScreen extends StatelessWidget {
 
   AppBar _buildAppBar(ColorScheme colors, BuildContext context) {
     return AppBar(
-        title: const DisplayTitle(text: "Nhóm học", color: Colors.black),
+        title: const DisplayText(text: "Nhóm học", color: Colors.black, fontWeight: FontWeight.bold,),
         centerTitle: true,
-        elevation: 0.5,
         actions: <Widget>[
           TextButton(
               onPressed: () {

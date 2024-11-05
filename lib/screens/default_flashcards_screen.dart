@@ -16,7 +16,7 @@ class DefaultFlashcardsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: _buildAppBar(),
+        appBar: CommonAppBar(title: "$setName"),
         body: SafeArea(
           child: _buildFutureCards(),
         ));
@@ -49,15 +49,6 @@ class DefaultFlashcardsScreen extends StatelessWidget {
         }
       },
     );
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-        title: DisplayText(
-      text: setName ?? "error",
-      color: Colors.black,
-      fontWeight: FontWeight.bold,
-    ));
   }
 
   Widget _listViewCards(List<DefaultCards> flashcards) {

@@ -10,7 +10,8 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DialogCreateSet extends ConsumerStatefulWidget {
-  const DialogCreateSet({super.key});
+  final FlashcardSets? flashcardSet;
+  const DialogCreateSet({super.key, this.flashcardSet});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>

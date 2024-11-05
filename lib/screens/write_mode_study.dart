@@ -11,7 +11,8 @@ import 'package:gap/gap.dart';
 
 class WriteModeStudy extends ConsumerStatefulWidget {
   final String? setId;
-  const WriteModeStudy({super.key, required this.setId});
+  final String? setName;
+  const WriteModeStudy({super.key, required this.setId, required this.setName});
 
   @override
   ConsumerState<WriteModeStudy> createState() => _WriteModeStudyState();
@@ -122,7 +123,6 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
   Widget build(BuildContext context) {
     final flashcardsAsync = ref.watch(flashcardStreamProvider(widget.setId!));
     final colors = context.colorScheme;
-    final setName = ref.read(flashcardSetsProvider).selectedFlashcardSet!.title;
 
     ref.listen<AsyncValue<List<Flashcards>>>(
         flashcardStreamProvider(widget.setId!), (previous, next) {
@@ -136,7 +136,7 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
     });
 
     return Scaffold(
-      appBar: _buildAppBar(setName),
+      appBar: CommonAppBar(title: "Ôn tập: ${widget.setName}"),
       body: flashcardsAsync.when(
         data: (flashcards) => flashcards.isEmpty
             ? const EmptyContainer(emptyType: EmptyType.card)
@@ -278,9 +278,5 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
           padding: EdgeInsets.symmetric(vertical: 15),
           child: Icon(Icons.arrow_right_alt, color: Colors.white)),
     );
-  }
-
-  AppBar _buildAppBar(String setName) {
-    return AppBar(title: DisplayTitle(text: "Chế độ viết: $setName"));
   }
 }

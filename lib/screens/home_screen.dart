@@ -10,13 +10,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const DisplayTitle(
-            text: "Màn hình chính",
-            color: Colors.black,
-          ),
-          centerTitle: true,
-        ),
+        appBar: const CommonAppBar(title: "Màn hình chính", isCenterTitle: true,),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(20.0),

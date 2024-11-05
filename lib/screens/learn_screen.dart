@@ -23,7 +23,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: const CommonAppBar(title: "Hãy chọn chế độ ộp tâp", isCenterTitle: true,),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -180,7 +180,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                   onPressed: () {
                     if (selectedSet != null) {
                       _startStudySession(
-                          selectedSet.setId, ref, context, studyType);
+                          selectedSet.setId, ref, context, studyType, selectedSet.title);
                     } else {
                       AppAlerts.showFlushBar(context,
                           "Bạn hãy chọn 1 thẻ để bắt đầu", AlertType.error);
@@ -460,7 +460,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
   }
 
   void _startStudySession(String setId, WidgetRef ref, BuildContext context,
-      StudyType studyType) async {
+      StudyType studyType, String setName) async {
     final cardNumberStream =
         ref.read(flashcardSetsProvider.notifier).getCardNumber(setId);
     final cardNumber = await cardNumberStream.first;
@@ -469,31 +469,20 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       AppAlerts.showFlushBar(
           context, "Bộ thẻ chưa có thẻ nào", AlertType.error);
     } else {
-      _startStudyMode(studyType, context, setId);
+      _startStudyMode(studyType, context, setId, setName);
     }
   }
 
   void _startStudyMode(
-      StudyType studyType, BuildContext context, String setId) {
+      StudyType studyType, BuildContext context, String setId, String setName) {
     if (studyType == StudyType.normal) {
-      context.push('/flipModeStudy/$setId');
+      context.push('/flipModeStudy/$setId/$setName');
     } else if (studyType == StudyType.write) {
-      context.push('/writeModeStudy/$setId');
+      context.push('/writeModeStudy/$setId/$setName');
     } else if (studyType == StudyType.abcd) {
-      context.push('/abcdModeStudy/$setId');
+      context.push('/abcdModeStudy/$setId/$setName');
     } else {
-      context.push('/speedRecallModeStudy/$setId');
+      context.push('/speedRecallModeStudy/$setId/$setName');
     }
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: const DisplayText(
-        text: "Hãy chọn chế độ học ",
-        color: Colors.black,
-        fontWeight: FontWeight.bold,
-      ),
-      centerTitle: true,
-    );
   }
 }

@@ -7,7 +7,8 @@ import 'package:flashcard_app/utils/utils.dart';
 
 class FlipStudyMode extends ConsumerStatefulWidget {
   final String? setId;
-  const FlipStudyMode({super.key, required this.setId});
+  final String? setName;
+  const FlipStudyMode({super.key, required this.setId, required this.setName});
 
   @override
   ConsumerState<FlipStudyMode> createState() => _FlipStudyModeState();
@@ -20,10 +21,9 @@ class _FlipStudyModeState extends ConsumerState<FlipStudyMode> {
   @override
   Widget build(BuildContext context) {
     final flashcardsAsync = ref.watch(flashcardStreamProvider(widget.setId!));
-    final setName = ref.read(flashcardSetsProvider).selectedFlashcardSet!.title;
 
     return Scaffold(
-        appBar: _buildAppBar(setName),
+        appBar: CommonAppBar(title: "Bộ ôn tập: ${widget.setName}"),
         body: flashcardsAsync.when(
           data: (flashcards) => flashcards.isEmpty
               ? const EmptyContainer(emptyType: EmptyType.card)
@@ -123,9 +123,5 @@ class _FlipStudyModeState extends ConsumerState<FlipStudyMode> {
         color: textColor,
       )),
     );
-  }
-
-  AppBar _buildAppBar(String setName) {
-    return AppBar(title: DisplayTitle(text: setName));
   }
 }
