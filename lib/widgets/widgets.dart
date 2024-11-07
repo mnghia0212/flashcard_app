@@ -12,6 +12,7 @@ export 'dialog_create_set.dart';
 export 'dialog_create_card.dart';
 export 'dialog_create_group.dart';
 export 'dialog_join_group.dart';
+export 'dialog_delete_flashcard_set.dart';
 export 'video_player.dart';
 export 'discuss_tab.dart';
 export 'common_app_bar.dart';

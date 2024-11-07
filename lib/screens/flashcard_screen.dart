@@ -48,7 +48,7 @@ class FlashcardScreen extends ConsumerWidget {
         const titleContainerTheme = Color(0xff808080);
         final deviceSize = context.deviceSize;
         return Container(
-          height: 300,
+          height: 450,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -70,7 +70,7 @@ class FlashcardScreen extends ConsumerWidget {
       Size deviceSize, Flashcards flashcard, BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      height: 250,
+      height: 400,
       width: deviceSize.width,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(

@@ -20,6 +20,23 @@ class FlashcardSetsNotifier extends StateNotifier<FlashcardSetsState> {
     }
   }
 
+  Future<void> updateSet(
+      FlashcardSets flashcardSets, BuildContext context) async {
+    try {
+      await repository.updateSet(flashcardSets, context);
+    } catch (e) {
+      log("error: $e");
+    }
+  }
+
+  Future<void> deleteSet(String setId, BuildContext context) async {
+    try {
+      await repository.deleteSet(setId, context);
+    } catch (e) {
+      log("error: $e");
+    }
+  }
+
   Future<String> getSetNameById(String setId) async {
     try {
       return await repository.getSetNameById(setId);

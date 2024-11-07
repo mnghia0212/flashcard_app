@@ -10,9 +10,16 @@ class StudyGroupScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userId = ref.watch(userIdProvider);
+    final userName = ref.watch(userProvider).user?.userName;
 
-    if (userId == null) {
-      return const CircularProgressIndicator();
+    if (userId == null || userName == null) {
+      return const Center(
+        child: DisplayText(
+          text: "Lỗi khi tải nhóm học",
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      );
     }
 
     return DefaultTabController(
@@ -33,13 +40,11 @@ class StudyGroupScreen extends ConsumerWidget {
                 ]),
           ),
           body: TabBarView(children: [
-            DiscussTab(groupId: groupId, userId: userId),
-
+            DiscussTab(groupId: groupId!, userId: userId, userName: userName),
             const Icon(
               Icons.group,
               size: 100,
             ),
-
             const Icon(
               Icons.notifications,
               size: 100,

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
@@ -10,98 +11,117 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 class DiscussTab extends ConsumerStatefulWidget {
-  final String? groupId;
-  final String? userId;
-  const DiscussTab({super.key, required this.groupId, required this.userId});
+  final String groupId;
+  final String userId;
+  final String userName;
+  const DiscussTab(
+      {super.key,
+      required this.groupId,
+      required this.userId,
+      required this.userName});
 
   @override
   ConsumerState<DiscussTab> createState() => _DiscussTabState();
 }
 
 class _DiscussTabState extends ConsumerState<DiscussTab> {
-  final List<FlashcardSetsShared> flashcardSets = [];
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colorScheme;
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Expanded(
-              child: flashcardSets.isEmpty
-                  ? const Center(
-                      child: DisplayTitle(text: "Nhóm chưa có chia sẻ bộ thẻ"),
-                    )
-                  : ListView.separated(
-                      itemCount: flashcardSets.length,
-                      itemBuilder: (context, index) {
-                        final flashcardSet = flashcardSets[index];
-
-                        return Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: colors.primary,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Row(
-                            children: [
-                              // Avatar người dùng
-                              // const CircleAvatar(
-                              //   radius: 30,
-                              //   backgroundImage: AssetImage(
-                              //       'assets/images/ava2.jpg'), // Thay bằng ảnh đại diện của người dùng
-                              // ),
-                              // const Gap(10),
-                              DisplayText(
-                                text:
-                                    "Bạn đã chia sẻ bộ thẻ ${flashcardSet.setName}",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                              ),
-                              const Spacer(),
-                              IconButton(
-                                icon: const Icon(Icons.watch),
-                                onPressed: () {
-                                  context.push(
-                                      '/flipModeStudy/${flashcardSet.setId}');
-                                },
-                                color: Colors.white,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const Gap(10);
-                      },
-                    )),
-          Row(
+    final flashcardSetsSharedAsync =
+        ref.watch(flashcardSetsSharedStreamProvider(widget.groupId));
+    final sizes = context.deviceSize;
+    
+    return flashcardSetsSharedAsync.when(
+      data: (flashcardSetsShared) => flashcardSetsShared.isEmpty
+          ? Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+                children: [
+                  const Expanded(
+                      child: Center(
+                          child: DisplayText(
+                    text: "Nhóm chia sẻ bộ thẻ nào",
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ))),
+                  _rowButtonShare(context, colors)
+                ],
+              ),
+          )
+          : Column(
             children: [
               Expanded(
-                child: ElevatedButton(
-                  onPressed: () => showDialogSelectShareSet(context),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: colors.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 13)),
-                  child: const DisplayText(text: "Chọn bộ thẻ để chia sẻ"),
-                ),
-              ),
-              const Gap(10),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: colors.primary,
-                    padding: const EdgeInsets.symmetric(vertical: 13)),
-                child: const Icon(
-                  Icons.takeout_dining,
-                  color: Colors.white,
-                ),
-              ),
+                  child: _listviewSetsShared(colors, flashcardSetsShared, sizes)),
+              _rowButtonShare(context, colors),
             ],
-          )
+          ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
+    );
+  }
+
+  Widget _rowButtonShare(BuildContext context, ColorScheme colors) {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () => showDialogSelectShareSet(context),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: colors.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 15)),
+              child: const DisplayText(text: "Chia sẻ bộ thẻ", fontWeight: FontWeight.bold,),
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  ListView _listviewSetsShared(
+      ColorScheme colors, List<FlashcardSetsShared> flashcardSetsShared, Size sizes) {
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+      itemCount: flashcardSetsShared.length,
+      itemBuilder: (context, index) {
+        final flashcardSetShared = flashcardSetsShared[index];
+
+        return Row(
+          children: [
+            const CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage(
+                        'assets/images/ava2.jpg'), 
+                  ),
+            InkWell(
+              onTap: () => context.push('/flipModeStudy/${flashcardSetShared.setId}/${flashcardSetShared.setName}'),
+              child: Container(
+                height: 65,
+                width: 280,
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                  color: colors.primary,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  children: [
+                    DisplayText(
+                      text: "Bạn đã chia sẻ bộ thẻ ${flashcardSetShared.setName}",
+                      fontSize: 15,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+      separatorBuilder: (context, index) {
+        return const Gap(20);
+      },
     );
   }
 
@@ -132,8 +152,8 @@ class _DiscussTabState extends ConsumerState<DiscussTab> {
                       _checkNumberCard(
                           selectedSet.setId, ref, context, selectedSet.title);
                     } else {
-                      AppAlerts.showFlushBar(context,
-                          "Bạn hãy chọn 1 thẻ để bắt đầu", AlertType.error);
+                      AppAlerts.showFlushBar(
+                          context, "Bạn chưa chọn bộ thẻ nào", AlertType.error);
                     }
                   },
                 ),
@@ -161,11 +181,6 @@ class _DiscussTabState extends ConsumerState<DiscussTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const DisplayText(
-            text: "Hãy chọn bộ thẻ: ",
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
           const Gap(10),
           Expanded(
             child: flashcardSetsStream.when(
@@ -275,28 +290,47 @@ class _DiscussTabState extends ConsumerState<DiscussTab> {
         ref.read(flashcardSetsProvider.notifier).getCardNumber(setId);
     final cardNumber = await cardNumberStream.first;
 
+    if (!context.mounted) {
+      return;
+    }
+
     if (cardNumber! < 1) {
       AppAlerts.showFlushBar(
           context, "Bộ thẻ chưa có thẻ nào", AlertType.error);
     } else {
-      _shareCard(setId, widget.userId!, widget.groupId!, setName, context);
+      _shareCard(setId, setName, context);
     }
   }
 
-  void _shareCard(String setId, String userId, String groupId, String setName,
-      BuildContext context) {
+  void _shareCard(String setId, String setName, BuildContext context) async {
     try {
+      final newSharedSetDoc =
+          FirebaseFirestore.instance.collection('flashcardSetsShared').doc();
+
+      final newSharedSetId = newSharedSetDoc.id;
+
       final newSharedSet = FlashcardSetsShared(
-          flashcardSetSharedId: "1",
-          userId: userId,
+          flashcardSetSharedId: newSharedSetId,
+          userId: widget.userId,
+          userName: widget.userName,
           setName: setName,
           setId: setId,
-          groupId: groupId,
+          groupId: widget.groupId,
           sharedAt: DateTime.now().toString());
-      setState(() {
-        flashcardSets.add(newSharedSet);
+
+      await ref
+          .read(flashcardSetsSharedProvider.notifier)
+          .shareSet(newSharedSet)
+          .then((value) {
+        if (!context.mounted) {
+          return;
+        }
+
         context.pop();
+        AppAlerts.showFlushBar(context,
+            "Đã chia sẻ bộ thẻ ${newSharedSet.setName}", AlertType.success);
       });
+
       AppAlerts.showFlushBar(context, "Đã chia sẻ bộ thẻ", AlertType.success);
       log("$newSharedSet");
     } catch (e) {

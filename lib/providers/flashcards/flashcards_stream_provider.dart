@@ -23,7 +23,7 @@ final flashcardStreamProvider =
         .map((doc) => Flashcards.fromMap(doc.data()))
         .toList();
 
-    // for (var flashcard in flashcards) {
+    //for (var flashcard in flashcards) {
     //   log('Flashcard: ${flashcard.flashcardId} => ${flashcard.toMap()}');
     // }
 

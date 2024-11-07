@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final flashcardSetsStreamProvider = StreamProvider<List<FlashcardSets>>((ref) {
   final userId = ref.watch(userIdProvider);
 
-
   if (userId == null) {
     return Stream.value([]);
   }
@@ -17,19 +16,9 @@ final flashcardSetsStreamProvider = StreamProvider<List<FlashcardSets>>((ref) {
       .where('userId', isEqualTo: userId)
       .snapshots()
       .map((snapshot) {
-        return snapshot.docs.map((doc) {
-          final data = doc.data();
-          return FlashcardSets(
-            setId: data['setId'],
-            userId: data['userId'],
-            title: data['title'],
-            description: data['description'],
-            isFavorite: data['isFavorite'],
-            isDefault: data['isDefault'],
-            createdAt: data['createdAt'],
-            updatedAt: data['updatedAt'],
-          );
-        }).toList();
-      });
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return FlashcardSets.fromMap(data);
+    }).toList();
+  });
 });
-

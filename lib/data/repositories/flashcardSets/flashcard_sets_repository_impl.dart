@@ -36,4 +36,22 @@ class FlashcardSetsRepositoryImpl implements FlashcardSetsRepositories {
       return Future.value("Error loading set name");
     }
   }
+
+  @override
+  Future<void> deleteSet(String setId, BuildContext context) async {
+    try {
+      await datasource.deleteSet(setId, context);
+    } catch (e) {
+      log("$e");
+    }
+  }
+
+  @override
+  Future<void> updateSet(FlashcardSets flashcardSets, BuildContext context) async {
+    try {
+      await datasource.updateSet(flashcardSets, context);
+    } catch (e) {
+      log("$e");
+    }
+  }
 }

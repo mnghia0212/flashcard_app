@@ -21,8 +21,22 @@ class DialogCreateSet extends ConsumerStatefulWidget {
 class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
   final supabase = Supabase.instance.client;
   bool isLoading = false;
-  final TextEditingController setNameController = TextEditingController();
-  final TextEditingController setDesController = TextEditingController();
+  late TextEditingController setNameController;
+  late TextEditingController setDesController;
+
+  bool get isEditing => widget.flashcardSet != null;
+
+   @override
+  void initState() {
+    super.initState();
+
+    setNameController = TextEditingController(
+      text: isEditing ? widget.flashcardSet?.title : '',
+    );
+    setDesController = TextEditingController(
+      text: isEditing ? widget.flashcardSet?.description : '',
+    );
+  }
 
   @override
   void dispose() {
@@ -45,9 +59,9 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
                   }),
               textButton(
                   context: context,
-                  text: "Tạo",
+                  text: isEditing ? "Lưu" : "Tạo",
                   onPressed: () {
-                    createCardSet();
+                    isEditing ? updateCardSet() : createCardSet();
                   }),
             ],
             title: rowTitleDialogCreateSet(context),
@@ -132,6 +146,48 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
     }
   }
 
+  void updateCardSet() async {
+    final setName = setNameController.text.trim();
+    final setDes = setDesController.text.trim();
+
+    if (setName.isNotEmpty && widget.flashcardSet != null) {
+      setState(() {
+        isLoading = true;
+      });
+
+      final updatedFlashcardSet = widget.flashcardSet!.copyWith(
+        title: setName,
+        description: setDes,
+        updatedAt: DateTime.now().toString(),
+      );
+
+      await ref
+          .read(flashcardSetsProvider.notifier)
+          .updateSet(updatedFlashcardSet, context)
+          .then((value) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          isLoading = false;
+        });
+        context.pop();
+        AppAlerts.showFlushBar(
+            context, "Sửa bộ thẻ thành công", AlertType.success);
+      }).catchError((error) {
+        setState(() {
+          isLoading = false;
+        });
+        if (!mounted) {
+          return;
+        }
+        AppAlerts.showFlushBar(context, "Đã có lỗi xảy ra", AlertType.error);
+      });
+    } else {
+      AppAlerts.showFlushBar(context, "Bộ thẻ phải có tên", AlertType.error);
+    }
+  }
+  
   TextButton textButton(
       {required BuildContext context,
       required String text,
@@ -153,7 +209,7 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
             const Icon(Icons.folder),
             const Gap(5),
             DisplayText(
-              text: "Bộ thẻ mới",
+              text: isEditing ? "Sửa bộ thẻ" : "Bộ thẻ mới",
               fontWeight: FontWeight.bold,
               color: context.colorScheme.primary,
             ),

@@ -16,7 +16,7 @@ class FlashcardSetsDatasource {
       await SessionService().checkSession(context);
 
       final newSetDoc =
-          FirebaseFirestore.instance.collection("flashcardSets").doc();
+          _firestore.collection("flashcardSets").doc();
       final newSetId = newSetDoc.id;
 
       await newSetDoc.set(flashcardSets.copyWith(setId: newSetId).toMap());
@@ -29,7 +29,7 @@ class FlashcardSetsDatasource {
 
   Future<String> getSetNameById(String? setId) async {
     try {
-      final flashcardSets = await FirebaseFirestore.instance
+      final flashcardSets = await _firestore
           .collection('flashcardSets')
           .where('setId', isEqualTo: setId)
           .get();
@@ -53,10 +53,10 @@ class FlashcardSetsDatasource {
           .collection('flashcardSets')
           .doc(flashcardSets.setId.toString())
           .update({
-        'title': flashcardSets.title,
-        'description': flashcardSets.description,
-        'isFavorite': flashcardSets.isFavorite,
-        'updatedAt': flashcardSets.updatedAt ?? DateTime.now().toString(),
+            'title': flashcardSets.title,
+            'description': flashcardSets.description,
+            'isFavorite': flashcardSets.isFavorite,
+            'updatedAt': DateTime.now().toString(),
       });
 
       log("Success updating flashcard set");
@@ -80,7 +80,7 @@ class FlashcardSetsDatasource {
 
   Stream<int?> getCardNumber(String setId) {
     try {
-      return FirebaseFirestore.instance
+      return _firestore
           .collection('flashcardSetDetails')
           .where('flashcardSetId', isEqualTo: setId)
           .snapshots()

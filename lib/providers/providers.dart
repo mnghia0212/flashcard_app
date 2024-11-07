@@ -4,6 +4,7 @@ export 'users/users.dart';
 export 'user_id_provider.dart';
 export 'flashcards/flashcards.dart';
 export 'groups/groups.dart';
+export 'flashcardSetsShared/flashcard_sets_shared.dart';
 export 'displayed_flashcard_provider.dart';
 export 'displayed_default_flashcard_provider.dart';
 export 'default_selected_set_provider.dart';

@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 class FlashcardSetsShared extends Equatable {
   final String flashcardSetSharedId;
   final String userId;
+  final String userName;
   final String setId;
   final String setName;
   final String groupId;
@@ -13,6 +14,7 @@ class FlashcardSetsShared extends Equatable {
   const FlashcardSetsShared({
     required this.flashcardSetSharedId,
     required this.userId,
+    required this.userName,
     required this.setId,
     required this.setName,
     required this.groupId,
@@ -22,6 +24,7 @@ class FlashcardSetsShared extends Equatable {
   FlashcardSetsShared copyWith({
     String? flashcardSetSharedId,
     String? userId,
+    String? userName,
     String? setId,
     String? setName,
     String? groupId,
@@ -30,6 +33,7 @@ class FlashcardSetsShared extends Equatable {
     return FlashcardSetsShared(
       flashcardSetSharedId: flashcardSetSharedId ?? this.flashcardSetSharedId,
       userId: userId ?? this.userId,
+      userName: userName ?? this.userName,
       setId: setId ?? this.setId,
       setName: setName ?? this.setName,
       groupId: groupId ?? this.groupId,
@@ -41,6 +45,7 @@ class FlashcardSetsShared extends Equatable {
     return <String, dynamic>{
       'flashcardSetSharedId': flashcardSetSharedId,
       'userId': userId,
+      'userName': userName,
       'setId': setId,
       'setName': setName,
       'groupId': groupId,
@@ -52,6 +57,7 @@ class FlashcardSetsShared extends Equatable {
     return FlashcardSetsShared(
       flashcardSetSharedId: map['flashcardSetSharedId'] as String,
       userId: map['userId'] as String,
+      userName: map['userName'] as String,
       setId: map['setId'] as String,
       setName: map['setName'] as String,
       groupId: map['groupId'] as String,
@@ -71,6 +77,7 @@ class FlashcardSetsShared extends Equatable {
     return [
       flashcardSetSharedId,
       userId,
+      userName,
       setId,
       setName,
       groupId,
