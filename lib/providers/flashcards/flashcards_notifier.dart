@@ -9,8 +9,7 @@ class FlashcardsNotifier extends StateNotifier<FlashcardsState> {
 
   FlashcardsNotifier(this.repository) : super(const FlashcardsState.initial());
 
-  Future<void> createCardInSet(
-      Flashcards flashcard, String setId) async {
+  Future<void> createCardInSet(Flashcards flashcard, String setId) async {
     try {
       await repository.createCardInSet(flashcard, setId);
     } catch (e) {
@@ -18,8 +17,7 @@ class FlashcardsNotifier extends StateNotifier<FlashcardsState> {
     }
   }
 
-  Future<void> updateCard(
-      Flashcards flashcard, String setId) async {
+  Future<void> updateCard(Flashcards flashcard) async {
     try {
       await repository.updateCard(flashcard);
     } catch (e) {
@@ -27,4 +25,11 @@ class FlashcardsNotifier extends StateNotifier<FlashcardsState> {
     }
   }
 
+  Future<void> deleteCard(String flashcardId) async {
+    try {
+      await repository.deleteCard(flashcardId);
+    } catch (e) {
+      log("error: $e");
+    }
+  }
 }

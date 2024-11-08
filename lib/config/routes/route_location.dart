@@ -18,6 +18,6 @@ class RouteLocation {
   static String get speedRecallModeStudy => '/speedRecallModeStudy/:setId/:setName';
   static String get endStudySessionScreen => '/endStudySessionScreen/:rightAnswerCount/:wrongAnswerCount';
   static String get testMode => '/testMode';
-  static String get studyGroupScreen => '/studyGroupScreen/:groupId';
+  static String get studyGroupScreen => '/studyGroupScreen/:groupId/:groupName';
   static String get defaultFlashcardsScreen => '/defaultFlashcardsScreen/:setId/:setName';
 }

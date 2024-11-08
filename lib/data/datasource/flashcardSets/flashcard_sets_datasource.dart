@@ -52,12 +52,7 @@ class FlashcardSetsDatasource {
       await _firestore
           .collection('flashcardSets')
           .doc(flashcardSets.setId.toString())
-          .update({
-            'title': flashcardSets.title,
-            'description': flashcardSets.description,
-            'isFavorite': flashcardSets.isFavorite,
-            'updatedAt': DateTime.now().toString(),
-      });
+          .update(flashcardSets.toMap());
 
       log("Success updating flashcard set");
     } catch (e) {
@@ -70,7 +65,7 @@ class FlashcardSetsDatasource {
       await SessionService().checkSession(context);
       await _firestore
           .collection('flashcardSets')
-          .doc(setId.toString())
+          .doc(setId)
           .delete();
       log("Success deleting flashcard set");
     } catch (e) {

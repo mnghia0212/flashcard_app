@@ -109,7 +109,8 @@ final appRoutes = [
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
       final groupId = state.pathParameters['groupId'];
-      return StudyGroupScreen(groupId: groupId);
+      final groupName = state.pathParameters['groupName'];
+      return StudyGroupScreen(groupId: groupId, groupName: groupName,);
     },
   ),
 ];

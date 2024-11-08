@@ -13,25 +13,25 @@ class AppAlerts {
 
     switch (type) {
       case AlertType.success:
-        backgroundColor = colors.primaryContainer;
+        backgroundColor = Colors.green.shade300;
         icon = Icons.check_circle;
         alertTitle = "Success";
         break;
 
       case AlertType.warning:
-        backgroundColor = Colors.yellowAccent;
+        backgroundColor = Colors.yellow.shade300;
         icon = Icons.warning;
         alertTitle = "Warning";
         break;
 
       case AlertType.error:
-        backgroundColor = Colors.redAccent;
+        backgroundColor = Colors.red.shade300;
         icon = Icons.error;
         alertTitle = "Error";
         break;
 
       default:
-        backgroundColor = Colors.orangeAccent;
+        backgroundColor = Colors.orange.shade300;
         icon = Icons.info;
         alertTitle = "Info";
     }
@@ -44,17 +44,16 @@ class AppAlerts {
       messageColor: Colors.black,
       messageSize: 17,
       flushbarPosition: FlushbarPosition.BOTTOM,
-      flushbarStyle: FlushbarStyle.FLOATING,
+      flushbarStyle: FlushbarStyle.GROUNDED,
       isDismissible: true,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(milliseconds: 1300),
       dismissDirection: FlushbarDismissDirection.VERTICAL,
       backgroundColor: backgroundColor,
       icon: Icon(
         icon,
         color: Colors.black,
       ),
-      borderRadius: BorderRadius.circular(20),
-      margin: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+      padding: const EdgeInsets.all(20),
       boxShadows: const [
         BoxShadow(color: Colors.grey, offset: Offset(0.0, 2.0), blurRadius: 3.0)
       ],

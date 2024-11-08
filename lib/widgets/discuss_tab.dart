@@ -35,21 +35,7 @@ class _DiscussTabState extends ConsumerState<DiscussTab> {
     
     return flashcardSetsSharedAsync.when(
       data: (flashcardSetsShared) => flashcardSetsShared.isEmpty
-          ? Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-                children: [
-                  const Expanded(
-                      child: Center(
-                          child: DisplayText(
-                    text: "Nhóm chia sẻ bộ thẻ nào",
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ))),
-                  _rowButtonShare(context, colors)
-                ],
-              ),
-          )
+          ? _emptySharedSets(context, colors)
           : Column(
             children: [
               Expanded(
@@ -60,6 +46,24 @@ class _DiscussTabState extends ConsumerState<DiscussTab> {
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(child: Text('Error: $error')),
     );
+  }
+
+  Padding _emptySharedSets(BuildContext context, ColorScheme colors) {
+    return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+              children: [
+                const Expanded(
+                    child: Center(
+                        child: DisplayText(
+                  text: "Nhóm chia sẻ bộ thẻ nào",
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ))),
+                _rowButtonShare(context, colors)
+              ],
+            ),
+        );
   }
 
   Widget _rowButtonShare(BuildContext context, ColorScheme colors) {

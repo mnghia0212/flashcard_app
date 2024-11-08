@@ -16,7 +16,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DialogCreateCard extends ConsumerStatefulWidget {
   final String? setId;
-  const DialogCreateCard({super.key, required this.setId});
+  final Flashcards? flashcard;
+  const DialogCreateCard({super.key, required this.setId, this.flashcard});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -24,16 +25,34 @@ class DialogCreateCard extends ConsumerStatefulWidget {
 }
 
 class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
+  final isLoading = false;
   final supabase = Supabase.instance.client;
-  final TextEditingController questionController = TextEditingController();
-  final TextEditingController answerController = TextEditingController();
+  late TextEditingController frontContentController;
+  late TextEditingController backContentController;
   String? audioUrl;
   String? videoUrl;
 
+  bool get isEditing => widget.flashcard != null;
+
+  @override
+  void initState() {
+    frontContentController = TextEditingController(
+        text: isEditing ? widget.flashcard!.frontContent : " ");
+
+    backContentController = TextEditingController(
+        text: isEditing ? widget.flashcard!.backContent : " ");
+
+    audioUrl = isEditing ? widget.flashcard!.audioPath : null;
+
+    videoUrl = isEditing ? widget.flashcard!.videoPath : null;
+
+    super.initState();
+  }
+
   @override
   void dispose() {
-    questionController.dispose();
-    answerController.dispose();
+    frontContentController.dispose();
+    backContentController.dispose();
     super.dispose();
   }
 
@@ -50,7 +69,7 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
             createCard(widget.setId);
           },
           context: context,
-          text: "Tạo",
+          text: isEditing ? "Lưu" : "Tạo",
         ),
       ],
       title: rowTitleDialogCreateSet(context),
@@ -71,7 +90,7 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
               maxLines: 3,
               labelText: "Câu hỏi",
               icon: const Icon(Icons.abc),
-              controller: questionController,
+              controller: frontContentController,
             ),
             const Gap(10),
             CommonTextFormField(
@@ -80,7 +99,7 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
               icon: const Icon(
                 Icons.description,
               ),
-              controller: answerController,
+              controller: backContentController,
             ),
             const Gap(15),
             _buttonPickFile(colors, pickAudioFile, "Chọn Audio"),
@@ -108,7 +127,7 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
       ColorScheme colors, Future<void> Function() function, String text) {
     return ElevatedButton(
       onPressed: () async {
-        await function(); 
+        await function();
       },
       style: ElevatedButton.styleFrom(
           backgroundColor: colors.primary,
@@ -118,8 +137,8 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
   }
 
   void createCard(String? setId) async {
-    final answer = answerController.text;
-    final question = questionController.text;
+    final answer = backContentController.text;
+    final question = frontContentController.text;
     final userId = supabase.auth.currentUser?.id;
 
     if (userId == null) {
@@ -152,6 +171,10 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
         await ref
             .read(flashcardsProvider.notifier)
             .createCardInSet(flashcard, setId);
+
+        if (!mounted) {
+          return;
+        }
         context.pop();
         AppAlerts.showFlushBar(
             context, "Tạo thẻ thành công", AlertType.success);
@@ -244,7 +267,7 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
             const Icon(Icons.folder),
             const Gap(5),
             DisplayText(
-              text: "Tạo thẻ mới",
+              text: isEditing ? "Cập nhật thẻ" : "Tạo thẻ mới",
               fontWeight: FontWeight.bold,
               color: context.colorScheme.primary,
             ),

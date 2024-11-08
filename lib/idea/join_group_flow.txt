@@ -1,0 +1,29 @@
+1. Người dùng nhập mã nhóm:
+
+    Kiểm tra mã nhóm có tồn tại hay không.
+    Nếu không tồn tại: Thông báo lỗi kèm hướng dẫn.
+
+2. Mã nhóm tồn tại:
+    Nếu người dùng đã ở trong nhóm:
+        Thông báo: "Bạn đã ở trong nhóm này."
+
+    Nếu người dùng chưa ở trong nhóm:
+        Kiểm tra bảng request_join_group xem đã có yêu cầu chưa trả lời từ trước hay không.
+            Nếu đã có: Thông báo: "Yêu cầu tham gia nhóm của bạn đang chờ xử lý."
+            Nếu chưa có:
+                Tạo yêu cầu mới trong request_join_group với trạng thái "pending".
+                    Gửi thông báo tới trưởng nhóm.
+
+3. Xử lý yêu cầu bởi trưởng nhóm:
+    Nếu chấp nhận:
+        Thêm người dùng vào nhóm (bảng group_members).
+        Xóa yêu cầu khỏi request_join_group.
+        Thông báo cho người dùng: "Bạn đã được thêm vào nhóm."
+
+    Nếu từ chối:
+        Xóa yêu cầu khỏi request_join_group.
+        Thông báo cho người dùng: "Yêu cầu của bạn đã bị từ chối. Bạn có thể thử lại sau."
+
+4. Yêu cầu hết hạn:
+    Sau 7 ngày (hoặc một khoảng thời gian định sẵn), nếu trưởng nhóm không trả lời, yêu cầu sẽ tự động hết hạn và bị xóa khỏi request_join_group.
+    Thông báo cho người dùng: "Yêu cầu của bạn đã hết hạn. Vui lòng gửi lại yêu cầu."

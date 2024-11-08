@@ -24,4 +24,13 @@ class FlashcardRepositoryImpl implements FlashcardRepositories {
       log("$e");
     }
   }
+  
+  @override
+  Future<void> deleteCard(String flashcardId) async{
+    try {
+      await datasource.deleteCard(flashcardId);
+    } catch (e) {
+      log("$e");
+    }
+  }
 }

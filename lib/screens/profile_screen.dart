@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flashcard_app/providers/providers.dart';
-import 'package:flashcard_app/services/services.dart';
 import 'package:flashcard_app/utils/extensions.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +17,6 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colorScheme;
-    final size = context.deviceSize;
     final userState = ref.watch(userProvider);
 
     if (userState.user == null) {

@@ -5,7 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class StudyGroupScreen extends ConsumerWidget {
   final String? groupId;
-  const StudyGroupScreen({super.key, required this.groupId});
+  final String? groupName;
+  const StudyGroupScreen({super.key, required this.groupId, required this.groupName});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,10 +24,14 @@ class StudyGroupScreen extends ConsumerWidget {
     }
 
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
           appBar: AppBar(
-            title: DisplayTitle(text: groupId ?? "Error group id"),
+            title: DisplayText(
+              text: groupName ?? "Error group name",
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
             bottom: const TabBar(
                 indicatorSize: TabBarIndicatorSize.tab,
                 indicatorWeight: 3,
@@ -37,6 +42,7 @@ class StudyGroupScreen extends ConsumerWidget {
                   ),
                   Icon(Icons.group, size: 25),
                   Icon(Icons.notifications, size: 25),
+                  Icon(Icons.settings, size: 25),
                 ]),
           ),
           body: TabBarView(children: [
@@ -49,6 +55,7 @@ class StudyGroupScreen extends ConsumerWidget {
               Icons.notifications,
               size: 100,
             ),
+            StudyGroupSettings(groupId: groupId!)
           ])),
     );
   }
