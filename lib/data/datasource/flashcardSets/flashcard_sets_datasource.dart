@@ -76,8 +76,8 @@ class FlashcardSetsDatasource {
   Stream<int?> getCardNumber(String setId) {
     try {
       return _firestore
-          .collection('flashcardSetDetails')
-          .where('flashcardSetId', isEqualTo: setId)
+          .collection('flashcards')
+          .where('setId', isEqualTo: setId)
           .snapshots()
           .map((snapshot) => snapshot.docs.length);
     } catch (e) {

@@ -100,7 +100,7 @@ class DisplayListOfFlashcardSets extends ConsumerWidget {
       trailing: PopupMenuButton<String>(
         onSelected: (value) {
           if (value == 'delete') {
-            showDialogDeleteSet(context, flashcardSet, colors, ref);
+            showDialogDeleteSet(context, flashcardSet);
           } else if (value == 'edit') {
             showDialogUpdateSet(context, flashcardSet);
           } else {
@@ -126,7 +126,7 @@ class DisplayListOfFlashcardSets extends ConsumerWidget {
   }
 
   Future<dynamic> showDialogDeleteSet(BuildContext context,
-      FlashcardSets flashcardSet, ColorScheme colors, WidgetRef ref) {
+      FlashcardSets flashcardSet) {
     return showDialog(
       context: context,
       builder: (context) {

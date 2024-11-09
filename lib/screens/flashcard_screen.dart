@@ -10,7 +10,8 @@ import 'package:just_audio/just_audio.dart';
 class FlashcardScreen extends ConsumerWidget {
   final String? setId;
   final String? setName;
-  const FlashcardScreen({super.key, required this.setId, required this.setName});
+  const FlashcardScreen(
+      {super.key, required this.setId, required this.setName});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,7 +20,7 @@ class FlashcardScreen extends ConsumerWidget {
     return Scaffold(
       appBar: CommonAppBar(title: "$setName"),
       floatingActionButton: FloatingActionButtonCreate(
-          dialogCreate: DialogCreateCard(setId: setId)),
+          dialogCreate: DialogCreateCard(setId: setId!)),
       body: flashcardsAsync.when(
         data: (flashcards) {
           if (flashcards.isEmpty) {
@@ -54,7 +55,8 @@ class FlashcardScreen extends ConsumerWidget {
           ),
           child: Column(
             children: [
-              _cardTitle(titleContainerBackground, index, titleContainerTheme),
+              _cardTitle(titleContainerBackground, index, titleContainerTheme,
+                  flashcard, context),
               _cardContent(deviceSize, flashcard, context),
             ],
           ),
@@ -141,8 +143,8 @@ class FlashcardScreen extends ConsumerWidget {
     return VideoPlayerWidget(videoUrl: videoUrl);
   }
 
-  Widget _cardTitle(
-      Color titleContainerBackground, int index, Color titleContainerTheme) {
+  Widget _cardTitle(Color titleContainerBackground, int index,
+      Color titleContainerTheme, Flashcards flashcard, BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       height: 50,
@@ -162,17 +164,48 @@ class FlashcardScreen extends ConsumerWidget {
             color: titleContainerTheme,
           ),
           PopupMenuButton(
+              onSelected: (value) {
+                if (value == 'delete') {
+                  showDialogDeleteCard(context, flashcard);
+                } else if (value == 'edit') {
+                  showDialogUpdateSet(context, flashcard);
+                } else {
+                  return;
+                }
+              },
               itemBuilder: (context) => const [
                     PopupMenuItem(
-                        child: DisplayText(
-                            text: "Di chuyển", color: Colors.black)),
-                    PopupMenuItem(
+                        value: 'edit',
                         child: DisplayText(text: "Sửa", color: Colors.black)),
                     PopupMenuItem(
+                        value: 'delete',
                         child: DisplayText(text: "Xóa", color: Colors.black)),
+                    PopupMenuItem(
+                        value: 'move',
+                        child: DisplayText(
+                            text: "Di chuyển", color: Colors.black)),
                   ])
         ],
       ),
     );
+  }
+
+  Future<dynamic> showDialogDeleteCard(
+      BuildContext context, Flashcards flashcard) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return DialogDeleteFlashcard(flashcard: flashcard);
+      },
+    );
+  }
+
+  Future<dynamic> showDialogUpdateSet(
+      BuildContext context, Flashcards flashcard) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return DialogCreateCard(setId: setId!, flashcard: flashcard);
+        });
   }
 }

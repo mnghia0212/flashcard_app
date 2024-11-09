@@ -20,13 +20,6 @@ class FlashcardsDatasource {
       await newFlashcardDoc
           .set(flashcard.copyWith(flashcardId: newFlashcardId).toMap());
 
-      final newFlashcardSetDetail =
-          FirebaseFirestore.instance.collection('flashcardSetDetails').doc();
-      await newFlashcardSetDetail.set({
-        'flashcardSetId': setId,
-        'flashcardId': newFlashcardId,
-      });
-
       log("Flashcard created and linked to set successfully");
     } catch (e) {
       log("Error creating flashcard in set: $e");
@@ -48,16 +41,7 @@ class FlashcardsDatasource {
   Future<void> deleteCard(String flashcardId) async {
     try {
       await firestore.collection('flashcards').doc(flashcardId).delete();
-
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance  
-        .collection("flashcardSetDetails")  
-        .where('flashcardId', isEqualTo: flashcardId)  
-        .get();  
-
-      for (QueryDocumentSnapshot doc in querySnapshot.docs) {  
-        await firestore.collection('flashcardSetDetails').doc(doc.id).delete();  
-      }  
-
+      
       log("Success deleting flashcard set");
     } catch (e) {
       log("Error deleting flashcard set: $e");

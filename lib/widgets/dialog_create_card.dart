@@ -15,7 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DialogCreateCard extends ConsumerStatefulWidget {
-  final String? setId;
+  final String setId;
   final Flashcards? flashcard;
   const DialogCreateCard({super.key, required this.setId, this.flashcard});
 
@@ -66,7 +66,7 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
             context: context, text: "Hủy bỏ", onPressed: () => context.pop()),
         textButton(
           onPressed: () {
-            createCard(widget.setId);
+            isEditing ? updateCard() : createCard(widget.setId);
           },
           context: context,
           text: isEditing ? "Lưu" : "Tạo",
@@ -76,6 +76,87 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
       contentPadding: const EdgeInsets.all(15),
       content: _contentDialog(size, colors),
     );
+  }
+
+  void updateCard() async {
+    final answer = backContentController.text;
+    final question = frontContentController.text;
+
+    if (answer.isNotEmpty && question.isNotEmpty) {
+      final updatedFlashcard = widget.flashcard!.copyWith(
+          frontContent: question,
+          backContent: answer,
+          audioPath: audioUrl,
+          videoPath: videoUrl,
+          updatedAt: DateTime.now().toString());
+
+      try {
+        await ref
+            .read(flashcardsProvider.notifier)
+            .updateCard(updatedFlashcard);
+
+        if (!mounted) {
+          return;
+        }
+
+        context.pop();
+        AppAlerts.showFlushBar(
+            context, "Tạo thẻ thành công", AlertType.success);
+      } catch (e) {
+        debugPrint("Error creating flashcard: $e");
+        AppAlerts.showFlushBar(context, "Lỗi khi tạo thẻ: $e", AlertType.error);
+      }
+    } else {
+      AppAlerts.showFlushBar(
+          context, "Thẻ phải có đủ mặt trước và sau", AlertType.error);
+    }
+  }
+
+  void createCard(String setId) async {
+    final answer = backContentController.text;
+    final question = frontContentController.text;
+    final userId = supabase.auth.currentUser?.id;
+
+    if (userId == null) {
+      SessionService().checkSession(context);
+      return;
+    }
+
+    if (answer.isNotEmpty && question.isNotEmpty) {
+      final newCardDoc =
+          FirebaseFirestore.instance.collection("flashcards").doc();
+
+      final flashcardId = newCardDoc.id;
+      final flashcard = Flashcards(
+        flashcardId: flashcardId,
+        setId: setId,
+        userId: userId,
+        frontContent: question,
+        backContent: answer,
+        audioPath: audioUrl,
+        videoPath: videoUrl,
+        createdAt: DateTime.now().toString(),
+      );
+
+      try {
+        await ref
+            .read(flashcardsProvider.notifier)
+            .createCardInSet(flashcard, setId);
+
+        if (!mounted) {
+          return;
+        }
+        context.pop();
+        AppAlerts.showFlushBar(
+            context, "Tạo thẻ thành công", AlertType.success);
+      } catch (e) {
+        debugPrint("Error creating flashcard: $e");
+        AppAlerts.showFlushBar(context, "Lỗi khi tạo thẻ: $e", AlertType.error);
+      }
+    } else {
+      AppAlerts.showFlushBar(
+          context, "Thẻ phải có đủ mặt trước và sau", AlertType.error);
+    }
   }
 
   SizedBox _contentDialog(Size size, ColorScheme colors) {
@@ -134,58 +215,6 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
           padding: const EdgeInsets.symmetric(vertical: 15)),
       child: DisplayText(text: text),
     );
-  }
-
-  void createCard(String? setId) async {
-    final answer = backContentController.text;
-    final question = frontContentController.text;
-    final userId = supabase.auth.currentUser?.id;
-
-    if (userId == null) {
-      SessionService().checkSession(context);
-      return;
-    }
-
-    if (setId == null) {
-      AppAlerts.showFlushBar(context,
-          "Lỗi: Không thể tạo thẻ vì thiếu thông tin bộ thẻ", AlertType.error);
-      return;
-    }
-
-    if (answer.isNotEmpty && question.isNotEmpty) {
-      final newCardDoc =
-          FirebaseFirestore.instance.collection("flashcards").doc();
-
-      final flashcardId = newCardDoc.id;
-      final flashcard = Flashcards(
-        flashcardId: flashcardId,
-        userId: userId,
-        frontContent: question,
-        backContent: answer,
-        audioPath: audioUrl,
-        videoPath: videoUrl,
-        createdAt: DateTime.now().toString(),
-      );
-
-      try {
-        await ref
-            .read(flashcardsProvider.notifier)
-            .createCardInSet(flashcard, setId);
-
-        if (!mounted) {
-          return;
-        }
-        context.pop();
-        AppAlerts.showFlushBar(
-            context, "Tạo thẻ thành công", AlertType.success);
-      } catch (e) {
-        debugPrint("Error creating flashcard: $e");
-        AppAlerts.showFlushBar(context, "Lỗi khi tạo thẻ: $e", AlertType.error);
-      }
-    } else {
-      AppAlerts.showFlushBar(
-          context, "Thẻ phải có đủ mặt trước và sau", AlertType.error);
-    }
   }
 
   Future<void> pickAudioFile() async {
