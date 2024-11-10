@@ -9,15 +9,20 @@ class RouteLocation {
   static String get home => '/home';
   static String get logIn => '/logIn';
   static String get signUp => '/signUp';
+  static String get profileScreen => '/profileScreen';
   static String get firstLogIn => '/firstLogIn';
   static String get flashcardSet => '/flashcardSet';
   static String get flashcard => '/flashcard/:setId/:setName';
   static String get writeModeStudy => '/writeModeStudy/:setId/:setName';
   static String get flipModeStudy => '/flipModeStudy/:setId/:setName';
   static String get abcdModeStudy => '/abcdModeStudy/:setId/:setName';
-  static String get speedRecallModeStudy => '/speedRecallModeStudy/:setId/:setName';
-  static String get endStudySessionScreen => '/endStudySessionScreen/:rightAnswerCount/:wrongAnswerCount';
+  static String get speedRecallModeStudy =>
+      '/speedRecallModeStudy/:setId/:setName';
+  static String get endStudySessionScreen =>
+      '/endStudySessionScreen/:rightAnswerCount/:wrongAnswerCount';
   static String get testMode => '/testMode';
+  static String get personalInformation => '/personalInformation';
   static String get studyGroupScreen => '/studyGroupScreen/:groupId/:groupName';
-  static String get defaultFlashcardsScreen => '/defaultFlashcardsScreen/:setId/:setName';
+  static String get defaultFlashcardsScreen =>
+      '/defaultFlashcardsScreen/:setId/:setName';
 }

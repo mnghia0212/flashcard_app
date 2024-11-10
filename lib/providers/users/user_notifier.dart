@@ -35,9 +35,16 @@ class UserNotifier extends StateNotifier<UserState> {
     }
   }
 
-  void updateUser(Users user) {
-    state = state.copyWith(user: user);
+  Future<void> updateUser(Users user) async {
+    try {
+      await _repository.updateUser(user);
+      state = state.copyWith(user: user);
+    } catch (e) {
+      debugPrint("Error updating user: $e");
+    }
   }
+
+
 
   void clearUser(WidgetRef ref) {
     state = const UserState.initial();

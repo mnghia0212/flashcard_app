@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/extensions.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
@@ -17,17 +18,19 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colorScheme;
-    final userState = ref.watch(userProvider);
+    final userState = ref.watch(userProvider).user;
 
-    if (userState.user == null) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
+    if (userState == null) {
+      const Center(
+        child: DisplayText(
+          text: "Lỗi khi tải thông tin người dùng",
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
         ),
       );
     }
 
-    final String userName = userState.user!.userName;
+    final String userName = userState!.userName;
 
     return Scaffold(
       body: SafeArea(
@@ -40,7 +43,7 @@ class ProfileScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Gap(10),
-                _buildProfileCard(ref, colors, userName),
+                _buildProfileCard(ref, colors, userName, context, userState),
                 const Gap(15),
                 _buildPreferencesSection(),
                 const Gap(15),
@@ -68,7 +71,7 @@ class ProfileScreen extends ConsumerWidget {
 
   // Phần hiển thị thông tin profile của người dùng
   Widget _buildProfileCard(
-      WidgetRef ref, ColorScheme colors, String? userName) {
+      WidgetRef ref, ColorScheme colors, String? userName, BuildContext context, Users userState) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const DisplayText(
         text: "Hồ sơ cá nhân",
@@ -106,10 +109,13 @@ class ProfileScreen extends ConsumerWidget {
               ],
             ),
             const Spacer(),
-            const Icon(
-              Icons.edit,
-              color: Colors.white,
-            ),
+            IconButton(
+              onPressed: () => context.push('/personalInformation', extra: userState),
+              icon: const Icon(
+                Icons.edit,
+                color: Colors.white,
+              ),
+            )
           ],
         ),
       ),

@@ -13,10 +13,19 @@ class UserRepositoryImpl implements UserRepositories {
     }
   }
 
-   @override
+  @override
   Future<Users?> getUser(String userId) async {
     try {
       return await _datasource.getUser(userId);
+    } catch (e) {
+      throw '$e';
+    }
+  }
+
+  @override
+  Future<void> updateUser(Users user) async {
+    try {
+      await _datasource.updateUser(user);
     } catch (e) {
       throw '$e';
     }

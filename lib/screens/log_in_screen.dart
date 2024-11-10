@@ -136,9 +136,6 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
 
       // Bước 2: Lấy userId từ phiên đăng nhập của Supabase
       final userId = response.user!.id;
-      final email = response.user!.email;
-      NotificationService notificationService = NotificationService();
-      final deviceToken = notificationService.getDeviceToken();
 
       log("userId auth: $userId");
 
@@ -160,14 +157,10 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
             log("username db: $userName");
             log("email db: $email");
 
-            ref.read(userProvider.notifier).updateUser(Users(
-                  userId: userId,
-                  userName: userName,
-                  email: email,
-                  password: "",
-                  deviceToken: await deviceToken
-                ));
+            ref.read(userProvider.notifier).getUser();
+
             ref.read(userIdProvider.notifier).state = userId;
+
             log("login success");
 
             context.go('/bottomNavigator');

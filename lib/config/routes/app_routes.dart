@@ -1,4 +1,5 @@
 import 'package:flashcard_app/config/config.dart';
+import 'package:flashcard_app/data/data.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flashcard_app/screens/screens.dart';
@@ -20,6 +21,11 @@ final appRoutes = [
     parentNavigatorKey: navigationKey,
     builder: (context, state) => const SignUpScreen(),
   ),
+    GoRoute(
+    path: RouteLocation.profileScreen,
+    parentNavigatorKey: navigationKey,
+    builder: (context, state) => const ProfileScreen(),
+  ),
   GoRoute(
     path: RouteLocation.firstLogIn,
     parentNavigatorKey: navigationKey,
@@ -39,6 +45,14 @@ final appRoutes = [
     path: RouteLocation.testMode,
     parentNavigatorKey: navigationKey,
     builder: (context, state) => const TestMode(),
+  ),
+  GoRoute(
+    path: RouteLocation.personalInformation,
+    parentNavigatorKey: navigationKey,
+    builder: (context, state) {
+      Users userState = state.extra as Users;
+      return PersonalInformation(userState: userState);
+    },
   ),
   GoRoute(
     path: RouteLocation.flashcard,
@@ -110,7 +124,10 @@ final appRoutes = [
     builder: (context, state) {
       final groupId = state.pathParameters['groupId'];
       final groupName = state.pathParameters['groupName'];
-      return StudyGroupScreen(groupId: groupId, groupName: groupName,);
+      return StudyGroupScreen(
+        groupId: groupId,
+        groupName: groupName,
+      );
     },
   ),
 ];

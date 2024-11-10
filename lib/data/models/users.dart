@@ -78,8 +78,6 @@ class Users extends Equatable {
     );
   }
 
-  String toJson() => json.encode(toMap());
-
   factory Users.fromJson(String source) =>
       Users.fromMap(json.decode(source) as Map<String, dynamic>);
 }
