@@ -10,16 +10,20 @@ import 'package:go_router/go_router.dart';
 class DisplayListOfFlashcardSets extends ConsumerWidget {
   const DisplayListOfFlashcardSets({super.key});
 
-  @override
+@override
   Widget build(BuildContext context, WidgetRef ref) {
     final flashcardSetsAsync = ref.watch(flashcardSetsStreamProvider);
     final colors = context.colorScheme;
 
     return flashcardSetsAsync.when(
       data: (flashcardSets) => flashcardSets.isEmpty
-          ? const EmptyContainer(
-              emptyType: EmptyType.set,
-            )
+          ? const Column(
+            children: [
+              EmptyContainer(
+                  emptyType: EmptyType.set,
+                ),
+            ],
+          )
           : _listViewCardSets(flashcardSets, ref, colors),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(child: Text('Error: $error')),

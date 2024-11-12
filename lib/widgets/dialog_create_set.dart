@@ -20,13 +20,12 @@ class DialogCreateSet extends ConsumerStatefulWidget {
 
 class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
   final supabase = Supabase.instance.client;
-  bool isLoading = false;
   late TextEditingController setNameController;
   late TextEditingController setDesController;
 
   bool get isEditing => widget.flashcardSet != null;
 
-   @override
+  @override
   void initState() {
     super.initState();
 
@@ -47,6 +46,7 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(isLoadingPageProvider);
     return isLoading
         ? const Center(child: CircularProgressIndicator())
         : AlertDialog(
@@ -101,9 +101,7 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
     }
 
     if (setName.isNotEmpty) {
-      setState(() {
-        isLoading = true;
-      });
+      ref.watch(isLoadingPageProvider.notifier).state = true;
 
       final newSetDoc =
           FirebaseFirestore.instance.collection('flashcardSets').doc();
@@ -126,16 +124,11 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
         if (!mounted) {
           return;
         }
-        setState(() {
-          isLoading = false;
-        });
+        ref.watch(isLoadingPageProvider.notifier).state = false;
         context.pop();
         AppAlerts.showFlushBar(
             context, "Tạo bộ thẻ thành công", AlertType.success);
       }).catchError((error) {
-        setState(() {
-          isLoading = false;
-        });
         if (!mounted) {
           return;
         }
@@ -151,9 +144,7 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
     final setDes = setDesController.text.trim();
 
     if (setName.isNotEmpty && widget.flashcardSet != null) {
-      setState(() {
-        isLoading = true;
-      });
+      ref.watch(isLoadingPageProvider.notifier).state = true;
 
       final updatedFlashcardSet = widget.flashcardSet!.copyWith(
         title: setName,
@@ -168,16 +159,11 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
         if (!mounted) {
           return;
         }
-        setState(() {
-          isLoading = false;
-        });
+       ref.watch(isLoadingPageProvider.notifier).state = false;
         context.pop();
         AppAlerts.showFlushBar(
             context, "Sửa bộ thẻ thành công", AlertType.success);
       }).catchError((error) {
-        setState(() {
-          isLoading = false;
-        });
         if (!mounted) {
           return;
         }
@@ -187,7 +173,7 @@ class _DialogCreateSetState extends ConsumerState<DialogCreateSet> {
       AppAlerts.showFlushBar(context, "Bộ thẻ phải có tên", AlertType.error);
     }
   }
-  
+
   TextButton textButton(
       {required BuildContext context,
       required String text,

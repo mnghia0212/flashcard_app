@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
@@ -28,7 +29,10 @@ class _DialogCreateGroupState extends ConsumerState<DialogCreateGroup> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    final isLoading = ref.watch(isLoadingPageProvider);
+    return isLoading
+    ? const Center(child: CircularProgressIndicator())
+    : AlertDialog(
       actions: [
         textButton(
             context: context,
@@ -69,6 +73,8 @@ class _DialogCreateGroupState extends ConsumerState<DialogCreateGroup> {
     }
 
     if (groupName.isNotEmpty) {
+      ref.read(isLoadingPageProvider.notifier).state = true;
+
       final newGroupDoc = FirebaseFirestore.instance.collection('groups').doc();
       final newGroupId = newGroupDoc.id;
 
@@ -82,6 +88,7 @@ class _DialogCreateGroupState extends ConsumerState<DialogCreateGroup> {
           .read(groupProvider.notifier)
           .createGroup(group, userId, userName)
           .then((value) {
+        ref.read(isLoadingPageProvider.notifier).state = false;
         if (!mounted) {
           return;
         }

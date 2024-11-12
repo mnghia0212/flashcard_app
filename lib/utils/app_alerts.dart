@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:another_flushbar/flushbar.dart';
-import 'package:flashcard_app/utils/extensions.dart';
+import 'package:flashcard_app/providers/providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum AlertType { success, warning, error, info }
 
@@ -9,7 +12,6 @@ class AppAlerts {
     Color backgroundColor;
     IconData icon;
     String alertTitle;
-    final colors = context.colorScheme;
 
     switch (type) {
       case AlertType.success:
@@ -58,5 +60,22 @@ class AppAlerts {
         BoxShadow(color: Colors.grey, offset: Offset(0.0, 2.0), blurRadius: 3.0)
       ],
     ).show(context);
+
+    log("sent message ");
+  }
+
+  static void sendFlushbarMessage(WidgetRef ref, BuildContext context) {
+    final message = ref.watch(flushbarMessageProvider);
+
+    if (message != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        AppAlerts.showFlushBar(
+          context,
+          message,
+          AlertType.success,
+        );
+        ref.read(flushbarMessageProvider.notifier).state = null;
+      });
+    }
   }
 }

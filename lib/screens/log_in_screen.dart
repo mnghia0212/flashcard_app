@@ -2,9 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_app/auth/auth.dart';
-import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
-import 'package:flashcard_app/services/services.dart';
 import 'package:flashcard_app/utils/utils.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/gestures.dart';
@@ -37,95 +35,100 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
+    final isLoading = ref.watch(isLoadingPageProvider);
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Gap(30),
-
-            //Heading login page
-            const DisplayHeading(text: "Chào mừng bạn trở lại !"),
-            const Gap(30),
-
-            // Email field
-            CommonTextFormField(
-              labelText: "Địa chỉ Email",
-              icon: const Icon(Icons.email_outlined),
-              controller: emailController,
-              type: TextInputType.emailAddress,
-            ),
-            const Gap(20),
-
-            // Password field
-            CommonTextFormField(
-              labelText: "Mật khẩu",
-              icon: const Icon(Icons.lock_outlined),
-              controller: passwordController,
-              isPassword: true,
-            ),
-
-            const Gap(10),
-
-            RichText(
-                text: TextSpan(style: const TextStyle(fontSize: 17), children: [
-              const TextSpan(
-                  text: "Quên mật khẩu ?",
-                  style: TextStyle(color: Colors.black)),
-              TextSpan(
-                  text: "Bấm vào đây",
-                  style: TextStyle(color: colorScheme.primary))
-            ])),
-
-            const Gap(20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: colorScheme.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.all(16),
-              ),
-              onPressed: () {
-                login();
-              },
-              child: const DisplayText(
-                text: "Đăng nhập",
-              ),
-            ),
-
-            const Gap(390),
-            RichText(
-              textAlign: TextAlign.left,
-              text: TextSpan(
-                style: const TextStyle(fontSize: 17),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const TextSpan(
-                    text: 'Bạn chưa có Tài khoản ? ',
-                    style: TextStyle(color: Colors.black),
+                  const Gap(30),
+
+                  //Heading login page
+                  const DisplayHeading(text: "Chào mừng bạn trở lại !"),
+                  const Gap(30),
+
+                  // Email field
+                  CommonTextFormField(
+                    labelText: "Địa chỉ Email",
+                    icon: const Icon(Icons.email_outlined),
+                    controller: emailController,
+                    type: TextInputType.emailAddress,
                   ),
-                  TextSpan(
-                      text: 'Đăng ký',
-                      style: const TextStyle(
-                        color: Colors.blue,
+                  const Gap(20),
+
+                  // Password field
+                  CommonTextFormField(
+                    labelText: "Mật khẩu",
+                    icon: const Icon(Icons.lock_outlined),
+                    controller: passwordController,
+                    isPassword: true,
+                  ),
+
+                  const Gap(10),
+
+                  RichText(
+                      text: TextSpan(
+                          style: const TextStyle(fontSize: 17),
+                          children: [
+                        const TextSpan(
+                            text: "Quên mật khẩu? ",
+                            style: TextStyle(color: Colors.black)),
+                        TextSpan(
+                            text: "Bấm vào đây",
+                            style: TextStyle(color: colorScheme.primary))
+                      ])),
+
+                  const Gap(20),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          context.push("/signUp");
-                        }),
+                      padding: const EdgeInsets.all(16),
+                    ),
+                    onPressed: () {
+                      login();
+                    },
+                    child: const DisplayText(
+                      text: "Đăng nhập",
+                    ),
+                  ),
+
+                  const Gap(390),
+                  RichText(
+                    textAlign: TextAlign.left,
+                    text: TextSpan(
+                      style: const TextStyle(fontSize: 17),
+                      children: [
+                        const TextSpan(
+                          text: 'Bạn chưa có Tài khoản ? ',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        TextSpan(
+                            text: 'Đăng ký',
+                            style: const TextStyle(
+                              color: Colors.blue,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                context.push("/signUp");
+                              }),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
   Future<void> login() async {
     try {
-      // Bước 1: Đăng nhập người dùng qua Supabase
+      ref.read(isLoadingPageProvider.notifier).state = true;
       final response = await supabase.auth.signInWithPassword(
           email: emailController.text, password: passwordController.text);
 
@@ -134,12 +137,10 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
         return;
       }
 
-      // Bước 2: Lấy userId từ phiên đăng nhập của Supabase
       final userId = response.user!.id;
 
       log("userId auth: $userId");
 
-      // Bước 3: Truy vấn Firestore để lấy thông tin người dùng
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
@@ -161,7 +162,16 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
 
             ref.read(userIdProvider.notifier).state = userId;
 
+            ref.read(isLoadingPageProvider.notifier).state = false;
+
+            ref.read(flushbarMessageProvider.notifier).state =
+                "Đăng nhập thành công";
+
             log("login success");
+
+            if (!mounted) {
+              return;
+            }
 
             context.go('/bottomNavigator');
           } else {

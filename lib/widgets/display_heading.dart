@@ -6,7 +6,7 @@ class DisplayHeading extends StatelessWidget {
       {super.key,
       required this.text,
       this.fontWeight = FontWeight.bold,
-      this.fontSize = 24,
+      this.fontSize = 27,
       this.color = Colors.black, 
       this.textAlign = TextAlign.left
     });

@@ -1,10 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:app_settings/app_settings.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flashcard_app/screens/screens.dart';
-import 'package:flashcard_app/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';

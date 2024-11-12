@@ -14,6 +14,7 @@ class UserNotifier extends StateNotifier<UserState> {
   Future<void> createUser(Users user) async {
     try {
       await _repository.createUser(user);
+      getUser();
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -43,8 +44,6 @@ class UserNotifier extends StateNotifier<UserState> {
       debugPrint("Error updating user: $e");
     }
   }
-
-
 
   void clearUser(WidgetRef ref) {
     state = const UserState.initial();

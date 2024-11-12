@@ -101,11 +101,13 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   }
 
   Flashcards? _selectNextFlashcard(Flashcards flashcard) {
-    if (initialBox.isNotEmpty)
+    if (initialBox.isNotEmpty) {
       return initialBox[Random().nextInt(initialBox.length)];
+    }
     if (wrongBox.isNotEmpty) return _getRandomFromBox(wrongBox, flashcard);
-    if (firstRightBox.isNotEmpty)
+    if (firstRightBox.isNotEmpty) {
       return _getRandomFromBox(firstRightBox, flashcard);
+    }
     return null;
   }
 

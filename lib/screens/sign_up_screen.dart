@@ -38,11 +38,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
+    final isLoading = ref.watch(isLoadingPageProvider);
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: _formSignUp(context, colorScheme),
-      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: _formSignUp(context, colorScheme),
+            ),
     );
   }
 
@@ -117,17 +120,20 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   Future<void> signUp() async {
     try {
+      ref.read(isLoadingPageProvider.notifier).state = true;
       //sign up auth
       final response = await supabase.auth.signUp(
         email: emailController.text,
         password: passwordController.text,
       );
+      
       if (response.user == null) {
         log('Đăng ký không thành công');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text("Đăng ký không thành công, vui lòng thử lại.")),
-        );
+        if (!mounted) {
+          return;
+        }
+        AppAlerts.showFlushBar(context,
+            "Đăng ký không thành công, vui lòng thử lại", AlertType.info);
         return;
       }
 
@@ -136,27 +142,32 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       NotificationService notificationService = NotificationService();
       final deviceToken = notificationService.getDeviceToken();
       final Users user = Users(
-        userId: userId,
-        userName: userNameController.text,
-        email: emailController.text,
-        password: passwordController.text,
-        deviceToken: await deviceToken
-      );
-      await ref.read(userProvider.notifier).createUser(user);
-      ref.read(userIdProvider.notifier).state = userId;
-
-      log("sign up success");
-
-      //navigate home screen
-      context.go('/bottomNavigator');
+          userId: userId,
+          userName: userNameController.text,
+          email: emailController.text,
+          password: passwordController.text,
+          deviceToken: await deviceToken);
+      await ref.read(userProvider.notifier).createUser(user).then((value) {
+        ref.read(userIdProvider.notifier).state = userId;
+        ref.read(flushbarMessageProvider.notifier).state = "Đăng ký thành công";
+        ref.read(isLoadingPageProvider.notifier).state = false;
+        log("sign up success");
+       
+        if (!mounted) {
+          return;
+        }
+        //navigate home screen
+        context.go('/bottomNavigator');
+      });
     }
 
     //catch error
     catch (e) {
       log("Đăng ký thất bại: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Đăng ký thất bại: $e")),
-      );
+      if (!mounted) {
+        return;
+      }
+      AppAlerts.showFlushBar(context, "Đăng ký không thất bại", AlertType.info);
     }
   }
 

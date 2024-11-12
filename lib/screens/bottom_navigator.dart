@@ -15,32 +15,12 @@ class BottomNavigator extends ConsumerWidget {
     final currentIndex = ref.watch(navigationProvider);
     final colorScheme = context.colorScheme;
 
-    final GetServerKey getServerKey = GetServerKey();
     NotificationService notificationService = NotificationService();
-
-    Future<void> getServiceToken() async {
-      String serverToken = await getServerKey.getServerKeyToken();
-      log("server token => $serverToken");
-    }
-
-    //notificationService.requestNotificationPermission();
-    //notificationService.getDeviceToken();
     notificationService.firebaseInit(context);
     notificationService.setupInteractMessage(context);
-    //getServiceToken();
+
 
     return Scaffold(
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      //   floatingActionButton: ElevatedButton(
-      //       onPressed: () async {
-      //         await SendNotificationService.sendNotificationUsingApi(
-      //             token:
-      //                 "dDJb6r9xSfCv9hFj0ytpEQ:APA91bGoZrjUG4ltj6cP8j_QfqwMxUCeByDYWouVIZsniVc-ddAQV6MF2ok6nePnPZ6D4Kdncz3P4f_BKNmGYD4f0y--EXzkOqGwjli1xLcpdiWhemdrDbU",
-      //             title: "notification title",
-      //             body: "notification body",
-      //             data: {"data": "profile"});
-      //       },
-      //       child: const Icon(Icons.add)),
         bottomNavigationBar: SizedBox(
           height: 70,
           child: BottomNavigationBar(

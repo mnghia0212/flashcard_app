@@ -25,7 +25,6 @@ class DialogCreateCard extends ConsumerStatefulWidget {
 }
 
 class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
-  final isLoading = false;
   final supabase = Supabase.instance.client;
   late TextEditingController frontContentController;
   late TextEditingController backContentController;
@@ -36,6 +35,11 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
 
   @override
   void initState() {
+    getCardValue();
+    super.initState();
+  }
+
+  void getCardValue() {
     frontContentController = TextEditingController(
         text: isEditing ? widget.flashcard!.frontContent : " ");
 
@@ -45,8 +49,6 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
     audioUrl = isEditing ? widget.flashcard!.audioPath : null;
 
     videoUrl = isEditing ? widget.flashcard!.videoPath : null;
-
-    super.initState();
   }
 
   @override
@@ -58,24 +60,29 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(isLoadingPageProvider);
     final colors = context.colorScheme;
     final size = context.deviceSize;
-    return AlertDialog(
-      actions: [
-        textButton(
-            context: context, text: "Hủy bỏ", onPressed: () => context.pop()),
-        textButton(
-          onPressed: () {
-            isEditing ? updateCard() : createCard(widget.setId);
-          },
-          context: context,
-          text: isEditing ? "Lưu" : "Tạo",
-        ),
-      ],
-      title: rowTitleDialogCreateSet(context),
-      contentPadding: const EdgeInsets.all(15),
-      content: _contentDialog(size, colors),
-    );
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : AlertDialog(
+            actions: [
+              textButton(
+                  context: context,
+                  text: "Hủy bỏ",
+                  onPressed: () => context.pop()),
+              textButton(
+                onPressed: () {
+                  isEditing ? updateCard() : createCard(widget.setId);
+                },
+                context: context,
+                text: isEditing ? "Lưu" : "Tạo",
+              ),
+            ],
+            title: rowTitleDialogCreateSet(context),
+            contentPadding: const EdgeInsets.all(15),
+            content: _contentDialog(size, colors),
+          );
   }
 
   void updateCard() async {
@@ -83,6 +90,7 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
     final question = frontContentController.text;
 
     if (answer.isNotEmpty && question.isNotEmpty) {
+      ref.read(isLoadingPageProvider.notifier).state = true;
       final updatedFlashcard = widget.flashcard!.copyWith(
           frontContent: question,
           backContent: answer,
@@ -93,18 +101,21 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
       try {
         await ref
             .read(flashcardsProvider.notifier)
-            .updateCard(updatedFlashcard);
+            .updateCard(updatedFlashcard)
+            .then((value) {
+          ref.read(isLoadingPageProvider.notifier).state = false;
 
-        if (!mounted) {
-          return;
-        }
+          if (!mounted) {
+            return;
+          }
 
-        context.pop();
-        AppAlerts.showFlushBar(
-            context, "Tạo thẻ thành công", AlertType.success);
+          context.pop();
+          AppAlerts.showFlushBar(
+              context, "Sửa thẻ thành công", AlertType.success);
+        });
       } catch (e) {
         debugPrint("Error creating flashcard: $e");
-        AppAlerts.showFlushBar(context, "Lỗi khi tạo thẻ: $e", AlertType.error);
+        AppAlerts.showFlushBar(context, "Lỗi khi sửa thẻ: $e", AlertType.error);
       }
     } else {
       AppAlerts.showFlushBar(
@@ -123,6 +134,7 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
     }
 
     if (answer.isNotEmpty && question.isNotEmpty) {
+      ref.read(isLoadingPageProvider.notifier).state = true;
       final newCardDoc =
           FirebaseFirestore.instance.collection("flashcards").doc();
 
@@ -141,14 +153,19 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
       try {
         await ref
             .read(flashcardsProvider.notifier)
-            .createCardInSet(flashcard, setId);
+            .createCardInSet(flashcard, setId)
+            .then((value) {
+          ref.read(isLoadingPageProvider.notifier).state = false;
 
-        if (!mounted) {
-          return;
-        }
-        context.pop();
-        AppAlerts.showFlushBar(
-            context, "Tạo thẻ thành công", AlertType.success);
+          if (!mounted) {
+            return;
+          }
+
+          context.pop();
+
+          AppAlerts.showFlushBar(
+              context, "Tạo thẻ thành công", AlertType.success);
+        });
       } catch (e) {
         debugPrint("Error creating flashcard: $e");
         AppAlerts.showFlushBar(context, "Lỗi khi tạo thẻ: $e", AlertType.error);

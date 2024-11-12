@@ -18,3 +18,4 @@ export 'discuss_tab.dart';
 export 'common_app_bar.dart';
 export 'study_group_settings.dart';
 export 'dialog_delete_flashcard.dart';
+export 'display_list_of_flashcards.dart';

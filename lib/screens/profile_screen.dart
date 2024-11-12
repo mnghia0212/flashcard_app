@@ -2,15 +2,13 @@ import 'dart:developer';
 
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
-import 'package:flashcard_app/utils/extensions.dart';
+import 'package:flashcard_app/utils/utils.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-final supabase = Supabase.instance.client;
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -19,50 +17,63 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colorScheme;
     final userState = ref.watch(userProvider).user;
-
-    if (userState == null) {
-      const Center(
-        child: DisplayText(
-          text: "Lỗi khi tải thông tin người dùng",
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
-      );
-    }
-
-    final String userName = userState!.userName;
+    final isLoading = ref.watch(isLoadingPageProvider);
 
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
-          physics: const BouncingScrollPhysics(),
-          child: SizedBox(
-            height: 650,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Gap(10),
-                _buildProfileCard(ref, colors, userName, context, userState),
-                const Gap(15),
-                _buildPreferencesSection(),
-                const Gap(15),
-                _buildMoreSection(),
-                const Spacer(),
-                _buildLogOutButton(context, ref, colors),
-              ],
-            ),
-          ),
-        ),
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                padding: const EdgeInsets.all(20.0),
+                physics: const BouncingScrollPhysics(),
+                child: SizedBox(
+                  height: 650,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Gap(10),
+                      _checkUserState(ref, colors, context, userState),
+                      const Gap(15),
+                      _buildPreferencesSection(),
+                      const Gap(15),
+                      _buildMoreSection(),
+                      const Spacer(),
+                      _buildLogOutButton(context, ref, colors),
+                    ],
+                  ),
+                ),
+              ),
       ),
     );
   }
 
+  Widget _checkUserState(WidgetRef ref, ColorScheme colors,
+      BuildContext context, Users? userState) {
+    if (userState != null) {
+      return _buildProfileCard(ref, colors, context, userState);
+    } else {
+      return Container();
+    }
+  }
+
   Future<void> signOut(WidgetRef ref, BuildContext context) async {
+    final supabase = Supabase.instance.client;
     try {
-      await supabase.auth.signOut();
-      ref.read(userProvider.notifier).clearUser(ref);
-      context.go('/firstLogin');
+      ref.read(isLoadingPageProvider.notifier).state = true;
+      await supabase.auth.signOut().then((value) {
+        ref.read(isLoadingPageProvider.notifier).state = false;
+
+        if (!context.mounted) {
+          return;
+        }
+        ref.read(userProvider.notifier).clearUser(ref);
+        ref.read(navigationProvider.notifier).state = 0;
+        ref.read(flushbarMessageProvider.notifier).state =
+            "Đăng xuất thành công";
+
+        context.go('/firstLogin');
+      });
+
       log("success sign out");
     } catch (e) {
       log("error sign out: $e");
@@ -70,8 +81,10 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   // Phần hiển thị thông tin profile của người dùng
-  Widget _buildProfileCard(
-      WidgetRef ref, ColorScheme colors, String? userName, BuildContext context, Users userState) {
+  Widget _buildProfileCard(WidgetRef ref, ColorScheme colors,
+      BuildContext context, Users userState) {
+    final userName = userState.userName;
+    final email = userState.email;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const DisplayText(
         text: "Hồ sơ cá nhân",
@@ -97,20 +110,20 @@ class ProfileScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DisplayText(
-                  text: userName ?? "Error username",
+                  text: userName,
                   fontWeight: FontWeight.bold,
                 ),
                 const Gap(5),
                 DisplayText(
-                  text: (supabase.auth.currentUser!.email) ??
-                      "Error when loading email",
+                  text: email,
                   fontSize: 14,
                 )
               ],
             ),
             const Spacer(),
             IconButton(
-              onPressed: () => context.push('/personalInformation', extra: userState),
+              onPressed: () =>
+                  context.push('/personalInformation', extra: userState),
               icon: const Icon(
                 Icons.edit,
                 color: Colors.white,
@@ -242,7 +255,7 @@ class ProfileScreen extends ConsumerWidget {
   Widget _buildLogOutButton(
       BuildContext context, WidgetRef ref, ColorScheme colors) {
     return OutlinedButton.icon(
-      onPressed: () async {
+      onPressed: () {
         signOut(ref, context);
       },
       icon: Icon(

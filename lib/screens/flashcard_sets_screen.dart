@@ -22,7 +22,6 @@ class FlashcardSetsScreen extends StatelessWidget {
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
-                const Gap(10),
                 rowTextFieldMenuDropDown(dropdownItems, selectedItem),
                 const Gap(15),
                 const Expanded(child: DisplayListOfFlashcardSets()),
