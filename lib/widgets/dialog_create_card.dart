@@ -86,8 +86,8 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
   }
 
   void updateCard() async {
-    final answer = backContentController.text;
-    final question = frontContentController.text;
+    final answer = backContentController.text.trim();
+    final question = frontContentController.text.trim();
 
     if (answer.isNotEmpty && question.isNotEmpty) {
       ref.read(isLoadingPageProvider.notifier).state = true;
@@ -115,6 +115,9 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
         });
       } catch (e) {
         debugPrint("Error creating flashcard: $e");
+        if (!mounted) {
+          return;
+        }
         AppAlerts.showFlushBar(context, "Lỗi khi sửa thẻ: $e", AlertType.error);
       }
     } else {
@@ -124,8 +127,8 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
   }
 
   void createCard(String setId) async {
-    final answer = backContentController.text;
-    final question = frontContentController.text;
+    final answer = backContentController.text.trim();
+    final question = frontContentController.text.trim();
     final userId = supabase.auth.currentUser?.id;
 
     if (userId == null) {
@@ -168,6 +171,9 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
         });
       } catch (e) {
         debugPrint("Error creating flashcard: $e");
+        if (!mounted) {
+          return;
+        }
         AppAlerts.showFlushBar(context, "Lỗi khi tạo thẻ: $e", AlertType.error);
       }
     } else {

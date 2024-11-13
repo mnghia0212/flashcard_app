@@ -8,13 +8,15 @@ class DisplayText extends StatelessWidget {
       this.fontWeight = FontWeight.normal,
       this.fontSize = 17,
       this.color = Colors.white,
-      this.textAlign = TextAlign.left
+      this.textAlign = TextAlign.left,
+      this.maxLines = 1,
     });
   final String text;
   final FontWeight? fontWeight;
   final double? fontSize;
   final Color? color;
   final TextAlign? textAlign;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +24,9 @@ class DisplayText extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
-      style: textTheme.bodyMedium?.copyWith(
-        fontWeight: fontWeight,
-        fontSize: fontSize,
-        color: color
-      ),
-      maxLines: 5,
+      style: textTheme.bodyMedium
+          ?.copyWith(fontWeight: fontWeight, fontSize: fontSize, color: color),
+      maxLines: maxLines,
       overflow: TextOverflow.ellipsis,
     );
   }

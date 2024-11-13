@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/screens/screens.dart';

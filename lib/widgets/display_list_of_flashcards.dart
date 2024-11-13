@@ -4,25 +4,55 @@ import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:video_player/video_player.dart';
 
-class DisplayListOfFlashcards extends StatelessWidget {
-  final List<Flashcards> flashcards;
+class DisplayListOfFlashcards extends StatefulWidget {
   final String setId;
-  const DisplayListOfFlashcards({super.key, required this.flashcards, required this.setId});
+  final List<Flashcards> flashcards;
+  const DisplayListOfFlashcards(
+      {super.key, required this.setId, required this.flashcards});
+
+  @override
+  State<DisplayListOfFlashcards> createState() =>
+      _DisplayListOfFlashcardsState();
+}
+
+class _DisplayListOfFlashcardsState extends State<DisplayListOfFlashcards> {
+  late VideoPlayerController controller;
+
+  @override
+  void initState() {
+    initVideoUrl();
+    super.initState();
+  }
+
+  void initVideoUrl() {
+    final initVideoCard = widget.flashcards
+        .where((flashcard) => flashcard.videoPath != null)
+        .toList();
+
+    for (var i in initVideoCard) {
+      controller = VideoPlayerController.networkUrl(Uri.parse(i.videoPath!))
+        ..initialize().then((_) {
+          setState(() {});
+        });
+      controller.setLooping(true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-      itemCount: flashcards.length,
+      itemCount: widget.flashcards.length,
       itemBuilder: (context, index) {
-        final flashcard = flashcards[index];
+        final flashcard = widget.flashcards[index];
         const titleContainerBackground = Color(0xfff1f1f1);
         const titleContainerTheme = Color(0xff808080);
         final deviceSize = context.deviceSize;
         return Container(
-          height: 450,
+          height: 350,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -44,8 +74,8 @@ class DisplayListOfFlashcards extends StatelessWidget {
   Widget _cardContent(
       Size deviceSize, Flashcards flashcard, BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      height: 400,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      height: 300,
       width: deviceSize.width,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
@@ -56,64 +86,97 @@ class DisplayListOfFlashcards extends StatelessWidget {
             Border.all(width: 1, color: Colors.grey, style: BorderStyle.solid),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          DisplayText(
-            text: flashcard.frontContent,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-            fontSize: 19,
-          ),
-          const Gap(5),
-          DisplayText(
-            text: flashcard.backContent,
-            color: Colors.black,
-          ),
-          const Spacer(),
-          Column(
-            children: [
-              if (flashcard.audioPath != null)
-                _buildAudioPlayer(flashcard.audioPath!, context),
-              const Gap(5),
-              if (flashcard.videoPath != null)
-                _buildVideoPlayer(flashcard.videoPath!)
-            ],
-          )
+          _buildExpandedCardSides(flashcard, context),
+          if (flashcard.videoPath != null) _buildExpandedVideo(),
         ],
       ),
     );
   }
 
-  Widget _buildAudioPlayer(String audioUrl, BuildContext context) {
-    final AudioPlayer audioPlayer = AudioPlayer();
-    final colors = context.colorScheme;
-    return Row(
-      children: [
-        ElevatedButton.icon(
-          label: DisplayText(
-              text: audioPlayer.playerState.playing
-                  ? "Dừng audio"
-                  : "Phát audio"),
-          icon: Icon(
-            audioPlayer.playerState.playing ? Icons.pause : Icons.play_arrow,
-            color: Colors.white,
-          ),
-          onPressed: () async {
-            await audioPlayer.setUrl(audioUrl);
-            audioPlayer.play();
-          },
-          style: ElevatedButton.styleFrom(
-              backgroundColor: colors.primary,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 13, horizontal: 20)),
-        ),
-      ],
+  Widget _buildExpandedVideo() {
+    return Expanded(
+      child: AspectRatio(
+        aspectRatio: controller.value.aspectRatio,
+        child: controller.value.isInitialized
+            ? VideoPlayer(controller)
+            : const Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 
-  Widget _buildVideoPlayer(String videoUrl) {
-    return VideoPlayerWidget(videoUrl: videoUrl);
+  Widget _buildExpandedCardSides(Flashcards flashcard, BuildContext context) {
+    return Expanded(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: DisplayText(
+                text: flashcard.frontContent,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 19,
+                maxLines: 3,
+              ),
+            ),
+            if (flashcard.audioPath != null)
+              _buildAudioPlayer(flashcard.audioPath!, context),
+            if (flashcard.videoPath != null)
+              _buildVideoPlayer(flashcard.videoPath!, context),
+          ],
+        ),
+        const Gap(5),
+        DisplayText(
+          text: flashcard.backContent,
+          color: Colors.black,
+          maxLines: 3,
+        ),
+      ],
+    ));
+  }
+
+  Widget _buildAudioPlayer(String audioUrl, BuildContext context) {
+    final AudioPlayer audioPlayer = AudioPlayer();
+    final colors = context.colorScheme;
+
+    return ElevatedButton(
+      onPressed: () async {
+        await audioPlayer.setUrl(audioUrl);
+        audioPlayer.play();
+      },
+      style: ElevatedButton.styleFrom(
+        shape: const CircleBorder(),
+        backgroundColor: colors.primaryContainer,
+        padding: const EdgeInsets.all(10),
+      ),
+      child: const Icon(
+        Icons.audio_file,
+        color: Colors.black,
+      ),
+    );
+  }
+
+  Widget _buildVideoPlayer(String videoUrl, BuildContext context) {
+    final colors = context.colorScheme;
+    return ElevatedButton(
+      onPressed: () {
+        setState(() {
+          controller.value.isPlaying ? controller.pause() : controller.play();
+        });
+      },
+      style: ElevatedButton.styleFrom(
+        shape: const CircleBorder(),
+        backgroundColor: colors.primaryContainer,
+        padding: const EdgeInsets.all(10),
+      ),
+      child: Icon(
+        controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        color: Colors.black,
+      ),
+    );
   }
 
   Widget _cardTitle(Color titleContainerBackground, int index,
@@ -178,7 +241,7 @@ class DisplayListOfFlashcards extends StatelessWidget {
     return showDialog(
         context: context,
         builder: (context) {
-          return DialogCreateCard(setId: setId, flashcard: flashcard);
+          return DialogCreateCard(setId: widget.setId, flashcard: flashcard);
         });
   }
 }

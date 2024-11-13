@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_app/data/data.dart';
 
 class DefaultSetsDatasource {
-  Future<List<DefaultSets>> fetchDefaultSets() async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  Future<List<DefaultSets>> fetchDefaultSets() async {
     try {
       final QuerySnapshot snapshot =
           await firestore.collection('defaultSets').orderBy("unitNumber").get();
@@ -22,13 +22,21 @@ class DefaultSetsDatasource {
     }
   }
 
-  Future<int> getCardNumber(String setId) async {  
-    try {  
-      List<DefaultSets> defaultSets = await fetchDefaultSets();  
-      return defaultSets.length;  
-    } catch (e) {  
-      log("Error getting flashcard number: $e");  
-      return 0;  
-    }  
-  }  
+  Future<int> getCardNumber(String setId) async {
+    try {
+      final QuerySnapshot snapshot = await firestore
+          .collection('defaultCards')
+          .where('setId', isEqualTo: setId)
+          .get();
+
+      final List<DefaultCards> defaultCardsInSet = snapshot.docs.map((doc) {
+        return DefaultCards.fromMap(doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      return defaultCardsInSet.length;
+    } catch (e) {
+      log("Error getting flashcard number: $e");
+      return 0;
+    }
+  }
 }
