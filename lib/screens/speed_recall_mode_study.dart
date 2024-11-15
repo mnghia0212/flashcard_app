@@ -10,9 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 class SpeedRecallModeStudy extends ConsumerStatefulWidget {
-  final String? setId;
-  final String? setName;
-  const SpeedRecallModeStudy({super.key, required this.setId, required this.setName});
+  final dynamic set;
+  const SpeedRecallModeStudy({super.key, required this.set});
 
   @override
   ConsumerState<SpeedRecallModeStudy> createState() =>
@@ -26,14 +25,15 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
   int answerTime = 3;
   bool isAnswered = false;
   bool isCorrect = false;
-  Flashcards? newFlashcard;
+  StudyCards? newFlashcard;
   String? randomAnswer;
+  late AsyncValue flashcardAsync;
 
   // Card boxes
-  List<Flashcards> initialBox = [];
-  List<Flashcards> wrongBox = [];
-  List<Flashcards> firstRightBox = [];
-  List<Flashcards> secondRightBox = [];
+  List<StudyCards> initialBox = [];
+  List<StudyCards> wrongBox = [];
+  List<StudyCards> firstRightBox = [];
+  List<StudyCards> secondRightBox = [];
 
   @override
   void dispose() {
@@ -44,26 +44,7 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
   @override
   void initState() {
     super.initState();
-    _initializeFlashcardsBox();
     _initializeProgressBar();
-  }
-
-  void _initializeFlashcardsBox() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final flashcardsAsync = ref.read(flashcardStreamProvider(widget.setId!));
-      flashcardsAsync.whenData((flashcards) {
-        if (flashcards.isNotEmpty && initialBox.isEmpty) {
-          setState(() {
-            initialBox = List<Flashcards>.from(flashcards);
-
-            ref.read(displayedFlashcardProvider.notifier).state =
-                initialBox[Random().nextInt(initialBox.length)];
-            randomAnswer = _getRandomAnswer(flashcards);
-            progressBarController.forward();
-          });
-        }
-      });
-    });
   }
 
   void _initializeProgressBar() {
@@ -90,12 +71,12 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
       ..repeat();
   }
 
-  Flashcards? _getNextFlashcard(bool isCorrect, Flashcards flashcard) {
+  StudyCards? _getNextFlashcard(bool isCorrect, StudyCards flashcard) {
     _updateBoxes(isCorrect, flashcard);
     return _selectNextFlashcard(flashcard);
   }
 
-  void _updateBoxes(bool isCorrect, Flashcards flashcard) {
+  void _updateBoxes(bool isCorrect, StudyCards flashcard) {
     if (isCorrect) {
       if (initialBox.remove(flashcard)) {
         firstRightBox.add(flashcard);
@@ -112,16 +93,19 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
       }
     }
     debugPrint(
-        "------------------------------------------------------------------------------------------------");
-    debugPrint("initial: $initialBox");
-    debugPrint("wrong: $wrongBox");
-    debugPrint("first: $firstRightBox");
-    debugPrint("second: $secondRightBox");
+        "-----------------------------------------------------------------------");
     debugPrint(
-        "------------------------------------------------------------------------------------------------");
+        "initialBox: ${initialBox.map((e) => e.backContent).join(' - ')}");
+    debugPrint("wrongBox: ${wrongBox.map((e) => e.backContent).join(' - ')}");
+    debugPrint(
+        "firstRightBox: ${firstRightBox.map((e) => e.backContent).join(' - ')}");
+    debugPrint(
+        "secondRightBox: ${secondRightBox.map((e) => e.backContent).join(' - ')}");
+    debugPrint(
+        "-----------------------------------------------------------------------");
   }
 
-  Flashcards? _selectNextFlashcard(Flashcards flashcard) {
+  StudyCards? _selectNextFlashcard(StudyCards flashcard) {
     if (initialBox.isNotEmpty) {
       return initialBox[Random().nextInt(initialBox.length)];
     }
@@ -134,14 +118,14 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
     return null;
   }
 
-  Flashcards? _getRandomFromBox(List<Flashcards> box, Flashcards currentCard) {
+  StudyCards? _getRandomFromBox(List<StudyCards> box, StudyCards currentCard) {
     if (box.length == 1 && box.first == currentCard) {
       return firstRightBox.isEmpty
           ? box.first
           : firstRightBox[Random().nextInt(firstRightBox.length)];
     }
 
-    Flashcards newCard;
+    StudyCards newCard;
     do {
       newCard = box[Random().nextInt(box.length)];
     } while (newCard == currentCard);
@@ -149,7 +133,7 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
     return newCard;
   }
 
-  String _getRandomAnswer(List<Flashcards> flashcards) {
+  String _getRandomAnswer(List<StudyCards> flashcards) {
     final List<String> answers =
         flashcards.take(flashcards.length).map((fc) => fc.backContent).toList();
     return answers[Random().nextInt(answers.length)];
@@ -157,42 +141,56 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
 
   @override
   Widget build(BuildContext context) {
-    final flashcardsAsync = ref.watch(flashcardStreamProvider(widget.setId!));
     final colors = context.colorScheme;
-    final selectedFlashcard = ref.watch(displayedFlashcardProvider);
+    final setId = widget.set is DefaultSets
+        ? (widget.set as DefaultSets).setId
+        : (widget.set as FlashcardSets).setId;
 
-    ref.listen<AsyncValue<List<Flashcards>>>(
-        flashcardStreamProvider(widget.setId!), (previous, next) {
-      if (next.hasValue && next.value!.isNotEmpty) {
+    final flashcardAsync = widget.set is DefaultSets
+        ? ref.watch(defaultCardsFutureProvider(setId))
+        : ref.watch(flashcardStreamProvider(setId));
+
+    flashcardAsync.whenData((flashcards) {
+      if (initialBox.isEmpty &&
+          firstRightBox.isEmpty &&
+          secondRightBox.isEmpty &&
+          wrongBox.isEmpty) {
         setState(() {
-          initialBox = List<Flashcards>.from(next.value!);
-          ref.read(displayedFlashcardProvider.notifier).state =
-              initialBox[Random().nextInt(initialBox.length)];
+          initialBox = List<StudyCards>.from(flashcards);
 
-          randomAnswer = _getRandomAnswer(next.value!);
+          if (initialBox.isNotEmpty) {
+            ref.read(displayedFlashcardProvider.notifier).state =
+                initialBox[Random().nextInt(initialBox.length)];
+          }
         });
       }
+      randomAnswer ??= _getRandomAnswer(initialBox);
     });
 
-    if (selectedFlashcard == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     return Scaffold(
-      appBar: CommonAppBar(title: "Bộ ôn tập: ${widget.setName}"),
-      body: flashcardsAsync.when(
-        data: (flashcards) => flashcards.isEmpty
-            ? const EmptyContainer(emptyType: EmptyType.card)
-            : _buildCardDisplay(selectedFlashcard, flashcards, context, colors),
+      appBar: const CommonAppBar(title: "Chế độ ghi nhớ nhanh"),
+      body: flashcardAsync.when(
+        data: (flashcards) {
+          if (flashcards.isEmpty) {
+            return const EmptyContainer(emptyType: EmptyType.card);
+          } else {
+            // Không cần setState ở đây, randomAnswer đã được khởi tạo ở trên
+            return _buildCardDisplay(flashcards, context, colors);
+          }
+        },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text('Error: $error')),
       ),
     );
   }
 
-  Widget _buildCardDisplay(Flashcards selectedFlashcard,
-      List<Flashcards> flashcards, BuildContext context, ColorScheme colors) {
+  Widget _buildCardDisplay(
+      List<StudyCards> flashcards, BuildContext context, ColorScheme colors) {
     final size = context.deviceSize;
+    final selectedFlashcard = ref.watch(displayedFlashcardProvider);
+    if (selectedFlashcard == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 350),
@@ -227,10 +225,10 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
     );
   }
 
-  Container _buildCardContainer(List<Flashcards> flashcards,
-      Flashcards selectedFlashcard, ColorScheme colors) {
+  Container _buildCardContainer(List<StudyCards> flashcards,
+      StudyCards selectedFlashcard, ColorScheme colors) {
     return Container(
-      key: ValueKey(selectedFlashcard.flashcardId),
+      key: ValueKey(selectedFlashcard.uniqueKey),
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 50),
       height: 450,
       decoration: BoxDecoration(
@@ -247,8 +245,8 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
     );
   }
 
-  Column _buildCardContent(List<Flashcards> flashcards,
-      Flashcards selectedFlashcard, ColorScheme colors) {
+  Column _buildCardContent(List<StudyCards> flashcards,
+      StudyCards selectedFlashcard, ColorScheme colors) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,7 +274,7 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
     );
   }
 
-  Row _buildAnswerButtons(Flashcards selectedFlashcard) {
+  Row _buildAnswerButtons(StudyCards selectedFlashcard) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -322,8 +320,8 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
     );
   }
 
-  Row _buildActionButtons(ColorScheme colors, Flashcards selectedFlashcard,
-      List<Flashcards> flashcards) {
+  Row _buildActionButtons(ColorScheme colors, StudyCards selectedFlashcard,
+      List<StudyCards> flashcards) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [_buildNextCardButton(colors, flashcards)],
@@ -331,7 +329,7 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
   }
 
   ElevatedButton _buildNextCardButton(
-      ColorScheme colors, List<Flashcards> flashcards) {
+      ColorScheme colors, List<StudyCards> flashcards) {
     return ElevatedButton(
       onPressed: !isAnswered
           ? null

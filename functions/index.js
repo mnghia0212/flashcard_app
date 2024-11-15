@@ -16,12 +16,12 @@ exports.sendDailyNotifications = functions.pubsub
         const userData = doc.data();
         const lastStudyDate = userData.lastStudyDate ?
         new Date(userData.lastStudyDate) : null;
-        // Kiểm tra nếu người dùng chưa học hôm nay
+        // kiểm tra nếu người dùng chưa học hôm nay
         if (lastStudyDate && lastStudyDate.
             toDateString() !== today.toDateString()) {
           const fcmToken = userData.deviceToken;
 
-          // Chỉ gửi thông báo nếu token hợp lệ
+          // kiểm tra device token
           if (fcmToken) {
             const payload = {
               notification: {

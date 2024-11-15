@@ -10,9 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 class AbcdModeStudy extends ConsumerStatefulWidget {
-  final String? setId;
-  final String? setName;
-  const AbcdModeStudy({super.key, required this.setId, required this.setName});
+  final dynamic set;
+  const AbcdModeStudy({super.key, required this.set});
 
   @override
   ConsumerState<AbcdModeStudy> createState() => _AbcdModeStudyState();
@@ -23,58 +22,23 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   bool isCorrect = false;
   String? groupValue;
   List<String>? shuffledAnswers;
-  Flashcards? newFlashcard;
+  StudyCards? newFlashcard;
   final AudioPlayer audioPlayer = AudioPlayer();
+  late AsyncValue flashcardAsync;
 
   // Card boxes
-  List<Flashcards> initialBox = [];
-  List<Flashcards> wrongBox = [];
-  List<Flashcards> firstRightBox = [];
-  List<Flashcards> secondRightBox = [];
+  List<StudyCards> initialBox = [];
+  List<StudyCards> wrongBox = [];
+  List<StudyCards> firstRightBox = [];
+  List<StudyCards> secondRightBox = [];
 
-  @override
-  void dispose() {
-    audioPlayer.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeFlashcardsBox();
-  }
-
-  void _initializeFlashcardsBox() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final flashcardsAsync = ref.read(flashcardStreamProvider(widget.setId!));
-      final selectedFlashcard = ref.watch(displayedFlashcardProvider);
-      flashcardsAsync.whenData((flashcards) {
-        if (flashcards.isNotEmpty && initialBox.isEmpty) {
-          setState(() {
-            initialBox = List<Flashcards>.from(flashcards);
-
-            ref.read(displayedFlashcardProvider.notifier).state =
-                initialBox[Random().nextInt(initialBox.length)];
-
-            List<String> wrongAnswers =
-                _getWrongAnswers(flashcards, selectedFlashcard!);
-            shuffledAnswers =
-                _getShuffledAnswers(selectedFlashcard, wrongAnswers);
-            debugPrint(shuffledAnswers.toString());
-          });
-        }
-      });
-    });
-  }
-
-  Flashcards? _getNextFlashcard(
-      bool isCorrect, Flashcards flashcard, List<Flashcards> flashcards) {
+  StudyCards? _getNextFlashcard(bool isCorrect, StudyCards flashcard) {
     _updateBoxes(isCorrect, flashcard);
 
     return _selectNextFlashcard(flashcard);
   }
 
-  void _updateBoxes(bool isCorrect, Flashcards flashcard) {
+  void _updateBoxes(bool isCorrect, StudyCards flashcard) {
     if (isCorrect) {
       if (initialBox.remove(flashcard)) {
         firstRightBox.add(flashcard);
@@ -91,34 +55,39 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
       }
     }
     debugPrint(
-        "------------------------------------------------------------------------------------------------");
-    debugPrint("initial: $initialBox");
-    debugPrint("wrong: $wrongBox");
-    debugPrint("first: $firstRightBox");
-    debugPrint("second: $secondRightBox");
+        "-----------------------------------------------------------------------");
     debugPrint(
-        "------------------------------------------------------------------------------------------------");
+        "initialBox: ${initialBox.map((e) => e.backContent).join(' - ')}");
+    debugPrint("wrongBox: ${wrongBox.map((e) => e.backContent).join(' - ')}");
+    debugPrint(
+        "firstRightBox: ${firstRightBox.map((e) => e.backContent).join(' - ')}");
+    debugPrint(
+        "secondRightBox: ${secondRightBox.map((e) => e.backContent).join(' - ')}");
+    debugPrint(
+        "-----------------------------------------------------------------------");
   }
 
-  Flashcards? _selectNextFlashcard(Flashcards flashcard) {
+  StudyCards? _selectNextFlashcard(StudyCards flashcard) {
     if (initialBox.isNotEmpty) {
       return initialBox[Random().nextInt(initialBox.length)];
     }
-    if (wrongBox.isNotEmpty) return _getRandomFromBox(wrongBox, flashcard);
+    if (wrongBox.isNotEmpty) {
+      return _getRandomFromBox(wrongBox, flashcard);
+    }
     if (firstRightBox.isNotEmpty) {
       return _getRandomFromBox(firstRightBox, flashcard);
     }
     return null;
   }
 
-  Flashcards? _getRandomFromBox(List<Flashcards> box, Flashcards currentCard) {
+  StudyCards? _getRandomFromBox(List<StudyCards> box, StudyCards currentCard) {
     if (box.length == 1 && box.first == currentCard) {
       return firstRightBox.isEmpty
           ? box.first
           : firstRightBox[Random().nextInt(firstRightBox.length)];
     }
 
-    Flashcards newCard;
+    StudyCards newCard;
     do {
       newCard = box[Random().nextInt(box.length)];
     } while (newCard == currentCard);
@@ -127,9 +96,9 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   }
 
   List<String> _getWrongAnswers(
-      List<Flashcards> allFlashcards, Flashcards selectedFlashcard) {
-    List<Flashcards> wrongCards =
-        allFlashcards.where((fc) => fc != selectedFlashcard).toList();
+      List<StudyCards> allStudyCards, StudyCards selectedFlashcard) {
+    List<StudyCards> wrongCards =
+        allStudyCards.where((fc) => fc != selectedFlashcard).toList();
 
     wrongCards.shuffle();
 
@@ -140,7 +109,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   }
 
   List<String> _getShuffledAnswers(
-      Flashcards selectedFlashcard, List<String> wrongAnswers) {
+      StudyCards selectedFlashcard, List<String> wrongAnswers) {
     List<String> answers = [...wrongAnswers, selectedFlashcard.backContent];
 
     answers.shuffle();
@@ -150,39 +119,58 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
 
   @override
   Widget build(BuildContext context) {
-    final flashcardsAsync = ref.watch(flashcardStreamProvider(widget.setId!));
     final colors = context.colorScheme;
     final selectedFlashcard = ref.watch(displayedFlashcardProvider);
 
-    if (selectedFlashcard == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    final setId = widget.set is DefaultSets
+        ? (widget.set as DefaultSets).setId
+        : (widget.set as FlashcardSets).setId;
 
-    ref.listen<AsyncValue<List<Flashcards>>>(
-        flashcardStreamProvider(widget.setId!), (previous, next) {
-      if (next.hasValue && next.value!.isNotEmpty) {
+    final flashcardAsync = widget.set is DefaultSets
+        ? ref.watch(defaultCardsFutureProvider(setId))
+        : ref.watch(flashcardStreamProvider(setId));
+
+    flashcardAsync.whenData((flashcards) {
+      if (initialBox.isEmpty &&
+          firstRightBox.isEmpty &&
+          secondRightBox.isEmpty &&
+          wrongBox.isEmpty) {
         setState(() {
-          initialBox = List<Flashcards>.from(next.value!);
-          ref.read(displayedFlashcardProvider.notifier).state =
-              initialBox[Random().nextInt(initialBox.length)];
+          initialBox = List<StudyCards>.from(flashcards);
+
+          if (initialBox.isNotEmpty) {
+            ref.read(displayedFlashcardProvider.notifier).state =
+                initialBox[Random().nextInt(initialBox.length)];
+          }
         });
       }
     });
 
+    if (selectedFlashcard != null && shuffledAnswers == null) {
+      setState(() {
+        final wrongAnswers = _getWrongAnswers(initialBox, selectedFlashcard);
+        shuffledAnswers = _getShuffledAnswers(selectedFlashcard, wrongAnswers);
+      });
+    }
+
     return Scaffold(
-      appBar: CommonAppBar(title: "Bộ ôn tập: ${widget.setName}"),
-      body: flashcardsAsync.when(
+      appBar: const CommonAppBar(title: "Ôn tập trắc nghiệm"),
+      body: flashcardAsync.when(
         data: (flashcards) => flashcards.isEmpty
             ? const EmptyContainer(emptyType: EmptyType.card)
-            : _buildCardDisplay(flashcards, selectedFlashcard, context, colors),
+            : _buildCardDisplay(flashcards, context, colors),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text('Error: $error')),
       ),
     );
   }
 
-  Widget _buildCardDisplay(List<Flashcards> flashcards,
-      Flashcards selectedFlashcard, BuildContext context, ColorScheme colors) {
+  Widget _buildCardDisplay(
+      List<StudyCards> flashcards, BuildContext context, ColorScheme colors) {
+    final selectedFlashcard = ref.watch(displayedFlashcardProvider);
+    if (selectedFlashcard == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -202,10 +190,10 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
     );
   }
 
-  Container _buildCardContainer(List<Flashcards> flashcards,
-      Flashcards selectedFlashcard, ColorScheme colors) {
+  Container _buildCardContainer(List<StudyCards> flashcards,
+      StudyCards selectedFlashcard, ColorScheme colors) {
     return Container(
-      key: ValueKey(selectedFlashcard.flashcardId),
+      key: ValueKey(selectedFlashcard.uniqueKey),
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 30),
       height: 530,
       decoration: BoxDecoration(
@@ -222,8 +210,8 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
     );
   }
 
-  Column _buildCardContent(List<Flashcards> flashcards,
-      Flashcards selectedFlashcard, ColorScheme colors) {
+  Column _buildCardContent(List<StudyCards> flashcards,
+      StudyCards selectedFlashcard, ColorScheme colors) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,17 +235,19 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   }
 
   Widget _buildOptionRatio(
-      List<Flashcards> flashcards, Flashcards selectedFlashcard) {
-    if (shuffledAnswers == null) {
+      List<StudyCards> flashcards, StudyCards selectedFlashcard) {
+    if (shuffledAnswers == null || shuffledAnswers!.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
+
     return Column(
       children: List.generate(shuffledAnswers!.length, (index) {
         return Container(
           margin: const EdgeInsets.only(top: 12),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              border: Border.all(width: 1, color: Colors.grey)),
+            borderRadius: BorderRadius.circular(50),
+            border: Border.all(width: 1, color: Colors.grey),
+          ),
           child: ListTile(
             title: Text(shuffledAnswers![index]),
             leading: Radio<String>(
@@ -278,7 +268,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   }
 
   Row _buildActionButtons(
-      ColorScheme colors, Flashcards flashcard, List<Flashcards> flashcards) {
+      ColorScheme colors, StudyCards flashcard, List<StudyCards> flashcards) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -287,7 +277,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
             setState(() {
               AppSounds.playSoundRightWrong(isCorrect, audioPlayer);
               newFlashcard =
-                  _getNextFlashcard(isCorrect, flashcard, flashcards);
+                  _getNextFlashcard(isCorrect, flashcard);
               debugPrint("yes/no: $isCorrect");
               debugPrint("new card: $newFlashcard");
             });
@@ -304,7 +294,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   }
 
   ElevatedButton _buildNextCardButton(
-      ColorScheme colors, Flashcards flashcard, List<Flashcards> flashcards) {
+      ColorScheme colors, StudyCards flashcard, List<StudyCards> flashcards) {
     return ElevatedButton(
       onPressed: !isAnswered
           ? null
@@ -314,7 +304,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
                     newFlashcard;
                 setState(() {
                   isAnswered = false;
-                  Flashcards? newFlashcard = _selectNextFlashcard(flashcard);
+                  StudyCards? newFlashcard = _selectNextFlashcard(flashcard);
                   if (newFlashcard != null) {
                     List<String> wrongAnswers =
                         _getWrongAnswers(flashcards, newFlashcard);

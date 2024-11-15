@@ -2,18 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final flashcardSetsSharedStreamProvider =
-    StreamProvider.family<List<FlashcardSetsShared>, String>((ref, groupId) {
+final groupMembersStreamProvider =
+    StreamProvider.family<List<GroupMembers>, String>((ref, groupId) {
   return FirebaseFirestore.instance
-      .collection('flashcardSetsShared')
+      .collection('groupMembers')
       .where('groupId', isEqualTo: groupId)
-      .orderBy('sharedAt')
+      .orderBy('joinAt', descending: true)
       .snapshots()
       .asyncMap((snapshot) {
     return snapshot.docs.map((doc) {
       final data = doc.data();
 
-      return FlashcardSetsShared.fromMap(data);
+      return GroupMembers.fromMap(data);
     }).toList();
   });
 });

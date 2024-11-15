@@ -3,12 +3,15 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:flashcard_app/data/data.dart';
 
-class Flashcards extends Equatable {
+class Flashcards extends Equatable implements StudyCards {
   final String flashcardId;
   final String userId;
   final String setId;
+  @override
   final String frontContent;
+  @override
   final String backContent;
   final String? audioPath;
   final String? videoPath;
@@ -81,20 +84,27 @@ class Flashcards extends Equatable {
 
   String toJson() => json.encode(toMap());
 
-  factory Flashcards.fromJson(String source) => Flashcards.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Flashcards.fromJson(String source) =>
+      Flashcards.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool get stringify => true;
 
   @override
-  List<Object> get props {
+  List<Object?> get props {
     return [
       flashcardId,
       userId,
       setId,
       frontContent,
       backContent,
+      audioPath,
+      videoPath,
       createdAt,
+      updatedAt,
     ];
   }
+  
+  @override
+  String get uniqueKey => flashcardId;
 }

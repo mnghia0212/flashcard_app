@@ -24,7 +24,7 @@ class DefaultFlashcardsScreen extends StatelessWidget {
 
   Widget _buildFutureCards() {
     return FutureBuilder<List<DefaultCards>>(
-      future: fetchDefaultCards(),
+      future: DefaultCardsDatasource().fetchDefaultCards(setId!),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -147,23 +147,5 @@ class DefaultFlashcardsScreen extends StatelessWidget {
     );
   }
 
-  Future<List<DefaultCards>> fetchDefaultCards() async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-    try {
-      final QuerySnapshot snapshot = await firestore
-          .collection('defaultCards')
-          .where('setId', isEqualTo: setId)
-          .get();
-
-      final List<DefaultCards> defaultCards = snapshot.docs.map((doc) {
-        return DefaultCards.fromMap(doc.data() as Map<String, dynamic>);
-      }).toList();
-
-      return defaultCards;
-    } catch (e) {
-      log("Error fetching default sets: $e");
-      return [];
-    }
-  }
+  
 }

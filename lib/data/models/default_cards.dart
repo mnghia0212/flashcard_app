@@ -2,11 +2,14 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:flashcard_app/data/data.dart';
 
-class DefaultCards extends Equatable {
+class DefaultCards extends Equatable implements StudyCards{
   final String flashcardId;
   final String setId;
+  @override
   final String frontContent;
+  @override
   final String backContent;
   
   const DefaultCards({
@@ -57,4 +60,8 @@ class DefaultCards extends Equatable {
 
   @override
   List<Object> get props => [flashcardId, setId, frontContent, backContent];
+  
+  @override
+  String get uniqueKey => flashcardId;
+
 }

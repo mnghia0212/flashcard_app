@@ -101,7 +101,7 @@ class _DiscussTabState extends ConsumerState<DiscussTab> {
                         'assets/images/ava2.jpg'), 
                   ),
             InkWell(
-              onTap: () => context.push('/flipModeStudy/${flashcardSetShared.setId}/${flashcardSetShared.setName}'),
+              onTap: () => context.push('/flashcard/${flashcardSetShared.setId}/${flashcardSetShared.setName}'),
               child: Container(
                 height: 65,
                 width: 280,

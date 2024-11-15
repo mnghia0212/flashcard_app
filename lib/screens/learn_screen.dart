@@ -1,10 +1,9 @@
 import 'package:flashcard_app/data/data.dart';
+import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-
-
 
 class LearnScreen extends ConsumerStatefulWidget {
   const LearnScreen({super.key});
@@ -34,6 +33,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
             const DisplayText(
               text: "Chúc bạn học tập thật tốt !",
               color: Colors.black,
+              fontWeight: FontWeight.bold,
             )
           ],
         ),
@@ -105,14 +105,16 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     );
   }
 
-  Future<void> showDialogSelectLearnSet (
+  Future<void> showDialogSelectLearnSet(
       BuildContext context, WidgetRef ref, StudyType studyType) async {
     await showDialog(
       context: context,
       builder: (context) {
         return DialogSelectLearnSet(studyType: studyType);
       },
-    );
+    ).whenComplete(() {
+      ref.read(selectedSetProvider.notifier).state = null;
+    });
   }
 
   Widget _buildStudyModeCard(

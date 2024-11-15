@@ -6,9 +6,8 @@ import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
 
 class FlipStudyMode extends ConsumerStatefulWidget {
-  final String? setId;
-  final String? setName;
-  const FlipStudyMode({super.key, required this.setId, required this.setName});
+  final dynamic set;
+  const FlipStudyMode({super.key, required this.set});
 
   @override
   ConsumerState<FlipStudyMode> createState() => _FlipStudyModeState();
@@ -20,10 +19,22 @@ class _FlipStudyModeState extends ConsumerState<FlipStudyMode> {
 
   @override
   Widget build(BuildContext context) {
-    final flashcardsAsync = ref.watch(flashcardStreamProvider(widget.setId!));
+    final setId = widget.set is DefaultSets
+        ? (widget.set as DefaultSets).setId
+        : (widget.set as FlashcardSets).setId;
+
+    final setName = widget.set is DefaultSets
+        ? (widget.set as DefaultSets).title
+        : (widget.set as FlashcardSets).title;
+
+    final flashcardsAsync = widget.set is DefaultSets
+        ? ref.watch(
+            defaultCardsFutureProvider(setId))
+        : ref.watch(
+            flashcardStreamProvider(setId));
 
     return Scaffold(
-        appBar: CommonAppBar(title: "Bộ ôn tập: ${widget.setName}"),
+        appBar: CommonAppBar(title: "Bộ ôn tập: $setName"),
         body: flashcardsAsync.when(
           data: (flashcards) => flashcards.isEmpty
               ? const EmptyContainer(emptyType: EmptyType.card)
@@ -33,7 +44,7 @@ class _FlipStudyModeState extends ConsumerState<FlipStudyMode> {
         ));
   }
 
-  Column _buildCardView(List<Flashcards> flashcards) {
+  Column _buildCardView(List<StudyCards> flashcards) {
     return Column(
       children: [
         Expanded(
@@ -61,7 +72,7 @@ class _FlipStudyModeState extends ConsumerState<FlipStudyMode> {
     );
   }
 
-  Widget _buildFlashCard(Flashcards card) {
+  Widget _buildFlashCard(StudyCards card) {
     final colors = context.colorScheme;
 
     return GestureDetector(
@@ -121,6 +132,7 @@ class _FlipStudyModeState extends ConsumerState<FlipStudyMode> {
         fontSize: 24,
         textAlign: TextAlign.center,
         color: textColor,
+        maxLines: 5,
       )),
     );
   }

@@ -8,7 +8,7 @@ class StudyGroupScreen extends ConsumerWidget {
   final String? groupName;
   const StudyGroupScreen({super.key, required this.groupId, required this.groupName});
 
-  @override
+@override
   Widget build(BuildContext context, WidgetRef ref) {
     final userId = ref.watch(userIdProvider);
     final userName = ref.watch(userProvider).user?.userName;
@@ -47,10 +47,7 @@ class StudyGroupScreen extends ConsumerWidget {
           ),
           body: TabBarView(children: [
             DiscussTab(groupId: groupId!, userId: userId, userName: userName),
-            const Icon(
-              Icons.group,
-              size: 100,
-            ),
+            DisplayListOfGroupMembersTab(groupId: groupId!),
             const Icon(
               Icons.notifications,
               size: 100,

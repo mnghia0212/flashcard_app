@@ -21,7 +21,7 @@ final appRoutes = [
     parentNavigatorKey: navigationKey,
     builder: (context, state) => const SignUpScreen(),
   ),
-    GoRoute(
+  GoRoute(
     path: RouteLocation.profileScreen,
     parentNavigatorKey: navigationKey,
     builder: (context, state) => const ProfileScreen(),
@@ -63,42 +63,48 @@ final appRoutes = [
       return FlashcardScreen(setId: setId, setName: setName);
     },
   ),
+
+
+
+
+
   GoRoute(
     path: RouteLocation.writeModeStudy,
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
-      final setId = state.pathParameters['setId'];
-      final setName = state.pathParameters['setName'];
-      return WriteModeStudy(setId: setId, setName: setName);
+      dynamic set = state.extra as dynamic;
+      return WriteModeStudy(set: set);
     },
   ),
   GoRoute(
     path: RouteLocation.flipModeStudy,
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
-      final setId = state.pathParameters['setId'];
-      final setName = state.pathParameters['setName'];
-      return FlipStudyMode(setId: setId, setName: setName);
+      dynamic set = state.extra as dynamic;
+      return FlipStudyMode(set: set);
     },
   ),
   GoRoute(
     path: RouteLocation.abcdModeStudy,
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
-      final setId = state.pathParameters['setId'];
-      final setName = state.pathParameters['setName'];
-      return AbcdModeStudy(setId: setId, setName: setName);
+      dynamic set = state.extra as dynamic;
+      return AbcdModeStudy(set: set);
     },
   ),
   GoRoute(
     path: RouteLocation.speedRecallModeStudy,
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
-      final setId = state.pathParameters['setId'];
-      final setName = state.pathParameters['setName'];
-      return SpeedRecallModeStudy(setId: setId, setName: setName);
+      dynamic set = state.extra as dynamic;
+      return SpeedRecallModeStudy(set: set);
     },
   ),
+
+
+
+
+
   GoRoute(
       path: RouteLocation.endStudySessionScreen,
       parentNavigatorKey: navigationKey,

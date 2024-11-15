@@ -31,14 +31,13 @@ class DialogSelectLearnSet extends ConsumerWidget {
           context: context,
           text: "Bắt đầu",
           onPressed: () {
-            // if (selectedSet != null) {
-            //   _startStudySession(selectedSet.setId, ref, context, studyType,
-            //       selectedSet.title);
-            // } else {
-            //   AppAlerts.showFlushBar(context,
-            //       "Bạn hãy chọn 1 thẻ để bắt đầu", AlertType.error);
-            // }
-            log("selected set: ${selectedSet!.set.toString()}");
+            if (selectedSet != null) {
+              _startStudySession(selectedSet, ref, context, studyType);
+            } else {
+              AppAlerts.showFlushBar(
+                  context, "Bạn hãy chọn 1 thẻ để bắt đầu", AlertType.error);
+            }
+            //log("selected set: ${selectedSet!.set.toString()}");
           },
         ),
       ],
@@ -63,10 +62,8 @@ class DialogSelectLearnSet extends ConsumerWidget {
                 // TabBar
                 const TabBar(
                   indicatorSize: TabBarIndicatorSize.tab,
-                  labelStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16
-                  ),
+                  labelStyle:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   tabs: [
                     Tab(text: 'Của bạn'),
                     Tab(text: 'Lớp 11'),
@@ -277,30 +274,44 @@ class DialogSelectLearnSet extends ConsumerWidget {
     );
   }
 
-  void _startStudySession(String setId, WidgetRef ref, BuildContext context,
-      StudyType studyType, String setName) async {
-    final cardNumberStream =
-        ref.read(flashcardSetsProvider.notifier).getCardNumber(setId);
-    final cardNumber = await cardNumberStream.first;
+  void _startStudySession(SelectedSetWrapper selectedSetWrapper, WidgetRef ref,
+      BuildContext context, StudyType studyType) async {
+    final set = selectedSetWrapper.set;
 
-    if (cardNumber! < 1) {
-      AppAlerts.showFlushBar(
-          context, "Bộ thẻ chưa có thẻ nào", AlertType.error);
+    if (selectedSetWrapper.isDefault) {
+      final defaultSet = set as DefaultSets;
+      _startStudyMode(studyType, context, defaultSet, true);
     } else {
-      _startStudyMode(studyType, context, setId, setName);
+      final flashcardSet = set as FlashcardSets;
+
+      final cardNumberStream = ref
+          .read(flashcardSetsProvider.notifier)
+          .getCardNumber(flashcardSet.setId);
+
+      final cardNumber = await cardNumberStream.first;
+
+      if (!context.mounted) {
+        return;
+      }
+
+      if (cardNumber! < 1) {
+        AppAlerts.showFlushBar(context, "Bộ thẻ trống", AlertType.error);
+      } else {
+        _startStudyMode(studyType, context, flashcardSet, false);
+      }
     }
   }
 
   void _startStudyMode(
-      StudyType studyType, BuildContext context, String setId, String setName) {
+      StudyType studyType, BuildContext context, dynamic set, bool isDefault) {
     if (studyType == StudyType.normal) {
-      context.push('/flipModeStudy/$setId/$setName');
+      context.push('/flipModeStudy', extra: set);
     } else if (studyType == StudyType.write) {
-      context.push('/writeModeStudy/$setId/$setName');
+      context.push('/writeModeStudy', extra: set);
     } else if (studyType == StudyType.abcd) {
-      context.push('/abcdModeStudy/$setId/$setName');
+      context.push('/abcdModeStudy', extra: set);
     } else {
-      context.push('/speedRecallModeStudy/$setId/$setName');
+      context.push('/speedRecallModeStudy', extra: set);
     }
   }
 }

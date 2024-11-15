@@ -86,4 +86,17 @@ class FlashcardSetsDatasource {
     }
   }
 
+  // Stream<int?> getCardNumberByInstance(FlashcardSets set) {
+  //   try {
+  //     return _firestore
+  //         .collection('flashcards')
+  //         .where('setId', isEqualTo: set.setId)
+  //         .snapshots()
+  //         .map((snapshot) => snapshot.docs.length);
+  //   } catch (e) {
+  //     log("Error getting flashcard number: $e");
+  //     return Stream.value(0);
+  //   }
+  // }
+
 }

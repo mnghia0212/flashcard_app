@@ -6,3 +6,4 @@ export 'group_members.dart';
 export 'flashcard_sets_shared.dart';
 export 'default_sets.dart';
 export 'default_cards.dart';
+export 'study_cards.dart';

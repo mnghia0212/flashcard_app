@@ -39,4 +39,22 @@ class DefaultSetsDatasource {
       return 0;
     }
   }
+
+  Future<int> getCardNumberByInstance(DefaultSets set) async {
+    try {
+      final QuerySnapshot snapshot = await firestore
+          .collection('defaultCards')
+          .where('setId', isEqualTo: set.setId)
+          .get();
+
+      final List<DefaultCards> defaultCardsInSet = snapshot.docs.map((doc) {
+        return DefaultCards.fromMap(doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      return defaultCardsInSet.length;
+    } catch (e) {
+      log("Error getting flashcard number: $e");
+      return 0;
+    }
+  }
 }
