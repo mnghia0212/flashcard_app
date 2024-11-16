@@ -25,12 +25,6 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
   StudyCards? newFlashcard;
   late AsyncValue flashcardAsync;
 
-  // Card boxes
-  List<StudyCards> initialBox = [];
-  List<StudyCards> wrongBox = [];
-  List<StudyCards> firstRightBox = [];
-  List<StudyCards> secondRightBox = [];
-
   @override
   void dispose() {
     audioPlayer.dispose();
@@ -39,18 +33,17 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(studyNotifierProvider.notifier).initializeFlashcards(widget.set);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colors = context.colorScheme;
     final studyState = ref.watch(studyNotifierProvider);
-
-    if (studyState.initialBox.isEmpty &&
-        studyState.wrongBox.isEmpty &&
-        studyState.firstRightBox.isEmpty &&
-        studyState.secondRightBox.isEmpty) {
-      ref.read(studyNotifierProvider.notifier).initializeFlashcards(widget.set);
-      return const Center(child: CircularProgressIndicator());
-    }
-
     final selectedFlashcard = studyState.displayedFlashcard;
 
     if (selectedFlashcard == null) {
@@ -88,8 +81,7 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
     );
   }
 
-  Container _buildCardContainer(
-      StudyCards selectedFlashcard, ColorScheme colors) {
+  Widget _buildCardContainer(StudyCards selectedFlashcard, ColorScheme colors) {
     return Container(
       key: ValueKey(selectedFlashcard.uniqueKey),
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 70),
@@ -108,7 +100,7 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
     );
   }
 
-  Column _buildCardContent(StudyCards selectedFlashcard, ColorScheme colors) {
+  Widget _buildCardContent(StudyCards selectedFlashcard, ColorScheme colors) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +123,7 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
     );
   }
 
-  TextFormField _buildAnswerTextField() {
+  Widget _buildAnswerTextField() {
     return TextFormField(
       controller: answerController,
       maxLines: 3,
@@ -150,22 +142,25 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
     );
   }
 
-  Row _buildActionButtons(ColorScheme colors, StudyCards selectedFlashcard) {
+  Widget _buildActionButtons(ColorScheme colors, StudyCards selectedFlashcard) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         ElevatedButton(
-          onPressed: () {
-            setState(() {
-              isCorrect = answerController.text.toLowerCase().trim() ==
-                  selectedFlashcard.backContent.toLowerCase().trim();
-              //AppSounds.playSoundRightWrong(isCorrect, audioPlayer);
-              isAnswered = true;
+          onPressed: isAnswered
+              ? null
+              : () {
+                  setState(() {
+                    isCorrect = answerController.text.toLowerCase().trim() ==
+                        selectedFlashcard.backContent.toLowerCase().trim();
+                    //AppSounds.playSoundRightWrong(isCorrect, audioPlayer);
+                    isAnswered = true;
 
-              log("isCorrect: $isCorrect");
-              log("isAnswered: $isAnswered");
-            });
-          },
+                    newFlashcard = ref
+                        .read(studyNotifierProvider.notifier)
+                        .setNextFlashcard(isCorrect, selectedFlashcard);
+                  });
+                },
           style: ElevatedButton.styleFrom(backgroundColor: colors.primary),
           child: const Padding(
               padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
@@ -177,23 +172,20 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
     );
   }
 
-  ElevatedButton _buildNextCardButton(
+  Widget _buildNextCardButton(
       ColorScheme colors, StudyCards selectedFlashcard) {
     return ElevatedButton(
       onPressed: !isAnswered
           ? null
           : () {
-              final studyState = ref.watch(studyNotifierProvider);
-              ref
-                  .read(studyNotifierProvider.notifier)
-                  .setNextFlashcard(isCorrect, selectedFlashcard);
-
-
-              if (studyState.displayedFlashcard != null) {
+              if (newFlashcard != null) {
                 answerController.clear();
                 setState(() {
                   isAnswered = false;
                 });
+                ref
+                    .read(studyNotifierProvider.notifier)
+                    .setDisplayedCardState(newFlashcard!);
               } else {
                 log("SESSION COMPLETED");
                 AppSounds.playEndSessionSound(audioPlayer);

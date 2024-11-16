@@ -10,21 +10,22 @@ class StudyNotifier extends StateNotifier<StudyState> {
   StudyNotifier(this.ref) : super(StudyState());
 
   Future<void> initializeFlashcards(dynamic set) async {
+    state = StudyState();
     final setId =
         set is DefaultSets ? (set).setId : (set as FlashcardSets).setId;
+
+    debugPrint("setId: $setId");
 
     final flashcards = set is DefaultSets
         ? await ref.read(defaultCardsFutureProvider(setId).future)
         : await ref.read(flashcardStreamProvider(setId).future);
 
+    debugPrint("flashcards: $flashcards");
+
     if (flashcards.isNotEmpty) {
       state = state.copyWith(
         initialBox: List<StudyCards>.from(flashcards),
-        wrongBox: [],
-        firstRightBox: [],
-        secondRightBox: [],
-        displayedFlashcard:
-            flashcards[Random().nextInt(flashcards.length)], // Random flashcard
+        displayedFlashcard: flashcards[Random().nextInt(flashcards.length)],
       );
     }
 
@@ -32,23 +33,29 @@ class StudyNotifier extends StateNotifier<StudyState> {
     debugPrint("selected card: ${state.displayedFlashcard}");
   }
 
-  void setNextFlashcard(bool isCorrect, StudyCards flashcard) {
+  void setDisplayedCardState(StudyCards flashcard) {
+    state = state.copyWith(displayedFlashcard: flashcard);
+  }
+
+  StudyCards? setNextFlashcard(bool isCorrect, StudyCards flashcard) {
     _updateBoxes(isCorrect, flashcard);
-    final nextFlashcard = _selectNextFlashcard(flashcard);
+    final StudyCards? nextFlashcard = _selectNextFlashcard(flashcard);
     if (nextFlashcard != null) {
-      state = state.copyWith(displayedFlashcard: nextFlashcard);
+      return nextFlashcard;
     } else {
-      state = state.copyWith(displayedFlashcard: null);
+      return null;
     }
   }
 
+
+
   void _updateBoxes(bool isCorrect, StudyCards flashcard) {
-     state = state.copyWith(
-    initialBox: List<StudyCards>.from(state.initialBox),
-    wrongBox: List<StudyCards>.from(state.wrongBox),
-    firstRightBox: List<StudyCards>.from(state.firstRightBox),
-    secondRightBox: List<StudyCards>.from(state.secondRightBox),
-  );
+    state = state.copyWith(
+      initialBox: List<StudyCards>.from(state.initialBox),
+      wrongBox: List<StudyCards>.from(state.wrongBox),
+      firstRightBox: List<StudyCards>.from(state.firstRightBox),
+      secondRightBox: List<StudyCards>.from(state.secondRightBox),
+    );
     if (isCorrect) {
       if (state.initialBox.remove(flashcard)) {
         state.firstRightBox.add(flashcard);
