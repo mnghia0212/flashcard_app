@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:developer';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flashcard_app/data/data.dart';
@@ -24,83 +24,11 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   List<String>? shuffledAnswers;
   StudyCards? newFlashcard;
   final AudioPlayer audioPlayer = AudioPlayer();
-  late AsyncValue flashcardAsync;
-
-  // Card boxes
-  List<StudyCards> initialBox = [];
-  List<StudyCards> wrongBox = [];
-  List<StudyCards> firstRightBox = [];
-  List<StudyCards> secondRightBox = [];
-
-  StudyCards? _getNextFlashcard(bool isCorrect, StudyCards flashcard) {
-    _updateBoxes(isCorrect, flashcard);
-
-    return _selectNextFlashcard(flashcard);
-  }
-
-  void _updateBoxes(bool isCorrect, StudyCards flashcard) {
-    if (isCorrect) {
-      if (initialBox.remove(flashcard)) {
-        firstRightBox.add(flashcard);
-      } else if (wrongBox.remove(flashcard)) {
-        firstRightBox.add(flashcard);
-      } else if (firstRightBox.remove(flashcard)) {
-        secondRightBox.add(flashcard);
-      }
-    } else {
-      if (initialBox.remove(flashcard)) {
-        wrongBox.add(flashcard);
-      } else if (firstRightBox.remove(flashcard)) {
-        wrongBox.add(flashcard);
-      }
-    }
-    debugPrint(
-        "-----------------------------------------------------------------------");
-    debugPrint(
-        "initialBox: ${initialBox.map((e) => e.backContent).join(' - ')}");
-    debugPrint("wrongBox: ${wrongBox.map((e) => e.backContent).join(' - ')}");
-    debugPrint(
-        "firstRightBox: ${firstRightBox.map((e) => e.backContent).join(' - ')}");
-    debugPrint(
-        "secondRightBox: ${secondRightBox.map((e) => e.backContent).join(' - ')}");
-    debugPrint(
-        "-----------------------------------------------------------------------");
-  }
-
-  StudyCards? _selectNextFlashcard(StudyCards flashcard) {
-    if (initialBox.isNotEmpty) {
-      return initialBox[Random().nextInt(initialBox.length)];
-    }
-    if (wrongBox.isNotEmpty) {
-      return _getRandomFromBox(wrongBox, flashcard);
-    }
-    if (firstRightBox.isNotEmpty) {
-      return _getRandomFromBox(firstRightBox, flashcard);
-    }
-    return null;
-  }
-
-  StudyCards? _getRandomFromBox(List<StudyCards> box, StudyCards currentCard) {
-    if (box.length == 1 && box.first == currentCard) {
-      return firstRightBox.isEmpty
-          ? box.first
-          : firstRightBox[Random().nextInt(firstRightBox.length)];
-    }
-
-    StudyCards newCard;
-    do {
-      newCard = box[Random().nextInt(box.length)];
-    } while (newCard == currentCard);
-
-    return newCard;
-  }
 
   List<String> _getWrongAnswers(
       List<StudyCards> allStudyCards, StudyCards selectedFlashcard) {
     List<StudyCards> wrongCards =
         allStudyCards.where((fc) => fc != selectedFlashcard).toList();
-
-    wrongCards.shuffle();
 
     List<String> wrongAnswers =
         wrongCards.take(3).map((fc) => fc.backContent).toList();
@@ -118,59 +46,49 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(studyNotifierProvider.notifier).initializeFlashcards(widget.set);
+    });
+    shuffledAnswers = null;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colors = context.colorScheme;
-    final selectedFlashcard = ref.watch(displayedFlashcardProvider);
+    final studyState = ref.watch(studyNotifierProvider);
+    final selectedFlashcard = studyState.displayedFlashcard;
 
-    final setId = widget.set is DefaultSets
-        ? (widget.set as DefaultSets).setId
-        : (widget.set as FlashcardSets).setId;
+    if (selectedFlashcard == null) {
+      return const Center(
+          child: DisplayText(
+        text: "Lỗi khi tải dữ liệu thẻ",
+        color: Colors.black,
+        fontWeight: FontWeight.bold,
+      ));
+    }
 
-    final flashcardAsync = widget.set is DefaultSets
-        ? ref.watch(defaultCardsFutureProvider(setId))
-        : ref.watch(flashcardStreamProvider(setId));
+    if (shuffledAnswers == null) {
+      final wrongAnswers = _getWrongAnswers(
+          studyState.remainBox, studyState.displayedFlashcard!);
 
-    flashcardAsync.whenData((flashcards) {
-      if (initialBox.isEmpty &&
-          firstRightBox.isEmpty &&
-          secondRightBox.isEmpty &&
-          wrongBox.isEmpty) {
-        setState(() {
-          initialBox = List<StudyCards>.from(flashcards);
-
-          if (initialBox.isNotEmpty) {
-            ref.read(displayedFlashcardProvider.notifier).state =
-                initialBox[Random().nextInt(initialBox.length)];
-          }
-        });
-      }
-    });
-
-    if (selectedFlashcard != null && shuffledAnswers == null) {
       setState(() {
-        final wrongAnswers = _getWrongAnswers(initialBox, selectedFlashcard);
-        shuffledAnswers = _getShuffledAnswers(selectedFlashcard, wrongAnswers);
+        shuffledAnswers =
+            _getShuffledAnswers(studyState.displayedFlashcard!, wrongAnswers);
       });
+
+      log("shuffle: $shuffledAnswers");
     }
 
     return Scaffold(
       appBar: const CommonAppBar(title: "Ôn tập trắc nghiệm"),
-      body: flashcardAsync.when(
-        data: (flashcards) => flashcards.isEmpty
-            ? const EmptyContainer(emptyType: EmptyType.card)
-            : _buildCardDisplay(flashcards, context, colors),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(child: Text('Error: $error')),
-      ),
+      body: _buildCardDisplay(selectedFlashcard, context, colors),
     );
   }
 
   Widget _buildCardDisplay(
-      List<StudyCards> flashcards, BuildContext context, ColorScheme colors) {
-    final selectedFlashcard = ref.watch(displayedFlashcardProvider);
-    if (selectedFlashcard == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
+      StudyCards selectedFlashcard, BuildContext context, ColorScheme colors) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -184,13 +102,13 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
               child: child,
             );
           },
-          child: _buildCardContainer(flashcards, selectedFlashcard, colors),
+          child: _buildCardContainer(selectedFlashcard, colors),
         ),
       ),
     );
   }
 
-  Container _buildCardContainer(List<StudyCards> flashcards,
+  Container _buildCardContainer(
       StudyCards selectedFlashcard, ColorScheme colors) {
     return Container(
       key: ValueKey(selectedFlashcard.uniqueKey),
@@ -206,12 +124,11 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
               blurRadius: 6)
         ],
       ),
-      child: _buildCardContent(flashcards, selectedFlashcard, colors),
+      child: _buildCardContent(selectedFlashcard, colors),
     );
   }
 
-  Column _buildCardContent(List<StudyCards> flashcards,
-      StudyCards selectedFlashcard, ColorScheme colors) {
+  Column _buildCardContent(StudyCards selectedFlashcard, ColorScheme colors) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,19 +144,14 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
         const DisplayText(
             text: "Chọn đáp án đúng", color: Colors.black, fontSize: 15),
         const Gap(5),
-        _buildOptionRatio(flashcards, selectedFlashcard),
+        _buildOptionRatio(selectedFlashcard),
         const Spacer(),
-        _buildActionButtons(colors, selectedFlashcard, flashcards)
+        _buildActionButtons(colors, selectedFlashcard)
       ],
     );
   }
 
-  Widget _buildOptionRatio(
-      List<StudyCards> flashcards, StudyCards selectedFlashcard) {
-    if (shuffledAnswers == null || shuffledAnswers!.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
+  Widget _buildOptionRatio(StudyCards selectedFlashcard) {
     return Column(
       children: List.generate(shuffledAnswers!.length, (index) {
         return Container(
@@ -256,7 +168,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
               onChanged: (value) {
                 setState(() {
                   groupValue = value;
-                  isAnswered = true;
+                  //isAnswered = true;
                   isCorrect = groupValue == selectedFlashcard.backContent;
                 });
               },
@@ -267,53 +179,60 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
     );
   }
 
-  Row _buildActionButtons(
-      ColorScheme colors, StudyCards flashcard, List<StudyCards> flashcards) {
+  Row _buildActionButtons(ColorScheme colors, StudyCards selectedFlashcard) {
+    final flashcards = ref.watch(studyNotifierProvider).remainBox;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              AppSounds.playSoundRightWrong(isCorrect, audioPlayer);
-              newFlashcard =
-                  _getNextFlashcard(isCorrect, flashcard);
-              debugPrint("yes/no: $isCorrect");
-              debugPrint("new card: $newFlashcard");
-            });
-          },
-          style: ElevatedButton.styleFrom(backgroundColor: colors.primary),
-          child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
-              child: DisplayText(text: "Trả lời")),
-        ),
+        _buildAnswerButton(selectedFlashcard, colors),
         const Gap(10),
-        _buildNextCardButton(colors, flashcard, flashcards)
+        _buildNextCardButton(colors, selectedFlashcard, flashcards)
       ],
     );
   }
 
-  ElevatedButton _buildNextCardButton(
-      ColorScheme colors, StudyCards flashcard, List<StudyCards> flashcards) {
+  ElevatedButton _buildAnswerButton(
+      StudyCards selectedFlashcard, ColorScheme colors) {
+    return ElevatedButton(
+      onPressed: isAnswered
+          ? null
+          : () {
+              setState(() {
+                //AppSounds.playSoundRightWrong(isCorrect, audioPlayer);
+                isAnswered = true;
+                newFlashcard = ref
+                    .read(studyNotifierProvider.notifier)
+                    .setNextFlashcard(isCorrect, selectedFlashcard);
+                log("isCorrect: $isCorrect");
+                log("new cards: $newFlashcard");
+              });
+            },
+      style: ElevatedButton.styleFrom(backgroundColor: colors.primary),
+      child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
+          child: DisplayText(text: "Trả lời")),
+    );
+  }
+
+  ElevatedButton _buildNextCardButton(ColorScheme colors,
+      StudyCards selectedFlashcard, List<StudyCards> flashcards) {
     return ElevatedButton(
       onPressed: !isAnswered
           ? null
           : () {
               if (newFlashcard != null) {
-                ref.read(displayedFlashcardProvider.notifier).state =
-                    newFlashcard;
                 setState(() {
                   isAnswered = false;
-                  StudyCards? newFlashcard = _selectNextFlashcard(flashcard);
-                  if (newFlashcard != null) {
-                    List<String> wrongAnswers =
-                        _getWrongAnswers(flashcards, newFlashcard);
-                    shuffledAnswers =
-                        _getShuffledAnswers(newFlashcard, wrongAnswers);
-                  }
+                  List<String> wrongAnswers =
+                      _getWrongAnswers(flashcards, selectedFlashcard);
+                  shuffledAnswers =
+                      _getShuffledAnswers(selectedFlashcard, wrongAnswers);
 
                   groupValue = null;
                 });
+                ref
+                    .read(studyNotifierProvider.notifier)
+                    .setDisplayedCardState(newFlashcard!);
               } else {
                 debugPrint("SESSION COMPLETED");
                 AppSounds.playEndSessionSound(audioPlayer);

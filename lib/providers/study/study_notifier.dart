@@ -24,6 +24,7 @@ class StudyNotifier extends StateNotifier<StudyState> {
 
     if (flashcards.isNotEmpty) {
       state = state.copyWith(
+        remainBox: List<StudyCards>.from(flashcards),
         initialBox: List<StudyCards>.from(flashcards),
         displayedFlashcard: flashcards[Random().nextInt(flashcards.length)],
       );
