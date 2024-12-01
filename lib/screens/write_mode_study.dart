@@ -55,6 +55,9 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
       ));
     }
 
+    log("all card 1: ${studyState.remainBox.map((e) => e.backContent).join(' - ')}");
+    log("displayed card 1: ${studyState.displayedFlashcard!.backContent}");
+
     return Scaffold(
         appBar: const CommonAppBar(title: "Ôn tập chế độ viết"),
         body: _buildCardDisplay(context, colors, selectedFlashcard));

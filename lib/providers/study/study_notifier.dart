@@ -14,13 +14,13 @@ class StudyNotifier extends StateNotifier<StudyState> {
     final setId =
         set is DefaultSets ? (set).setId : (set as FlashcardSets).setId;
 
-    debugPrint("setId: $setId");
+    //debugPrint("setId: $setId");
 
     final flashcards = set is DefaultSets
         ? await ref.read(defaultCardsFutureProvider(setId).future)
         : await ref.read(flashcardStreamProvider(setId).future);
 
-    debugPrint("flashcards: $flashcards");
+    //debugPrint("flashcards: $flashcards");
 
     if (flashcards.isNotEmpty) {
       state = state.copyWith(
@@ -29,9 +29,7 @@ class StudyNotifier extends StateNotifier<StudyState> {
         displayedFlashcard: flashcards[Random().nextInt(flashcards.length)],
       );
     }
-
-    debugPrint("ini: ${state.initialBox}");
-    debugPrint("selected card: ${state.displayedFlashcard}");
+    //debugPrint("all: ${state.remainBox}");
   }
 
   void setDisplayedCardState(StudyCards flashcard) {

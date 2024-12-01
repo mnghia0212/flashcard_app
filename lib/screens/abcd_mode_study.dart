@@ -20,6 +20,7 @@ class AbcdModeStudy extends ConsumerStatefulWidget {
 class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   bool isAnswered = false;
   bool isCorrect = false;
+  bool isShuffled = false;
   String? groupValue;
   List<String>? shuffledAnswers;
   StudyCards? newFlashcard;
@@ -51,7 +52,6 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(studyNotifierProvider.notifier).initializeFlashcards(widget.set);
     });
-    shuffledAnswers = null;
   }
 
   @override
@@ -69,17 +69,22 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
       ));
     }
 
-    if (shuffledAnswers == null) {
+    log("all card 1: ${studyState.remainBox.map((e) => e.backContent).join(' - ')}");
+    log("displayed card 1: ${studyState.displayedFlashcard!.backContent}");
+
+    if (!isShuffled) {
       final wrongAnswers = _getWrongAnswers(
           studyState.remainBox, studyState.displayedFlashcard!);
 
       setState(() {
         shuffledAnswers =
             _getShuffledAnswers(studyState.displayedFlashcard!, wrongAnswers);
-      });
 
-      log("shuffle: $shuffledAnswers");
+        isShuffled = true;
+      });
     }
+
+    log("sf answer 2: $shuffledAnswers");
 
     return Scaffold(
       appBar: const CommonAppBar(title: "Ôn tập trắc nghiệm"),
@@ -234,7 +239,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
                     .read(studyNotifierProvider.notifier)
                     .setDisplayedCardState(newFlashcard!);
               } else {
-                debugPrint("SESSION COMPLETED");
+                log("SESSION COMPLETED");
                 AppSounds.playEndSessionSound(audioPlayer);
               }
             },
