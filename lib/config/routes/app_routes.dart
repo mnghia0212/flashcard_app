@@ -55,6 +55,14 @@ final appRoutes = [
     },
   ),
   GoRoute(
+    path: RouteLocation.changePasswordScreen,
+    parentNavigatorKey: navigationKey,
+    builder: (context, state) {
+      Users userState = state.extra as Users;
+      return ChangePasswordScreen(userState: userState);
+    },
+  ),
+  GoRoute(
     path: RouteLocation.flashcard,
     parentNavigatorKey: navigationKey,
     builder: (context, state) {

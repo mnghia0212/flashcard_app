@@ -54,12 +54,11 @@ class PersonalInformation extends ConsumerWidget {
                         controller: userNameController,
                         labelText: "Tên người dùng",
                         icon: const Icon(Icons.person_outline)),
-                    const Gap(20),
-                    CommonTextFormField(
-                        controller: passwordController,
-                        isPassword: true,
-                        labelText: "Mật khẩu",
-                        icon: const Icon(Icons.lock_outline)),
+                    // CommonTextFormField(
+                    //     controller: passwordController,
+                    //     isPassword: true,
+                    //     labelText: "Mật khẩu",
+                    //     icon: const Icon(Icons.lock_outline)),
                     const Spacer(),
                     _buildFormUserInformation(sizes, userNameController,
                         passwordController, ref, context, colors)
@@ -84,7 +83,7 @@ class PersonalInformation extends ConsumerWidget {
           ref.read(isLoadingPageProvider.notifier).state = true;
           final updatedUser = userState!.copyWith(
               userName: userNameController.text,
-              password: passwordController.text);
+          );
 
           await ref
               .read(userProvider.notifier)
@@ -106,7 +105,7 @@ class PersonalInformation extends ConsumerWidget {
           fontWeight: FontWeight.bold,
         ),
         icon: const Icon(
-          Icons.exit_to_app,
+          Icons.system_update,
           color: Colors.white,
         ),
         style: ElevatedButton.styleFrom(

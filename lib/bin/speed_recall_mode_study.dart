@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';

@@ -1,6 +1,4 @@
-import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/utils/utils.dart';
 import 'package:flashcard_app/widgets/widgets.dart';

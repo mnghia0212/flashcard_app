@@ -26,4 +26,5 @@ class RouteLocation {
   static String get studyGroupScreen => '/studyGroupScreen/:groupId/:groupName';
   static String get defaultFlashcardsScreen =>
       '/defaultFlashcardsScreen/:setId/:setName';
+  static String get changePasswordScreen => '/changePasswordScreen';
 }

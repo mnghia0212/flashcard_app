@@ -34,9 +34,9 @@ class ProfileScreen extends ConsumerWidget {
                       const Gap(10),
                       _checkUserState(ref, colors, context, userState),
                       const Gap(15),
-                      _buildPreferencesSection(),
+                      _buildPreferencesSection(context, userState!),
                       const Gap(15),
-                      _buildMoreSection(),
+                      _buildMoreSection(context),
                       const Spacer(),
                       _buildLogOutButton(context, ref, colors),
                     ],
@@ -136,7 +136,7 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   // Phần Preferences (Dark theme, Notifications, Language, Settings)
-  Widget _buildPreferencesSection() {
+  Widget _buildPreferencesSection(BuildContext context, Users userState) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -163,16 +163,19 @@ class ProfileScreen extends ConsumerWidget {
                 icon: Icons.dark_mode,
                 title: "Giao diện tối",
                 trailing: Switch(
-                  value: false, // Thay đổi trạng thái theo dark theme của bạn
+                  value: false,
                   onChanged: (value) {
                     // Xử lý sự kiện bật/tắt dark theme
                   },
                 ),
               ),
               _buildPreferenceItem(
-                icon: Icons.notifications,
-                title: "Thông báo",
+                icon: Icons.lock,
+                title: "Đổi mật khẩu",
                 trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  context.push('/changePasswordScreen', extra: userState);
+                },
               ),
               _buildPreferenceItem(
                 icon: Icons.language,
@@ -180,8 +183,8 @@ class ProfileScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.arrow_forward_ios),
               ),
               _buildPreferenceItem(
-                icon: Icons.settings,
-                title: "Cài đặt",
+                icon: Icons.delete,
+                title: "Đã xóa",
                 trailing: const Icon(Icons.arrow_forward_ios),
               ),
             ],
@@ -192,7 +195,7 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   // Phần More (Terms & Conditions, Help & Support)
-  Widget _buildMoreSection() {
+  Widget _buildMoreSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -222,7 +225,7 @@ class ProfileScreen extends ConsumerWidget {
               ),
               _buildPreferenceItem(
                 icon: Icons.help,
-                title: "Giúp đỡ và hỗ trợ",
+                title: "Câu hỏi thường gặp",
                 trailing: const Icon(Icons.arrow_forward_ios),
               ),
             ],
@@ -233,21 +236,24 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   // Tạo nút cho mỗi tùy chọn trong Preferences và More
-  Widget _buildPreferenceItem({
-    required IconData icon,
-    required String title,
-    required Widget trailing,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.black54),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+  Widget _buildPreferenceItem(
+      {required IconData icon,
+      required String title,
+      required Widget trailing,
+      VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: ListTile(
+        leading: Icon(icon, color: Colors.black54),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        trailing: trailing,
       ),
-      trailing: trailing,
     );
   }
 

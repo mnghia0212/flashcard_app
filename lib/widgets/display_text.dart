@@ -9,7 +9,7 @@ class DisplayText extends StatelessWidget {
       this.fontSize = 17,
       this.color = Colors.white,
       this.textAlign = TextAlign.left,
-      this.maxLines = 1,
+      this.maxLines = 10,
     });
   final String text;
   final FontWeight? fontWeight;

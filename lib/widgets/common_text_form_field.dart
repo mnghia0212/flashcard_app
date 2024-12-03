@@ -11,7 +11,8 @@ class CommonTextFormField extends StatelessWidget {
       required this.icon,
       this.filledColor = const Color(0xfff1f1f1),
       this.type = TextInputType.emailAddress,
-      this.isPassword = false});
+      this.isPassword = false,
+      this.validator});
 
   final String labelText;
   final Widget icon;
@@ -21,6 +22,7 @@ class CommonTextFormField extends StatelessWidget {
   final Color? filledColor;
   final TextInputType? type;
   final bool isPassword;
+  final FormFieldValidator<String>? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,8 @@ class CommonTextFormField extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       onChanged: (value) {},
+      validator: validator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }
