@@ -21,3 +21,4 @@ export 'display_list_of_flashcards.dart';
 export 'dialog_select_learn_set.dart';
 export 'dialog_confirm_do_test.dart';
 export 'display_list_of_group_members_tab.dart';
+export 'progress_bar.dart';

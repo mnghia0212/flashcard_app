@@ -56,15 +56,15 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
             showDialogSelectLearnSet(context, ref, StudyType.normal);
           },
         ),
-        _buildStudyModeCard(
-          context,
-          title: "Ghi nhớ nhanh",
-          description: "Tốc độ & phản xạ",
-          pathImage: 'assets/images/combination_study_mode.png',
-          onTap: () {
-            showDialogSelectLearnSet(context, ref, StudyType.speed);
-          },
-        ),
+        // _buildStudyModeCard(
+        //   context,
+        //   title: "Ghi nhớ nhanh",
+        //   description: "Tốc độ & phản xạ",
+        //   pathImage: 'assets/images/combination_study_mode.png',
+        //   onTap: () {
+        //     showDialogSelectLearnSet(context, ref, StudyType.speed);
+        //   },
+        // ),
         _buildStudyModeCard(
           context,
           title: "Viết",

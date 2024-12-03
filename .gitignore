@@ -9,7 +9,7 @@ build/
 *.wav
 *.mp3
 
-# ignore sensitive files
+# ignore private files
 flashcard--app-firebase-adminsdk.json
 lib/services/get_server_key.dart
 google-services.json

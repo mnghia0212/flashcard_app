@@ -13,7 +13,6 @@ export 'splash_screen.dart';
 export 'write_mode_study.dart';
 export 'flip_study_mode.dart';
 export 'abcd_mode_study.dart';
-export 'speed_recall_mode_study.dart';
 export 'study_group_screen.dart';
 export 'end_study_session_screen.dart';
 export 'test_mode.dart';

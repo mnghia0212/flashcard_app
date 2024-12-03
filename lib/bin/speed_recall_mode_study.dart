@@ -20,19 +20,12 @@ class SpeedRecallModeStudy extends ConsumerStatefulWidget {
 
 class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
     with TickerProviderStateMixin {
-  final AudioPlayer audioPlayer = AudioPlayer();
-  late AnimationController progressBarController;
-  int answerTime = 3;
+  //final AudioPlayer audioPlayer = AudioPlayer();
+  double answerTime = 3.0;
   bool isAnswered = false;
   bool isCorrect = false;
   StudyCards? newFlashcard;
   String? randomAnswer;
-
-  @override
-  void dispose() {
-    progressBarController.dispose();
-    super.dispose();
-  }
 
   @override
   void initState() {
@@ -40,50 +33,26 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(studyNotifierProvider.notifier).initializeFlashcards(widget.set);
     });
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeProgressBar();
-    });
-  }
-
-//   @override
-//   void didChangeDependencies() {
-//     _initializeProgressBar();
-//     super.didChangeDependencies();
-//   }
-
-  void _initializeProgressBar() {
-    final selectedFlashcard =
-        ref.read(studyNotifierProvider).displayedFlashcard;
-
-    progressBarController = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: answerTime),
-    )
-      ..addListener(() {
-        setState(() {});
-      })
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed && !isAnswered) {
-          setState(() {
-            //progressBarController.stop();
-            isCorrect = false;
-            isAnswered = true;
-            ref
-                .read(studyNotifierProvider.notifier)
-                .setNextFlashcard(isCorrect, selectedFlashcard!);
-            debugPrint("new card: $newFlashcard");
-          });
-          //progressBarController.stop();
-        }
-      })
-      ..repeat();
+    // ref.read(progressBarNotifierProvider.notifier).startProgress(answerTime, onComplete);
   }
 
   String _getRandomAnswer(List<StudyCards> flashcards) {
     final List<String> answers =
         flashcards.take(flashcards.length).map((fc) => fc.backContent).toList();
     return answers[Random().nextInt(answers.length)];
+  }
+
+  void onComplete() {
+    final flashcards = ref.watch(studyNotifierProvider).remainBox;
+    final selectedFlashcard = ref.watch(studyNotifierProvider).displayedFlashcard;
+    setState(() {
+      isAnswered = true;
+      isCorrect = false;
+      newFlashcard = ref
+          .read(studyNotifierProvider.notifier)
+          .setNextFlashcard(isCorrect, selectedFlashcard!);
+      randomAnswer = _getRandomAnswer(flashcards);
+    });
   }
 
   @override
@@ -93,12 +62,6 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
     final selectedFlashcard = studyState.displayedFlashcard;
     final flashcards = studyState.remainBox;
 
-    if (randomAnswer == null) {
-      setState(() {
-        randomAnswer = _getRandomAnswer(flashcards);
-      });
-    }
-
     if (selectedFlashcard == null) {
       return const Center(
           child: DisplayText(
@@ -106,6 +69,13 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
         color: Colors.black,
         fontWeight: FontWeight.bold,
       ));
+    }
+
+    if (randomAnswer == null) {
+      setState(() {
+        randomAnswer = _getRandomAnswer(flashcards);
+      });
+      debugPrint("random answer: $randomAnswer");
     }
 
     return Scaffold(
@@ -135,13 +105,15 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               LinearProgressIndicator(
-                value: progressBarController.value,
+                value: 0,
+                // value: ref.watch(progressBarNotifierProvider),
                 backgroundColor: colors.primaryContainer,
                 color: colors.primary,
                 minHeight: 15,
                 borderRadius: BorderRadius.circular(16),
               ),
-              const Gap(20),
+               // ProgressBar(duration: answerTime, onComplete: onComplete, isAnswered: isAnswered),             
+                const Gap(20),
               _buildCardContainer(selectedFlashcard, colors),
             ],
           ),
@@ -207,8 +179,8 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
           onPressed: isAnswered
               ? null
               : () {
+                  // ref.read(progressBarNotifierProvider.notifier).stopProgress();
                   setState(() {
-                    progressBarController.stop();
                     isAnswered = true;
                     isCorrect = selectedFlashcard.backContent == randomAnswer;
                     newFlashcard = ref
@@ -227,7 +199,9 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
               ? null
               : () {
                   setState(() {
-                    progressBarController.stop();
+                    // ref
+                    //     .read(progressBarNotifierProvider.notifier)
+                    //     .stopProgress();
                     isAnswered = true;
                     isCorrect = selectedFlashcard.backContent != randomAnswer;
                     newFlashcard = ref
@@ -262,10 +236,11 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
               if (newFlashcard != null) {
                 setState(() {
                   randomAnswer = _getRandomAnswer(flashcards);
-                  progressBarController.reset();
-                  progressBarController.forward();
                   isAnswered = false;
                 });
+                // ref
+                //     // .read(progressBarNotifierProvider.notifier)
+                //     .startProgress(answerTime, onComplete);
                 ref
                     .read(studyNotifierProvider.notifier)
                     .setDisplayedCardState(newFlashcard!);

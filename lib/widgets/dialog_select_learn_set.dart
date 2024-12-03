@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
@@ -308,9 +306,11 @@ class DialogSelectLearnSet extends ConsumerWidget {
       context.push('/flipModeStudy', extra: set);
     } else if (studyType == StudyType.write) {
       context.push('/writeModeStudy', extra: set);
-    } else if (studyType == StudyType.abcd) {
-      context.push('/abcdModeStudy', extra: set);
-    } else {
+    }
+    // else if (studyType == StudyType.abcd) {
+    //   context.push('/abcdModeStudy', extra: set);
+    // }
+    else {
       context.push('/speedRecallModeStudy', extra: set);
     }
   }

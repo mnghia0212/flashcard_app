@@ -92,14 +92,14 @@ final appRoutes = [
       return AbcdModeStudy(set: set);
     },
   ),
-  GoRoute(
-    path: RouteLocation.speedRecallModeStudy,
-    parentNavigatorKey: navigationKey,
-    builder: (context, state) {
-      dynamic set = state.extra as dynamic;
-      return SpeedRecallModeStudy(set: set);
-    },
-  ),
+  // GoRoute(
+  //   path: RouteLocation.speedRecallModeStudy,
+  //   parentNavigatorKey: navigationKey,
+  //   builder: (context, state) {
+  //     dynamic set = state.extra as dynamic;
+  //     return SpeedRecallModeStudy(set: set);
+  //   },
+  // ),
 
 
 
