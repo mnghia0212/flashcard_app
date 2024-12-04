@@ -55,7 +55,7 @@ class CommonTextFormField extends StatelessWidget {
       },
       onChanged: (value) {},
       validator: validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      //autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }
