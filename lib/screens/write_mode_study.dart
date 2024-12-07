@@ -63,6 +63,15 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
         body: _buildCardDisplay(context, colors, selectedFlashcard));
   }
 
+  String showCardResult(StudyCards card) {
+     log("yes/no: $isCorrect");
+    if (isCorrect) {
+      return "Đáp án chính xác";
+    } else {
+      return "Sai, đáp án là: ${card.backContent}";
+    }
+  }
+
   Widget _buildCardDisplay(
       BuildContext context, ColorScheme colors, StudyCards selectedFlashcard) {
     return Center(
@@ -87,7 +96,7 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
   Widget _buildCardContainer(StudyCards selectedFlashcard, ColorScheme colors) {
     return Container(
       key: ValueKey(selectedFlashcard.uniqueKey),
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 70),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 60),
       height: 450,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -120,6 +129,14 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
             text: "Câu trả lời", color: Colors.black, fontSize: 15),
         const Gap(10),
         _buildAnswerTextField(),
+        const Gap(10),
+        if (isAnswered)
+          DisplayText(
+            text: showCardResult(selectedFlashcard),
+            fontWeight: FontWeight.bold,
+            textAlign: TextAlign.center,
+            color: isCorrect ? Colors.green : Colors.red,
+          ),
         const Spacer(),
         _buildActionButtons(colors, selectedFlashcard)
       ],
@@ -156,7 +173,6 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
                   setState(() {
                     isCorrect = answerController.text.toLowerCase().trim() ==
                         selectedFlashcard.backContent.toLowerCase().trim();
-                    //AppSounds.playSoundRightWrong(isCorrect, audioPlayer);
                     isAnswered = true;
 
                     newFlashcard = ref

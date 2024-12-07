@@ -307,10 +307,9 @@ class DialogSelectLearnSet extends ConsumerWidget {
     } else if (studyType == StudyType.write) {
       context.push('/writeModeStudy', extra: set);
     }
-    // else if (studyType == StudyType.abcd) {
-    //   context.push('/abcdModeStudy', extra: set);
-    // }
-    else {
+    else if (studyType == StudyType.abcd) {
+      context.push('/abcdModeStudy', extra: set);
+    } else {
       context.push('/speedRecallModeStudy', extra: set);
     }
   }

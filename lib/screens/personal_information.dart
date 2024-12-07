@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
@@ -16,7 +18,6 @@ class PersonalInformation extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final emailController = TextEditingController(text: userState!.email);
     final userNameController = TextEditingController(text: userState!.userName);
-    final passwordController = TextEditingController(text: userState!.password);
     final colors = context.colorScheme;
     final sizes = context.deviceSize;
     final isLoading = ref.watch(isLoadingPageProvider);
@@ -34,8 +35,7 @@ class PersonalInformation extends ConsumerWidget {
                   children: [
                     const CircleAvatar(
                       radius: 30,
-                      backgroundImage: AssetImage(
-                          'assets/images/ava2.jpg'), // Thay bằng ảnh đại diện của người dùng
+                      backgroundImage: AssetImage('assets/images/ava2.jpg'),
                     ),
                     const Gap(10),
                     DisplayText(
@@ -54,14 +54,9 @@ class PersonalInformation extends ConsumerWidget {
                         controller: userNameController,
                         labelText: "Tên người dùng",
                         icon: const Icon(Icons.person_outline)),
-                    // CommonTextFormField(
-                    //     controller: passwordController,
-                    //     isPassword: true,
-                    //     labelText: "Mật khẩu",
-                    //     icon: const Icon(Icons.lock_outline)),
                     const Spacer(),
-                    _buildFormUserInformation(sizes, userNameController,
-                        passwordController, ref, context, colors)
+                    _buildButtonUpdateUserInformation(
+                        sizes, userNameController, ref, context, colors)
                   ],
                 ),
               ),
@@ -69,37 +64,57 @@ class PersonalInformation extends ConsumerWidget {
     );
   }
 
-  SizedBox _buildFormUserInformation(
+  Future<void> updateUserInformation(BuildContext context, WidgetRef ref,
+      TextEditingController userNameController) async {
+    if (userState != null) {
+      try {
+        ref.read(isLoadingPageProvider.notifier).state = true;
+        final updatedUser = userState!.copyWith(
+          userName: userNameController.text,
+        );
+
+        await ref
+            .read(userProvider.notifier)
+            .updateUser(updatedUser)
+            .then((value) {
+          ref.read(isLoadingPageProvider.notifier).state = false;
+          if (!context.mounted) {
+            return;
+          }
+
+          context.pop();
+
+          AppAlerts.showFlushBar(
+              context, "Cập nhật thông tin thành công", AlertType.success);
+        });
+      } catch (e) {
+        if (!context.mounted) {
+          return;
+        }
+        log("error update user info: $e");
+        AppAlerts.showFlushBar(
+            context, "Lỗi khi cập nhật: $e", AlertType.error);
+      }
+    } else {
+      if (!context.mounted) {
+        return;
+      }
+      AppAlerts.showFlushBar(
+          context, "Chưa có người dùng nào đăng nhập", AlertType.error);
+    }
+  }
+
+  SizedBox _buildButtonUpdateUserInformation(
       Size sizes,
       TextEditingController userNameController,
-      TextEditingController passwordController,
       WidgetRef ref,
       BuildContext context,
       ColorScheme colors) {
     return SizedBox(
       width: sizes.width,
       child: ElevatedButton.icon(
-        onPressed: () async {
-          ref.read(isLoadingPageProvider.notifier).state = true;
-          final updatedUser = userState!.copyWith(
-              userName: userNameController.text,
-          );
-
-          await ref
-              .read(userProvider.notifier)
-              .updateUser(updatedUser)
-              .then((value) {
-            ref.read(isLoadingPageProvider.notifier).state = false;
-            if (!context.mounted) {
-              return;
-            }
-
-            context.pop();
-
-            AppAlerts.showFlushBar(
-                context, "Cập nhật thông tin thành công", AlertType.success);
-          });
-        },
+        onPressed: () =>
+            updateUserInformation(context, ref, userNameController),
         label: const DisplayText(
           text: "Cập nhật",
           fontWeight: FontWeight.bold,

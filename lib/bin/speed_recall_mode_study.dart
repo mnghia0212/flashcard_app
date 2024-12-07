@@ -32,7 +32,6 @@ class _SpeedRecallModeStudyState extends ConsumerState<SpeedRecallModeStudy>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(studyNotifierProvider.notifier).initializeFlashcards(widget.set);
     });
-    // ref.read(progressBarNotifierProvider.notifier).startProgress(answerTime, onComplete);
   }
 
   String _getRandomAnswer(List<StudyCards> flashcards) {

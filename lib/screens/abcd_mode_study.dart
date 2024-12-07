@@ -92,6 +92,31 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
     );
   }
 
+  Color showAnswerColor(String shuffleAnswer, StudyCards card) {
+    if (!isAnswered) {
+      return Colors.black;
+    } else {
+      if (isCorrect && groupValue == card.backContent) {
+        return Colors.green;
+      }
+      else {
+        return Colors.red;
+      }
+    }
+  }
+
+  Widget showAnswerIcon(StudyCards card) {  
+    if (!isAnswered) {
+      return const SizedBox.shrink();
+    } else if (groupValue == card.backContent) {
+      return const Icon(Icons.check);
+    } else if (groupValue != card.backContent) {
+      return const Icon(Icons.close);
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
   Widget _buildCardDisplay(
       StudyCards selectedFlashcard, BuildContext context, ColorScheme colors) {
     return Center(
@@ -166,19 +191,24 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
             border: Border.all(width: 1, color: Colors.grey),
           ),
           child: ListTile(
-            title: Text(shuffledAnswers![index]),
-            leading: Radio<String>(
-              value: shuffledAnswers![index],
-              groupValue: groupValue,
-              onChanged: (value) {
-                setState(() {
-                  groupValue = value;
-                  //isAnswered = true;
-                  isCorrect = groupValue == selectedFlashcard.backContent;
-                });
-              },
-            ),
-          ),
+              title: DisplayText(
+                  text: shuffledAnswers![index],
+                  fontWeight: FontWeight.bold,
+                  color: showAnswerColor(
+                      shuffledAnswers![index], selectedFlashcard)),
+              leading: Radio<String>(
+                value: shuffledAnswers![index],
+                groupValue: groupValue,
+                onChanged: (value) {
+                  if (!isAnswered) {
+                    setState(() {
+                      groupValue = value;
+                      isCorrect = groupValue == selectedFlashcard.backContent;
+                    });
+                  }
+                },
+              ),
+              trailing: showAnswerIcon(selectedFlashcard)),
         );
       }),
     );

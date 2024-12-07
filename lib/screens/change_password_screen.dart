@@ -44,8 +44,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     final colors = context.colorScheme;
     final sizes = context.deviceSize;
-    //final isLoading = ref.watch(isLoadingPageProvider);
-
+    
     if (widget.userState == null) {
       const Center(
         child: DisplayTitle(
