@@ -8,16 +8,18 @@ class StudyState {
   final List<StudyCards> firstRightBox;
   final List<StudyCards> secondRightBox;
   final StudyCards? displayedFlashcard;
+  final List<String>? randomAnswer;
   StudyState({
      this.remainBox = const [],
      this.initialBox = const [],
      this.wrongBox = const [],
      this.firstRightBox = const [],
      this.secondRightBox = const [],
-    this.displayedFlashcard,
+     this.displayedFlashcard,
+     this.randomAnswer
   });
 
-
+  
 
   StudyState copyWith({
     List<StudyCards>? remainBox,
@@ -26,6 +28,7 @@ class StudyState {
     List<StudyCards>? firstRightBox,
     List<StudyCards>? secondRightBox,
     StudyCards? displayedFlashcard,
+    List<String>? randomAnswer
   }) {
     return StudyState(
       remainBox: remainBox ?? this.remainBox,
@@ -34,6 +37,7 @@ class StudyState {
       firstRightBox: firstRightBox ?? this.firstRightBox,
       secondRightBox: secondRightBox ?? this.secondRightBox,
       displayedFlashcard: displayedFlashcard ?? this.displayedFlashcard,
+      randomAnswer: randomAnswer ?? this.randomAnswer
     );
   }
 }

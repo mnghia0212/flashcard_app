@@ -14,26 +14,25 @@ class StudyNotifier extends StateNotifier<StudyState> {
     final setId =
         set is DefaultSets ? (set).setId : (set as FlashcardSets).setId;
 
-    //debugPrint("setId: $setId");
-
     final flashcards = set is DefaultSets
         ? await ref.read(defaultCardsFutureProvider(setId).future)
         : await ref.read(flashcardStreamProvider(setId).future);
 
-    //debugPrint("flashcards: $flashcards");
-
     if (flashcards.isNotEmpty) {
       state = state.copyWith(
-        remainBox: List<StudyCards>.from(flashcards),
-        initialBox: List<StudyCards>.from(flashcards),
-        displayedFlashcard: flashcards[Random().nextInt(flashcards.length)],
-      );
+          remainBox: List<StudyCards>.from(flashcards),
+          initialBox: List<StudyCards>.from(flashcards),
+          displayedFlashcard: flashcards[Random().nextInt(flashcards.length)],
+          randomAnswer: null);
     }
-    //debugPrint("all: ${state.remainBox}");
   }
 
   void setDisplayedCardState(StudyCards flashcard) {
     state = state.copyWith(displayedFlashcard: flashcard);
+  }
+
+  void setRandomAnswers(List<String> answerList) {
+    state = state.copyWith(randomAnswer: answerList);
   }
 
   StudyCards? setNextFlashcard(bool isCorrect, StudyCards flashcard) {
@@ -45,8 +44,6 @@ class StudyNotifier extends StateNotifier<StudyState> {
       return null;
     }
   }
-
-
 
   void _updateBoxes(bool isCorrect, StudyCards flashcard) {
     state = state.copyWith(
