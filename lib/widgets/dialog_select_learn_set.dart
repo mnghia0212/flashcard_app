@@ -292,8 +292,8 @@ class DialogSelectLearnSet extends ConsumerWidget {
         return;
       }
 
-      if (cardNumber! < 1) {
-        AppAlerts.showFlushBar(context, "Bộ thẻ trống", AlertType.error);
+      if (cardNumber! <= 1) {
+        AppAlerts.showFlushBar(context, "Bộ thẻ ít hơn hoặc bằng 2 thẻ", AlertType.error);
       } else {
         _startStudyMode(studyType, context, flashcardSet, false);
       }

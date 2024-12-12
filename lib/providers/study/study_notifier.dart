@@ -25,11 +25,16 @@ class StudyNotifier extends StateNotifier<StudyState> {
           displayedFlashcard: flashcards[Random().nextInt(flashcards.length)],
           randomAnswer: null);
     }
+    // debugPrint("ini: ${state.remainBox.map((card) => card.backContent)}");
+    // debugPrint("selected card: ${state.displayedFlashcard}");
   }
 
   void setDisplayedCardState(StudyCards flashcard) {
-    state = state.copyWith(displayedFlashcard: flashcard);
-  }
+  debugPrint("Setting new card: ${flashcard.frontContent}");
+  state = state.copyWith(displayedFlashcard: flashcard);
+  debugPrint("Updated displayedFlashcard: ${state.displayedFlashcard!.frontContent}");
+}
+
 
   void setRandomAnswers(List<String> answerList) {
     state = state.copyWith(randomAnswer: answerList);

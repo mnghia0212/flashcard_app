@@ -19,8 +19,9 @@ class RouteLocation {
   static String get abcdModeStudy => '/abcdModeStudy';
   // static String get speedRecallModeStudy => '/speedRecallModeStudy';
 
-  static String get endStudySessionScreen =>
-      '/endStudySessionScreen/:rightAnswerCount/:wrongAnswerCount';
+  static String get endTestSessionScreen =>
+      '/endTestSessionScreen/:rightAnswerCount/:wrongAnswerCount';
+  static String get endStudySessionScreen => '/endStudySessionScreen/:studyMode';
   static String get testMode => '/testMode';
   static String get personalInformation => '/personalInformation';
   static String get studyGroupScreen => '/studyGroupScreen/:groupId/:groupName';

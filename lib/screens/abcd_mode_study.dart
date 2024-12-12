@@ -8,6 +8,7 @@ import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 class AbcdModeStudy extends ConsumerStatefulWidget {
   final dynamic set;
@@ -24,6 +25,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   String? groupValue;
   StudyCards? newFlashcard;
   final AudioPlayer audioPlayer = AudioPlayer();
+  String studyMode = "abcd";
 
   List<String> _getWrongAnswers(
       List<StudyCards> allStudyCards, StudyCards selectedFlashcard) {
@@ -39,8 +41,6 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   List<String> _getShuffledAnswers(
       StudyCards selectedFlashcard, List<String> wrongAnswers) {
     List<String> answers = [...wrongAnswers, selectedFlashcard.backContent];
-
-    answers.shuffle();
 
     return answers;
   }
@@ -60,16 +60,23 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
     final selectedFlashcard = studyState.displayedFlashcard;
 
     if (selectedFlashcard == null) {
-      return const Center(
-          child: DisplayText(
-        text: "Lỗi khi tải dữ liệu thẻ",
-        color: Colors.black,
-        fontWeight: FontWeight.bold,
-      ));
+      return const Center(child: CircularProgressIndicator());
     }
 
     return Scaffold(
-      appBar: const CommonAppBar(title: "Ôn tập trắc nghiệm"),
+      appBar: CommonAppBar(
+        title: "Ôn tập trắc nghiệm",
+         leadingButton: IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const DialogCancelStudySession();
+                  },
+                );
+              },
+              icon: const Icon(Icons.arrow_back_ios_new)),
+      ),
       body: _buildCardDisplay(selectedFlashcard, studyState, context, colors),
     );
   }
@@ -196,16 +203,27 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   Widget _buildOptionRatio(
       StudyCards selectedFlashcard, StudyState studyState) {
     List<String>? shuffleAnswers;
+
     if (studyState.randomAnswer == null) {
       final wrongAnswers =
           _getWrongAnswers(studyState.remainBox, selectedFlashcard);
-      final answerList = _getShuffledAnswers(selectedFlashcard, wrongAnswers);
-      shuffleAnswers = answerList;
+      shuffleAnswers = _getShuffledAnswers(selectedFlashcard, wrongAnswers);
+      //   if (!isShuffled) {
+      //     shuffleAnswers.shuffle();
+      //   }
     } else {
       shuffleAnswers = ref.watch(studyNotifierProvider).randomAnswer;
     }
+
+    if (shuffleAnswers == null) {
+      return const DisplayText(
+        text: "Lỗi khi tải câu trả lời",
+        color: Colors.black,
+      );
+    }
+
     return Column(
-      children: List.generate(shuffleAnswers!.length, (index) {
+      children: List.generate(shuffleAnswers.length, (index) {
         return Container(
           margin: const EdgeInsets.only(top: 12),
           decoration: BoxDecoration(
@@ -216,6 +234,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
               title: DisplayText(
                   text: shuffleAnswers![index],
                   fontWeight: FontWeight.bold,
+                  fontSize: 16,
                   color: showAnswerColor(
                       shuffleAnswers[index], selectedFlashcard)),
               leading: Radio<String>(
@@ -226,6 +245,7 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
                     setState(() {
                       groupValue = value;
                       isCorrect = groupValue == selectedFlashcard.backContent;
+                      isShuffled = true;
                     });
                   }
                 },
@@ -239,13 +259,12 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
 
   Row _buildActionButtons(
       ColorScheme colors, StudyCards selectedFlashcard, StudyState studyState) {
-    final flashcards = studyState.remainBox;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         _buildAnswerButton(selectedFlashcard, colors),
         const Gap(10),
-        _buildNextCardButton(colors, selectedFlashcard, flashcards, studyState)
+        _buildNextCardButton(colors, selectedFlashcard, studyState)
       ],
     );
   }
@@ -257,13 +276,10 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
           ? null
           : () {
               setState(() {
-                //AppSounds.playSoundRightWrong(isCorrect, audioPlayer);
                 isAnswered = true;
                 newFlashcard = ref
                     .read(studyNotifierProvider.notifier)
                     .setNextFlashcard(isCorrect, selectedFlashcard);
-                log("isCorrect: $isCorrect");
-                log("new cards: $newFlashcard");
               });
             },
       style: ElevatedButton.styleFrom(backgroundColor: colors.primary),
@@ -274,35 +290,40 @@ class _AbcdModeStudyState extends ConsumerState<AbcdModeStudy> {
   }
 
   ElevatedButton _buildNextCardButton(
-      ColorScheme colors,
-      StudyCards selectedFlashcard,
-      List<StudyCards> flashcards,
-      StudyState studyState) {
+      ColorScheme colors, StudyCards selectedFlashcard, StudyState studyState) {
     return ElevatedButton(
       onPressed: !isAnswered
           ? null
           : () {
               if (newFlashcard != null) {
                 List<String> answerList;
+                List<String> wrongAnswers;
+                StudyCards? newCard;
+
                 setState(() {
+                  ref
+                      .read(studyNotifierProvider.notifier)
+                      .setDisplayedCardState(newFlashcard!);
+
+                  newCard = ref.watch(studyNotifierProvider).displayedFlashcard;
                   isAnswered = false;
-                  List<String> wrongAnswers =
-                      _getWrongAnswers(flashcards, selectedFlashcard);
-                  answerList =
-                      _getShuffledAnswers(selectedFlashcard, wrongAnswers);
+                  wrongAnswers =
+                      _getWrongAnswers(studyState.remainBox, newCard!);
+                  answerList = _getShuffledAnswers(newCard!, wrongAnswers);
+                  answerList.shuffle();
+
+                  log("wrong list :$wrongAnswers");
+                  log("random list :$answerList");
                   ref
                       .read(studyNotifierProvider.notifier)
                       .setRandomAnswers(answerList);
-                  //shuffledAnswers =
-                  //_getShuffledAnswers(selectedFlashcard, wrongAnswers);
 
                   groupValue = null;
                 });
-                ref
-                    .read(studyNotifierProvider.notifier)
-                    .setDisplayedCardState(newFlashcard!);
               } else {
-                log("SESSION COMPLETED");
+                log("set: ${widget.set}");
+                log("string $studyMode");
+                context.go('/endStudySessionScreen/$studyMode', extra: widget.set);
                 AppSounds.playEndSessionSound(audioPlayer);
               }
             },

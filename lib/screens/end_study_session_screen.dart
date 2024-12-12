@@ -1,68 +1,141 @@
-import 'package:flashcard_app/utils/extensions.dart';
-import 'package:flashcard_app/widgets/widgets.dart';
+import 'package:flashcard_app/providers/providers.dart';
+import 'package:flashcard_app/utils/utils.dart';
+import 'package:flashcard_app/widgets/display_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-class EndStudySessionScreen extends StatelessWidget {
-  final String? rightAnswerCount;
-  final String? wrongAnswerCount;
+class EndStudySessionScreen extends ConsumerWidget {
+  final dynamic set;
+  final String? studyMode;
   const EndStudySessionScreen(
-      {super.key,
-      required this.rightAnswerCount,
-      required this.wrongAnswerCount});
+      {super.key, required this.set, required this.studyMode});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sizes = context.deviceSize;
+    final colors = context.colorScheme;
+    final userName = ref.watch(userProvider).user!.userName;
+    final mode = studyMode == "abcd" ? "Trắc nghiệm" : "Viết";
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Center(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            width: context.deviceSize.width,
-            height: context.deviceSize.height * 0.3,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.25),
-                    offset: const Offset(2, 2),
-                    blurRadius: 6)
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                DisplayText(
-                  text: "Bạn đã hoàn thành bài kiểm tra",
-                  color: context.colorScheme.primary,
-                  fontSize: 19,
-                  fontWeight: FontWeight.bold,
+        body: SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Image.asset(
+                "assets/images/cheer.png",
+                scale: 0.9,
+              ),
+              Positioned(
+                  top: 80,
+                  child: Image.asset(
+                    "assets/images/trophy.png",
+                    scale: 0.8,
+                  )),
+              Positioned(
+                bottom: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        RichText(
+                            text: TextSpan(
+                                style: const TextStyle(
+                                    fontSize: 27,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Montserrat'),
+                                children: [
+                              const TextSpan(
+                                  text: "Chúc mừng ",
+                                  style: TextStyle(color: Colors.black)),
+                              TextSpan(
+                                  text: userName,
+                                  style: TextStyle(color: colors.primary))
+                            ])),
+                      ]),
                 ),
-                const Gap(20),
-                DisplayText(
-                  text: "Số câu đúng: $rightAnswerCount",
-                  color: Colors.black,
-                ),
-                const Gap(10),
-                DisplayText(
-                  text: "Số câu sai: $wrongAnswerCount",
-                  color: Colors.black,
-                ),
-                const Gap(20),
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.arrow_left, color: Colors.black,),
-                  onPressed: () => context.go('/bottomNavigator'), 
-                  label: const DisplayText(text: "Quay về", color: Colors.black,)
-                )
-              ],
-            ),
+              ),
+            ],
           ),
-        ),
+          SizedBox(
+            height: sizes.height * 0.55,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const DisplayText(
+                    text: "Đã hoàn thành phiên học",
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                    textAlign: TextAlign.center,
+                  ),
+                  const Gap(10),
+                  RichText(
+                    textAlign: TextAlign.center,
+                      text: TextSpan(
+                          style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Montserrat'),
+                          children: [
+                        const TextSpan(
+                            text: "Chế độ học: ",
+                            style: TextStyle(color: Colors.black)),
+                        TextSpan(
+                            text: mode, style: TextStyle(color: colors.primary))
+                      ])),
+                  const Gap(10),
+                  const DisplayText(
+                    text: "Hãy chọn làm lại hoặc quay về",
+                    color: Colors.black,
+                    textAlign: TextAlign.center,
+                  ),
+                  const Spacer(),
+                  OutlinedButton.icon(
+                  onPressed: () {
+                    studyMode == "abcd" 
+                      ? context.push('/abcdModeStudy', extra: set)
+                      : context.push('/writeModeStudy', extra: set);
+                  },
+                  label: const DisplayText(
+                    text: "Làm lại",
+                    color: Colors.black,
+                  ),
+                  icon: const Icon(Icons.refresh),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    side: BorderSide(
+                      width: 2,
+                      color: colors.primary
+                    )
+                  ),
+                ),
+                const Gap(20),
+                 ElevatedButton(
+                  onPressed: () => context.go('/bottomNavigator'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colors.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 18)
+                  ),
+                  child: const DisplayText(
+                    text: "Quay về",
+                  
+                  ),
+                ),
+                ],
+              ),
+            ),
+          )
+        ],
       ),
-    );
+    ));
   }
 }

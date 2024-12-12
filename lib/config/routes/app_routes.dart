@@ -72,10 +72,6 @@ final appRoutes = [
     },
   ),
 
-
-
-
-
   GoRoute(
     path: RouteLocation.writeModeStudy,
     parentNavigatorKey: navigationKey,
@@ -109,20 +105,27 @@ final appRoutes = [
   //   },
   // ),
 
-
-
-
-
   GoRoute(
-      path: RouteLocation.endStudySessionScreen,
+      path: RouteLocation.endTestSessionScreen,
       parentNavigatorKey: navigationKey,
       builder: (context, state) {
         final rightAnswerCount = state.pathParameters['rightAnswerCount'];
         final wrongAnswerCount = state.pathParameters['wrongAnswerCount'];
-        return EndStudySessionScreen(
+        return EndTestSessionScreen(
             rightAnswerCount: rightAnswerCount,
             wrongAnswerCount: wrongAnswerCount);
       }),
+
+  GoRoute(
+    path: RouteLocation.endStudySessionScreen,
+    parentNavigatorKey: navigationKey,
+    builder: (context, state) {
+      dynamic set = state.extra as dynamic;
+      final studyMode = state.pathParameters['studyMode'];
+      return EndStudySessionScreen(set: set, studyMode: studyMode);
+    },
+  ),
+
   GoRoute(
     path: RouteLocation.defaultFlashcardsScreen,
     parentNavigatorKey: navigationKey,

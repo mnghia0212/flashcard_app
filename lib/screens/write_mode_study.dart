@@ -8,6 +8,7 @@ import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 class WriteModeStudy extends ConsumerStatefulWidget {
   final dynamic set;
@@ -23,7 +24,7 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
   bool isAnswered = false;
   bool isCorrect = false;
   StudyCards? newFlashcard;
-  late AsyncValue flashcardAsync;
+  String studyMode = "write";
 
   @override
   void dispose() {
@@ -59,12 +60,24 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
     log("displayed card 1: ${studyState.displayedFlashcard!.backContent}");
 
     return Scaffold(
-        appBar: const CommonAppBar(title: "Ôn tập chế độ viết"),
+        appBar: CommonAppBar(
+          title: "Ôn tập viết",
+          leadingButton: IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const DialogCancelStudySession();
+                  },
+                );
+              },
+              icon: const Icon(Icons.arrow_back_ios_new)),
+        ),
         body: _buildCardDisplay(context, colors, selectedFlashcard));
   }
 
   String showCardResult(StudyCards card) {
-     log("yes/no: $isCorrect");
+    log("yes/no: $isCorrect");
     if (isCorrect) {
       return "Đáp án chính xác";
     } else {
@@ -206,7 +219,10 @@ class _WriteModeStudyState extends ConsumerState<WriteModeStudy> {
                     .read(studyNotifierProvider.notifier)
                     .setDisplayedCardState(newFlashcard!);
               } else {
-                log("SESSION COMPLETED");
+                log("set: ${widget.set}");
+                log("string $studyMode");
+                context.go('/endStudySessionScreen/$studyMode',
+                    extra: widget.set);
                 AppSounds.playEndSessionSound(audioPlayer);
               }
             },

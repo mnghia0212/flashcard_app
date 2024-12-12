@@ -209,7 +209,7 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
             _buttonPickFile(colors, pickAudioFile, "Chọn Audio"),
             const Gap(10),
             DisplayText(
-              text: audioUrl ?? "Chưa có audio nào",
+              text: audioUrl ?? "Chưa có audio",
               color: Colors.black,
               textAlign: TextAlign.center,
             ),
@@ -217,7 +217,7 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
             _buttonPickFile(colors, pickVideoFile, "Chọn video"),
             const Gap(10),
             DisplayText(
-              text: videoUrl ?? "Chưa có video nào",
+              text: videoUrl ?? "Chưa có video",
               color: Colors.black,
               textAlign: TextAlign.center,
             ),
@@ -227,16 +227,37 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
     );
   }
 
-  ElevatedButton _buttonPickFile(
+  Row _buttonPickFile(
       ColorScheme colors, Future<void> Function() function, String text) {
-    return ElevatedButton(
-      onPressed: () async {
-        await function();
-      },
-      style: ElevatedButton.styleFrom(
-          backgroundColor: colors.primary,
-          padding: const EdgeInsets.symmetric(vertical: 15)),
-      child: DisplayText(text: text),
+    return Row(
+      children: [
+        Expanded(
+          child: ElevatedButton(
+            onPressed: () async {
+              await function();
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: colors.primary,
+                padding: const EdgeInsets.symmetric(vertical: 15)),
+            child: DisplayText(text: text),
+          ),
+        ),
+        const Gap(10),
+         OutlinedButton(
+          onPressed: () async {
+            await function();
+          },
+          style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              side: BorderSide(
+                width: 1,
+                color: colors.primary
+              ),
+
+          
+        ),
+          child: const Icon(Icons.delete),)
+      ],
     );
   }
 

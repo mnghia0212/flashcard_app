@@ -14,10 +14,11 @@ export 'write_mode_study.dart';
 export 'flip_study_mode.dart';
 export 'abcd_mode_study.dart';
 export 'study_group_screen.dart';
-export 'end_study_session_screen.dart';
+export 'end_test_session_screen.dart';
 export 'test_mode.dart';
 export 'personal_information.dart';
 export 'change_password_screen.dart';
+export 'end_study_session_screen.dart';
 
 
 export 'notification_screen.dart';
