@@ -13,6 +13,8 @@ class Flashcards extends Equatable implements StudyCards {
   final String frontContent;
   @override
   final String backContent;
+  final String? audioFile;
+  final String? videoFile;
   final String? audioPath;
   final String? videoPath;
   final String createdAt;
@@ -26,6 +28,8 @@ class Flashcards extends Equatable implements StudyCards {
     required this.backContent,
     this.audioPath,
     this.videoPath,
+    this.audioFile,
+    this.videoFile,
     required this.createdAt,
     this.updatedAt,
   });
@@ -38,6 +42,8 @@ class Flashcards extends Equatable implements StudyCards {
     String? backContent,
     String? audioPath,
     String? videoPath,
+    String? audioFile,
+    String? videoFile,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -47,8 +53,10 @@ class Flashcards extends Equatable implements StudyCards {
       setId: setId ?? this.setId,
       frontContent: frontContent ?? this.frontContent,
       backContent: backContent ?? this.backContent,
-      audioPath: audioPath ?? this.audioPath,
-      videoPath: videoPath ?? this.videoPath,
+      audioPath: audioPath,
+      videoPath: videoPath,
+      audioFile: audioFile,
+      videoFile: videoFile,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -63,6 +71,8 @@ class Flashcards extends Equatable implements StudyCards {
       'backContent': backContent,
       'audioPath': audioPath,
       'videoPath': videoPath,
+      'audioFile': audioFile,
+      'videoFile': videoFile,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
     };
@@ -77,6 +87,8 @@ class Flashcards extends Equatable implements StudyCards {
       backContent: map['backContent'] as String,
       audioPath: map['audioPath'] != null ? map['audioPath'] as String : null,
       videoPath: map['videoPath'] != null ? map['videoPath'] as String : null,
+      audioFile: map['audioFile'] != null ? map['audioFile'] as String : null,
+      videoFile: map['videoFile'] != null ? map['videoFile'] as String : null,
       createdAt: map['createdAt'] as String,
       updatedAt: map['updatedAt'] != null ? map['updatedAt'] as String : null,
     );
@@ -100,11 +112,13 @@ class Flashcards extends Equatable implements StudyCards {
       backContent,
       audioPath,
       videoPath,
+      audioFile,
+      videoFile,
       createdAt,
       updatedAt,
     ];
   }
-  
+
   @override
   String get uniqueKey => flashcardId;
 }

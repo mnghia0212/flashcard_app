@@ -32,9 +32,9 @@ class ProfileScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const Gap(10),
-                      _checkUserState(ref, colors, context, userState),
+                      _checkUserState1(ref, colors, context, userState),
                       const Gap(15),
-                      _buildPreferencesSection(context, userState!),
+                      _checkUserState2(context, userState),
                       const Gap(15),
                       _buildMoreSection(context),
                       const Spacer(),
@@ -47,10 +47,18 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _checkUserState(WidgetRef ref, ColorScheme colors,
+  Widget _checkUserState1(WidgetRef ref, ColorScheme colors,
       BuildContext context, Users? userState) {
     if (userState != null) {
       return _buildProfileCard(ref, colors, context, userState);
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _checkUserState2(BuildContext context, Users? userState) {
+    if (userState != null) {
+      return _buildPreferencesSection(context, userState);
     } else {
       return Container();
     }

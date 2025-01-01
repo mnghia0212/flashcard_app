@@ -28,8 +28,9 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
   final supabase = Supabase.instance.client;
   late TextEditingController frontContentController;
   late TextEditingController backContentController;
-  String? audioUrl;
-  String? videoUrl;
+  String? audioFileName, audioUrl;
+  String? videoFileName, videoUrl;
+  File? audioFile, videoFile;
 
   bool get isEditing => widget.flashcard != null;
 
@@ -46,9 +47,9 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
     backContentController = TextEditingController(
         text: isEditing ? widget.flashcard!.backContent : " ");
 
-    audioUrl = isEditing ? widget.flashcard!.audioPath : null;
+    audioFileName = isEditing ? widget.flashcard!.audioFile : null;
 
-    videoUrl = isEditing ? widget.flashcard!.videoPath : null;
+    videoFileName = isEditing ? widget.flashcard!.videoFile : null;
   }
 
   @override
@@ -85,18 +86,63 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
           );
   }
 
+  void deleteAudioUrl() {
+    setState(() {
+      audioFileName = null;
+      audioFile = null;
+    });
+  }
+
+  void deleteVideoUrl() {
+    setState(() {
+      videoFileName = null;
+      videoFile = null;
+    });
+  }
+
   void updateCard() async {
     final answer = backContentController.text.trim();
     final question = frontContentController.text.trim();
 
     if (answer.isNotEmpty && question.isNotEmpty) {
       ref.read(isLoadingPageProvider.notifier).state = true;
+
+      if (audioFileName == null) {
+        setState(() {
+          audioUrl = null;
+          audioFile = null;
+        });
+      } else {
+        if (audioFileName != widget.flashcard!.audioFile) {
+          await uploadFile(audioFile!, "audio");
+        }
+      }
+
+      if (videoFileName == null) {
+        setState(() {
+          videoUrl = null;
+          videoFile = null;
+        });
+      } else {
+        if (videoFileName != widget.flashcard!.videoFile) {
+          await uploadFile(videoFile!, "video");
+        }
+      }
+
+      log("audio name: $audioFileName");
+      log("audio url: $audioUrl");
+      log("video name: $videoFileName");
+      log("video url: $videoUrl");
+
       final updatedFlashcard = widget.flashcard!.copyWith(
           frontContent: question,
           backContent: answer,
-          audioPath: audioUrl,
-          videoPath: videoUrl,
+          audioFile: null,
+          videoFile: null,
+          audioPath: null,
+          videoPath: null,
           updatedAt: DateTime.now().toString());
+      log("card: $updatedFlashcard");
 
       try {
         await ref
@@ -138,6 +184,15 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
 
     if (answer.isNotEmpty && question.isNotEmpty) {
       ref.read(isLoadingPageProvider.notifier).state = true;
+
+      if (audioFileName != null) {
+        await uploadFile(audioFile!, "audio");
+      }
+
+      if (videoFileName != null) {
+        await uploadFile(videoFile!, "video");
+      }
+
       final newCardDoc =
           FirebaseFirestore.instance.collection("flashcards").doc();
 
@@ -150,6 +205,8 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
         backContent: answer,
         audioPath: audioUrl,
         videoPath: videoUrl,
+        audioFile: audioFileName,
+        videoFile: videoFileName,
         createdAt: DateTime.now().toString(),
       );
 
@@ -170,6 +227,7 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
               context, "Tạo thẻ thành công", AlertType.success);
         });
       } catch (e) {
+        ref.read(isLoadingPageProvider.notifier).state = false;
         debugPrint("Error creating flashcard: $e");
         if (!mounted) {
           return;
@@ -206,18 +264,20 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
               controller: backContentController,
             ),
             const Gap(15),
-            _buttonPickFile(colors, pickAudioFile, "Chọn Audio"),
+            _buttonPickFile(colors, pickAudioFile, "Chọn Audio",
+                audioFileName != null, deleteAudioUrl),
             const Gap(10),
             DisplayText(
-              text: audioUrl ?? "Chưa có audio",
+              text: audioFileName ?? "Chưa có audio",
               color: Colors.black,
               textAlign: TextAlign.center,
             ),
             const Gap(40),
-            _buttonPickFile(colors, pickVideoFile, "Chọn video"),
+            _buttonPickFile(colors, pickVideoFile, "Chọn video",
+                videoFileName != null, deleteVideoUrl),
             const Gap(10),
             DisplayText(
-              text: videoUrl ?? "Chưa có video",
+              text: videoFileName ?? "Chưa có video",
               color: Colors.black,
               textAlign: TextAlign.center,
             ),
@@ -228,13 +288,17 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
   }
 
   Row _buttonPickFile(
-      ColorScheme colors, Future<void> Function() function, String text) {
+      ColorScheme colors,
+      Future<void> Function() pickFileFunction,
+      String text,
+      bool fileCondition,
+      VoidCallback removeFileFunction) {
     return Row(
       children: [
         Expanded(
           child: ElevatedButton(
             onPressed: () async {
-              await function();
+              await pickFileFunction();
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: colors.primary,
@@ -243,20 +307,15 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
           ),
         ),
         const Gap(10),
-         OutlinedButton(
-          onPressed: () async {
-            await function();
-          },
-          style: OutlinedButton.styleFrom(
+        if (fileCondition)
+          OutlinedButton(
+            onPressed: () => removeFileFunction(),
+            style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 15),
-              side: BorderSide(
-                width: 1,
-                color: colors.primary
-              ),
-
-          
-        ),
-          child: const Icon(Icons.delete),)
+              side: BorderSide(width: 1, color: colors.primary),
+            ),
+            child: const Icon(Icons.delete),
+          )
       ],
     );
   }
@@ -268,11 +327,16 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
       );
 
       if (result != null && result.files.single.path != null) {
-        File file = File(result.files.single.path!);
-        await uploadFile(file, 'audio');
+        final fileName = result.files.single.name;
+        final file = File(result.files.single.path!);
+        setState(() {
+          audioFileName = fileName.toString();
+          audioFile = file;
+        });
+        log("audio file: $fileName");
       } else {
         AppAlerts.showFlushBar(
-            context, "Lỗi: Không tìm thấy tệp âm thanh", AlertType.error);
+            context, "Không tìm thấy tệp âm thanh", AlertType.error);
       }
     } catch (e) {
       log("error pick audio: $e");
@@ -285,19 +349,23 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
     );
 
     if (result != null && result.files.single.path != null) {
+      final fileName = result.files.single.name;
       File file = File(result.files.single.path!);
-      await uploadFile(file, 'video');
+      setState(() {
+        videoFileName = fileName.toString();
+        videoFile = file;
+      });
+      log("video file: $fileName");
     } else {
       AppAlerts.showFlushBar(
-          context, "Lỗi: Không tìm thấy tệp video", AlertType.error);
+          context, "Không tìm thấy tệp video", AlertType.error);
     }
   }
 
   Future<void> uploadFile(File file, String fileType) async {
     try {
       String extension = fileType == 'audio' ? 'mp3' : 'mp4';
-      String fileName =
-          '${DateTime.now().millisecondsSinceEpoch}_$fileType.$extension';
+      String fileName = '${DateTime.now().millisecondsSinceEpoch}.$extension';
       Reference ref =
           FirebaseStorage.instance.ref().child('flashcards/$fileName');
       UploadTask uploadTask = ref.putFile(file);
@@ -307,8 +375,10 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
         setState(() {
           if (fileType == 'audio') {
             audioUrl = fileUrl;
+            log("audioUrl: $audioUrl");
           } else if (fileType == 'video') {
             videoUrl = fileUrl;
+            log("videoUrl: $videoUrl");
           }
         });
         log("download link: $fileUrl");

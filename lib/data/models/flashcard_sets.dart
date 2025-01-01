@@ -7,7 +7,7 @@ class FlashcardSets extends Equatable {
   final String setId;
   final String userId;
   final String title;
-  final String description;
+  final String description; 
   final bool isFavorite;
   final bool isDefault;
   final String createdAt;

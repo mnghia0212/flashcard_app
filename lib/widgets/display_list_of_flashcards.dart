@@ -18,26 +18,32 @@ class DisplayListOfFlashcards extends StatefulWidget {
 }
 
 class _DisplayListOfFlashcardsState extends State<DisplayListOfFlashcards> {
-  late VideoPlayerController controller;
+  final Map<String, VideoPlayerController> controllers = {};
+  bool isLoadingVideo = false;
+  Flashcards? loadingCard;
 
-  @override
-  void initState() {
-    initVideoUrl();
-    super.initState();
-  }
-
-  void initVideoUrl() {
-    final initVideoCard = widget.flashcards
-        .where((flashcard) => flashcard.videoPath != null)
-        .toList();
-
-    for (var i in initVideoCard) {
-      controller = VideoPlayerController.networkUrl(Uri.parse(i.videoPath!))
+  void initControllerForFlashcard(String videoPath) {
+    if (!controllers.containsKey(videoPath)) {
+      final controller = VideoPlayerController.networkUrl(Uri.parse(videoPath))
         ..initialize().then((_) {
           setState(() {});
         });
+      controller.play();
       controller.setLooping(true);
+      controllers[videoPath] = controller;
+    } else if (controllers[videoPath]!.value.isPlaying) {
+      controllers[videoPath]!.pause();
+    } else {
+      controllers[videoPath]!.play();
     }
+  }
+
+  @override
+  void dispose() {
+    for (var controller in controllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -71,6 +77,26 @@ class _DisplayListOfFlashcardsState extends State<DisplayListOfFlashcards> {
     );
   }
 
+  Widget _buildVideoPlaceholder(Flashcards flashcard) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          color: Colors.black,
+        ),
+        isLoadingVideo && flashcard.flashcardId == loadingCard!.flashcardId
+            ? const CircularProgressIndicator(
+                color: Colors.white,
+              )
+            : const Icon(
+                Icons.play_arrow,
+                size: 40,
+                color: Colors.white,
+              )
+      ],
+    );
+  }
+
   Widget _cardContent(
       Size deviceSize, Flashcards flashcard, BuildContext context) {
     return Container(
@@ -89,21 +115,35 @@ class _DisplayListOfFlashcardsState extends State<DisplayListOfFlashcards> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildExpandedCardSides(flashcard, context),
-          if (flashcard.videoPath != null) _buildExpandedVideo(),
+          _buildVideoView(flashcard)
         ],
       ),
     );
   }
 
-  Widget _buildExpandedVideo() {
-    return Expanded(
-      child: AspectRatio(
-        aspectRatio: controller.value.aspectRatio,
-        child: controller.value.isInitialized
-            ? VideoPlayer(controller)
-            : const Center(child: CircularProgressIndicator()),
-      ),
-    );
+  Widget _buildVideoView(Flashcards flashcard) {
+    if (flashcard.videoPath != null) {
+      return Expanded(
+        child: GestureDetector(
+            onTap: () {
+              initControllerForFlashcard(flashcard.videoPath!);
+              setState(() {
+                loadingCard = flashcard;
+                isLoadingVideo = true;
+              });
+            },
+            child: controllers.containsKey(flashcard.videoPath) &&
+                    controllers[flashcard.videoPath]!.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio:
+                        controllers[flashcard.videoPath]!.value.aspectRatio,
+                    child: VideoPlayer(controllers[flashcard.videoPath]!),
+                  )
+                : _buildVideoPlaceholder(flashcard)),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 
   Widget _buildExpandedCardSides(Flashcards flashcard, BuildContext context) {
@@ -124,8 +164,6 @@ class _DisplayListOfFlashcardsState extends State<DisplayListOfFlashcards> {
             ),
             if (flashcard.audioPath != null)
               _buildAudioPlayer(flashcard.audioPath!, context),
-            if (flashcard.videoPath != null)
-              _buildVideoPlayer(flashcard.videoPath!, context),
           ],
         ),
         const Gap(5),
@@ -153,27 +191,7 @@ class _DisplayListOfFlashcardsState extends State<DisplayListOfFlashcards> {
         padding: const EdgeInsets.all(10),
       ),
       child: const Icon(
-        Icons.audio_file,
-        color: Colors.black,
-      ),
-    );
-  }
-
-  Widget _buildVideoPlayer(String videoUrl, BuildContext context) {
-    final colors = context.colorScheme;
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          controller.value.isPlaying ? controller.pause() : controller.play();
-        });
-      },
-      style: ElevatedButton.styleFrom(
-        shape: const CircleBorder(),
-        backgroundColor: colors.primaryContainer,
-        padding: const EdgeInsets.all(10),
-      ),
-      child: Icon(
-        controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        Icons.volume_up,
         color: Colors.black,
       ),
     );

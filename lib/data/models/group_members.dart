@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 class GroupMembers extends Equatable {
-  final String groupMemberId;
+  final String groupMemberId; 
   final String groupId;
   final String userId;
   final String groupMemberName;
