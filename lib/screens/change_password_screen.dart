@@ -44,7 +44,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     final colors = context.colorScheme;
     final sizes = context.deviceSize;
-    
+
     if (widget.userState == null) {
       const Center(
         child: DisplayTitle(
@@ -56,37 +56,37 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
     }
 
     return Scaffold(
-            appBar: const CommonAppBar(title: "Đổi mật khẩu"),
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              physics: const BouncingScrollPhysics(),
-              child: SizedBox(
-                height: sizes.height * 0.85,
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const DisplayText(
-                        text: "Vui lòng nhập lại mật khẩu cũ",
-                        color: Colors.black,
-                        textAlign: TextAlign.center,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      const Gap(20),
-                      _buildOldPasswordField(),
-                      const Gap(20),
-                      _buildNewPasswordTextField(),
-                      const Gap(20),
-                      _buildReEnterPasswordTextField(),
-                      const Spacer(),
-                      _buildButtonChangePassword(colors, ref),
-                    ],
-                  ),
+      appBar: const CommonAppBar(title: "Đổi mật khẩu"),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        physics: const BouncingScrollPhysics(),
+        child: SizedBox(
+          height: sizes.height * 0.85,
+          child: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildOldPasswordField(),
+                const Gap(20),
+                _buildNewPasswordTextField(),
+                const Gap(20),
+                _buildReEnterPasswordTextField(),
+                const Gap(20),
+                 const DisplayText(
+                  text: "Vui lòng nhập lại mật khẩu cũ và nhập mật khẩu mới",
+                  color: Colors.black,
+                  textAlign: TextAlign.center,
+                  fontWeight: FontWeight.bold,
                 ),
-              ),
+                const Spacer(),
+                _buildButtonChangePassword(colors, ref),
+              ],
             ),
-          );
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> changePassword(String newPassword, WidgetRef ref) async {

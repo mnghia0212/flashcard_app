@@ -7,14 +7,12 @@ class GroupMembers extends Equatable {
   final String groupMemberId; 
   final String groupId;
   final String userId;
-  final String groupMemberName;
   final String joinedAt;
   final bool isAdmin;
   const GroupMembers({
     required this.groupMemberId,
     required this.groupId,
     required this.userId,
-    required this.groupMemberName,
     required this.joinedAt,
     required this.isAdmin
   });
@@ -23,7 +21,6 @@ class GroupMembers extends Equatable {
     String? groupMemberId,
     String? groupId,
     String? userId,
-    String? groupMemberName,
     String? joinedAt,
     bool? isAdmin,
   }) {
@@ -31,7 +28,6 @@ class GroupMembers extends Equatable {
       groupMemberId: groupMemberId ?? this.groupMemberId,
       groupId: groupId ?? this.groupId,
       userId: userId ?? this.userId,
-      groupMemberName: groupMemberName ?? this.groupMemberName,
       joinedAt: joinedAt ?? this.joinedAt,
       isAdmin: isAdmin ?? this.isAdmin,
     );
@@ -42,7 +38,6 @@ class GroupMembers extends Equatable {
       'groupMemberId': groupMemberId,
       'groupId': groupId,
       'userId': userId,
-      'groupMemberName': groupMemberName,
       'joinedAt': joinedAt,
       'isAdmin': isAdmin,
     };
@@ -53,7 +48,6 @@ class GroupMembers extends Equatable {
       groupMemberId: map['groupMemberId'] as String,
       groupId: map['groupId'] as String,
       userId: map['userId'] as String,
-      groupMemberName: map['groupMemberName'] as String,
       joinedAt: map['joinedAt'] as String,
       isAdmin: map['isAdmin'] as bool,
     );
@@ -72,7 +66,6 @@ class GroupMembers extends Equatable {
       groupMemberId,
       groupId,
       userId,
-      groupMemberName,
       joinedAt,
       isAdmin,
     ];

@@ -34,33 +34,36 @@ class Flashcards extends Equatable implements StudyCards {
     this.updatedAt,
   });
 
-  Flashcards copyWith({
-    String? flashcardId,
-    String? userId,
-    String? setId,
-    String? frontContent,
-    String? backContent,
-    String? audioPath,
-    String? videoPath,
-    String? audioFile,
-    String? videoFile,
-    String? createdAt,
-    String? updatedAt,
-  }) {
-    return Flashcards(
-      flashcardId: flashcardId ?? this.flashcardId,
-      userId: userId ?? this.userId,
-      setId: setId ?? this.setId,
-      frontContent: frontContent ?? this.frontContent,
-      backContent: backContent ?? this.backContent,
-      audioPath: audioPath,
-      videoPath: videoPath,
-      audioFile: audioFile,
-      videoFile: videoFile,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-    );
-  }
+ Flashcards copyWith({
+  String? flashcardId,
+  String? userId,
+  String? setId,
+  String? frontContent,
+  String? backContent,
+  String? audioPath = _keepOriginal,
+  String? videoPath = _keepOriginal,
+  String? audioFile = _keepOriginal,
+  String? videoFile = _keepOriginal,
+  String? createdAt,
+  String? updatedAt,
+}) {
+  return Flashcards(
+    flashcardId: flashcardId ?? this.flashcardId,
+    userId: userId ?? this.userId,
+    setId: setId ?? this.setId,
+    frontContent: frontContent ?? this.frontContent,
+    backContent: backContent ?? this.backContent,
+    audioPath: audioPath == _keepOriginal ? this.audioPath : audioPath,
+    videoPath: videoPath == _keepOriginal ? this.videoPath : videoPath,
+    audioFile: audioFile == _keepOriginal ? this.audioFile : audioFile,
+    videoFile: videoFile == _keepOriginal ? this.videoFile : videoFile,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+}
+
+static const String _keepOriginal = '__KEEP_ORIGINAL__';
+
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

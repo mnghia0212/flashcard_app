@@ -50,6 +50,10 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
     audioFileName = isEditing ? widget.flashcard!.audioFile : null;
 
     videoFileName = isEditing ? widget.flashcard!.videoFile : null;
+
+    audioUrl = isEditing ? widget.flashcard!.audioPath : null;
+
+    videoUrl = isEditing ? widget.flashcard!.videoPath : null;
   }
 
   @override
@@ -137,10 +141,10 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
       final updatedFlashcard = widget.flashcard!.copyWith(
           frontContent: question,
           backContent: answer,
-          audioFile: null,
-          videoFile: null,
-          audioPath: null,
-          videoPath: null,
+          audioFile: audioFileName,
+          videoFile: videoFileName,
+          audioPath: audioUrl,
+          videoPath: videoUrl,
           updatedAt: DateTime.now().toString());
       log("card: $updatedFlashcard");
 
@@ -185,14 +189,17 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
     if (answer.isNotEmpty && question.isNotEmpty) {
       ref.read(isLoadingPageProvider.notifier).state = true;
 
+      //upload file to storage
+      List<Future<void>> uploadTasks = [];
       if (audioFileName != null) {
-        await uploadFile(audioFile!, "audio");
+        uploadTasks.add(uploadFile(audioFile!, "audio"));
       }
-
       if (videoFileName != null) {
-        await uploadFile(videoFile!, "video");
+        uploadTasks.add(uploadFile(videoFile!, "video"));
       }
+      await Future.wait(uploadTasks); 
 
+      //create new card
       final newCardDoc =
           FirebaseFirestore.instance.collection("flashcards").doc();
 
@@ -327,8 +334,20 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
       );
 
       if (result != null && result.files.single.path != null) {
+        final fileSize = result.files.single.size;
+        const maxSize = 5 * 1024 * 1024;
+
+        if (fileSize > maxSize) {
+          AppAlerts.showFlushBar(
+              context,
+              "Tệp âm thanh quá lớn, vui lòng chọn tệp nhỏ hơn 5MB",
+              AlertType.error);
+          return;
+        }
+
         final fileName = result.files.single.name;
         final file = File(result.files.single.path!);
+
         setState(() {
           audioFileName = fileName.toString();
           audioFile = file;
@@ -349,8 +368,20 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
     );
 
     if (result != null && result.files.single.path != null) {
+      final fileSize = result.files.single.size;
+      const maxSize = 10 * 1024 * 1024;
+
+      if (fileSize > maxSize) {
+        AppAlerts.showFlushBar(
+            context,
+            "Tệp video quá lớn, vui lòng chọn tệp nhỏ hơn 10MB",
+            AlertType.error);
+        return;
+      }
+
       final fileName = result.files.single.name;
       File file = File(result.files.single.path!);
+
       setState(() {
         videoFileName = fileName.toString();
         videoFile = file;
@@ -369,6 +400,12 @@ class _DialogCreateCardState extends ConsumerState<DialogCreateCard> {
       Reference ref =
           FirebaseStorage.instance.ref().child('flashcards/$fileName');
       UploadTask uploadTask = ref.putFile(file);
+
+      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+        double progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        log("Upload $fileType progress: $progress%");
+      });
 
       await uploadTask.whenComplete(() async {
         String fileUrl = await ref.getDownloadURL();

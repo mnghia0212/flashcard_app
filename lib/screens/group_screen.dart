@@ -43,6 +43,7 @@ class GroupScreen extends StatelessWidget {
       children: [
         const Expanded(
           child: ShadowBoxContainer(
+            height: 70,
             child: CommonTextFormField(
               labelText: "Tìm kiếm",
               icon: Icon(Icons.search_outlined),
@@ -52,6 +53,7 @@ class GroupScreen extends StatelessWidget {
         ),
         const Gap(15),
         ShadowBoxContainer(
+          height: 70,
           padding: 3,
           child: DropdownButton(
             underline: const SizedBox.shrink(),

@@ -1,5 +1,6 @@
 import 'package:flashcard_app/config/config.dart';
 import 'package:flashcard_app/data/data.dart';
+import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flashcard_app/screens/screens.dart';
@@ -60,6 +61,14 @@ final appRoutes = [
     builder: (context, state) {
       Users userState = state.extra as Users;
       return ChangePasswordScreen(userState: userState);
+    },
+  ),
+  GoRoute(
+    path: RouteLocation.requestSentScreen,
+    parentNavigatorKey: navigationKey,
+    builder: (context, state) {
+      Users userState = state.extra as Users;
+      return RequestSentScreen(userState: userState);
     },
   ),
   GoRoute(
@@ -139,11 +148,9 @@ final appRoutes = [
     path: RouteLocation.studyGroupScreen,
     parentNavigatorKey: navigationKey,
     builder: (context, state) {
-      final groupId = state.pathParameters['groupId'];
-      final groupName = state.pathParameters['groupName'];
+      Groups group = state.extra as Groups;
       return StudyGroupScreen(
-        groupId: groupId,
-        groupName: groupName,
+        group: group
       );
     },
   ),

@@ -41,7 +41,7 @@ class DisplayListOfGroups extends ConsumerWidget {
 
   InkWell _inkWellListTile(BuildContext context, Groups group) {
     return InkWell(
-      onTap: () => context.push("/studyGroupScreen/${group.groupId}/${group.groupName}"),
+      onTap: () => context.push("/studyGroupScreen", extra: group),
       child: Container(
           decoration: BoxDecoration(
             color: Colors.white,

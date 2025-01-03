@@ -11,10 +11,10 @@ class GroupDatasource {
   Future<void> createGroup(
       Groups groups, String createdBy, String creatorName) async {
     try {
-      final newGroupDoc = FirebaseFirestore.instance.collection("groups").doc();
+      final newGroupDoc = firestore.collection("groups").doc();
       final newMemberDoc =
           FirebaseFirestore.instance.collection("groupMembers").doc();
-          
+
       final newGroupId = newGroupDoc.id;
       final newMemberId = newMemberDoc.id;
 
@@ -24,7 +24,6 @@ class GroupDatasource {
           groupMemberId: newMemberId,
           groupId: newGroupId,
           userId: createdBy,
-          groupMemberName: creatorName,
           joinedAt: Timestamp.now().toString(),
           isAdmin: true);
 
@@ -33,6 +32,32 @@ class GroupDatasource {
       log("success create group: $newGroupId");
     } catch (e) {
       log("error create group: $e");
+    }
+  }
+
+  Future<void> joinGroup(GroupMembers newMember) async {
+    try {
+      final newMemberDoc = firestore.collection("groupMembers").doc();
+      final newMemberId = newMemberDoc.id;
+
+      await newMemberDoc.set(newMember.copyWith(groupMemberId: newMemberId).toMap());
+
+      log("success join group");
+    } catch (e) {
+      log("error join group: $e");
+    }
+  }
+
+  Future<String?> getGroup(String groupId) async {
+    try {
+       final doc =
+          await firestore.collection("groups").doc(groupId).get();
+      if (doc.exists) {
+        return Groups.fromMap(doc.data()!).groupName;
+      }
+      return null;
+    } catch (e) {
+       throw Exception("Failed to get group: $e");
     }
   }
 }

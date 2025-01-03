@@ -1,17 +1,18 @@
+import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class StudyGroupScreen extends ConsumerWidget {
-  final String? groupId;
-  final String? groupName;
-  const StudyGroupScreen({super.key, required this.groupId, required this.groupName});
+  final Groups? group;
+  const StudyGroupScreen({super.key, required this.group});
 
-@override
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userId = ref.watch(userIdProvider);
     final userName = ref.watch(userProvider).user?.userName;
+    final isAdmin = group!.createdBy == userId ? true : false;
 
     if (userId == null || userName == null) {
       return const Center(
@@ -24,35 +25,38 @@ class StudyGroupScreen extends ConsumerWidget {
     }
 
     return DefaultTabController(
-      length: 4,
+      length: isAdmin ? 5 : 4,
       child: Scaffold(
           appBar: AppBar(
             title: DisplayText(
-              text: groupName ?? "Error group name",
+              text: group!.groupName,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
-            bottom: const TabBar(
+            bottom: TabBar(
                 indicatorSize: TabBarIndicatorSize.tab,
                 indicatorWeight: 3,
                 tabs: [
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Icon(Icons.message, size: 25),
+                    child: Icon(Icons.question_answer, size: 25),
                   ),
-                  Icon(Icons.group, size: 25),
-                  Icon(Icons.notifications, size: 25),
-                  Icon(Icons.settings, size: 25),
+                  const Icon(Icons.group, size: 25),
+                  const Icon(Icons.notifications, size: 25),
+                  if(isAdmin) const Icon(Icons.message),
+                  const Icon(Icons.settings, size: 25),
                 ]),
           ),
           body: TabBarView(children: [
-            DiscussTab(groupId: groupId!, userId: userId, userName: userName),
-            DisplayListOfGroupMembersTab(groupId: groupId!),
+            DiscussTab(
+                groupId: group!.groupId, userId: userId, userName: userName),
+            DisplayListOfGroupMembersTab(groupId: group!.groupId),
             const Icon(
               Icons.notifications,
               size: 100,
             ),
-            StudyGroupSettings(groupId: groupId!)
+            if(isAdmin) RequestJoinGroupTab(groupId: group!.groupId,),
+            StudyGroupSettings(groupId: group!.groupId)
           ])),
     );
   }

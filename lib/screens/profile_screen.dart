@@ -168,14 +168,12 @@ class ProfileScreen extends ConsumerWidget {
           child: Column(
             children: [
               _buildPreferenceItem(
-                icon: Icons.dark_mode,
-                title: "Giao diện tối",
-                trailing: Switch(
-                  value: false,
-                  onChanged: (value) {
-                    // Xử lý sự kiện bật/tắt dark theme
-                  },
-                ),
+                icon: Icons.send,
+                title: "Yêu cầu đã gửi",
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  context.push('/requestSentScreen', extra: userState);
+                }
               ),
               _buildPreferenceItem(
                 icon: Icons.lock,

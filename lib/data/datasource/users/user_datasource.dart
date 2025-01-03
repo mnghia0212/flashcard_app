@@ -18,7 +18,7 @@ class UserDatasource {
   Future<Users?> getUser(String userId) async {
     try {
       final doc =
-          await firestore.collection("users").doc(userId.toString()).get();
+          await firestore.collection("users").doc(userId).get();
       if (doc.exists) {
         return Users.fromMap(doc.data()!);
       }

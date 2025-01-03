@@ -23,3 +23,4 @@ export 'dialog_confirm_do_test.dart';
 export 'display_list_of_group_members_tab.dart';
 export 'progress_bar.dart';
 export 'dialog_cancel_study_session.dart';
+export 'request_join_group_tab.dart';

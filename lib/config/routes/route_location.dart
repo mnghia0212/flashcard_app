@@ -24,7 +24,8 @@ class RouteLocation {
   static String get endStudySessionScreen => '/endStudySessionScreen/:studyMode';
   static String get testMode => '/testMode';
   static String get personalInformation => '/personalInformation';
-  static String get studyGroupScreen => '/studyGroupScreen/:groupId/:groupName';
+  static String get studyGroupScreen => '/studyGroupScreen';
+  static String get requestSentScreen => '/requestSentScreen';
   static String get defaultFlashcardsScreen =>
       '/defaultFlashcardsScreen/:setId/:setName';
   static String get changePasswordScreen => '/changePasswordScreen';

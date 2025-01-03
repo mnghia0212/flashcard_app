@@ -37,7 +37,7 @@ class DisplayListOfGroupMembersTab extends ConsumerWidget {
             radius: 30,
             backgroundImage: AssetImage('assets/images/ava2.jpg'),
           ),
-          title: DisplayText(text: groupMember.groupMemberName,color:  Colors.black, fontWeight: FontWeight.bold,),
+          title: const DisplayText(text: "hehe",color:  Colors.black, fontWeight: FontWeight.bold,),
           subtitle: DisplayText(text: groupMember.joinedAt, color: Colors.black, fontSize: 15,),
         ));
       },
