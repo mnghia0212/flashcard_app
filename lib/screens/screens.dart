@@ -20,5 +20,6 @@ export 'personal_information.dart';
 export 'change_password_screen.dart';
 export 'end_study_session_screen.dart';
 export 'request_sent_screen.dart';
+export 'comment_screen.dart';
 
 export 'notification_screen.dart';

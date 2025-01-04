@@ -154,4 +154,12 @@ final appRoutes = [
       );
     },
   ),
+  GoRoute(
+    path: RouteLocation.commentScreen,
+    parentNavigatorKey: navigationKey,
+    builder: (context, state) {
+      final setId = state.pathParameters['setId'];
+      return CommentScreen(setId: setId);
+    },
+  ),
 ];

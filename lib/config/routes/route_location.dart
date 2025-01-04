@@ -29,4 +29,5 @@ class RouteLocation {
   static String get defaultFlashcardsScreen =>
       '/defaultFlashcardsScreen/:setId/:setName';
   static String get changePasswordScreen => '/changePasswordScreen';
+  static String get commentScreen => '/commentScreen/:setId';
 }
