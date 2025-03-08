@@ -15,16 +15,17 @@ class FlashcardSetsScreen extends StatelessWidget {
       'Gần đây',
       'A-Z'
     ];
-    return Scaffold(
-        floatingActionButton: const FloatingActionButtonCreate(dialogCreate: DialogCreateSet()),
+    return const Scaffold(
+        floatingActionButton: FloatingActionButtonCreate(dialogCreate: DialogCreateSet()),
+        appBar: CommonAppBar(title: "Bộ thẻ học", isCenterTitle: true,),
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(20.0),
             child: Column(
               children: [
-                rowTextFieldMenuDropDown(dropdownItems, selectedItem),
-                const Gap(15),
-                const Expanded(child: DisplayListOfFlashcardSets()),
+                //rowTextFieldMenuDropDown(dropdownItems, selectedItem),
+                Gap(15),
+                Expanded(child: DisplayListOfFlashcardSets()),
               ],
             ),
           ),

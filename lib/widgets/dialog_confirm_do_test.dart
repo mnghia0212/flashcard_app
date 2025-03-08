@@ -1,3 +1,5 @@
+import 'package:flashcard_app/data/data.dart';
+import 'package:flashcard_app/data/datasource/tests/tests.dart';
 import 'package:flashcard_app/utils/utils.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -30,48 +32,75 @@ class DialogConfirmDoTest extends StatelessWidget {
         content: _buildContentDialog());
   }
 
-  Column _buildContentDialog() {
-    return const Column(
-        children: [
-          DisplayText(
-            text: "Lưu ý khi làm kiểm tra",
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
+  Widget _buildContentDialog() {
+    return Column(
+      children: [
+        SizedBox(
+          height: 400,
+          child: FutureBuilder<List<TestCards>>(
+            future: TestCardDatasource().getCardsToTest(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                return const Center(
+                  child: DisplayText(
+                    text: "Lỗi khi tải bộ thẻ",
+                    color: Colors.black,
+                  ),
+                );
+              } else if (!snapshot.hasData) {
+                return const Center(
+                    child: DisplayText(
+                  text: "Chưa có thẻ nào cần kiểm tra",
+                  color: Colors.black,
+                ));
+              } else {
+                final testCards = snapshot.data;
+                return ListView.separated(
+                  itemCount: testCards!.length,
+                  itemBuilder: (context, index) {
+                    final testCard = testCards[index];
+                    return ListTile(
+                      title: DisplayText(
+                        text: testCard.frontSide,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      subtitle: DisplayText(
+                        text: testCard.backSide,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return const Gap(10);
+                  },
+                );
+              }
+            },
           ),
-          Gap(10),
-          DisplayText(
-            text:
-                "- Khi bắt đầu làm bài kiểm tra, hệ thống sẽ chọ ngẫu nhiên 30 câu từ kiến thức các bộ thẻ có sẵn",
-            color: Colors.black,
-          ),
-          Gap(10),
-          DisplayText(
-            text: "- Học sinh có 20 phút để hoàn thành 30 câu đó",
-            color: Colors.black,
-          ),
-          Gap(10),
-          DisplayText(
-            text:
-                "- Trong lúc làm bài, học sinh không được thoát khỏi phiên làm bài hoặc khỏi ứng dụng",
-            color: Colors.black,
-          ),
-        ],
-      );
+        ),
+      ],
+    );
   }
 
   Row _buildTitleDialog(BuildContext context) {
     return Row(
-        children: [
-          const DisplayText(
-            text: "Bài kiểm tra ngẫu nhiên",
-            color: Colors.black,
-          ),
-          const Spacer(),
-          IconButton(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.close))
-        ],
-      );
+      children: [
+        const DisplayText(
+          text: "Bài kiểm tra ngẫu nhiên",
+          color: Colors.black,
+        ),
+        const Spacer(),
+        IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.close))
+      ],
+    );
   }
 
   TextButton _textButton(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
+import 'package:go_router/go_router.dart';
 
 class FlipStudyMode extends ConsumerStatefulWidget {
   final dynamic set;
@@ -28,13 +29,11 @@ class _FlipStudyModeState extends ConsumerState<FlipStudyMode> {
         : (widget.set as FlashcardSets).title;
 
     final flashcardsAsync = widget.set is DefaultSets
-        ? ref.watch(
-            defaultCardsFutureProvider(setId))
-        : ref.watch(
-            flashcardStreamProvider(setId));
+        ? ref.watch(defaultCardsFutureProvider(setId))
+        : ref.watch(flashcardStreamProvider(setId));
 
     return Scaffold(
-        appBar: _buildAppBar(context, setName),
+        appBar: _buildAppBar(context, setId, setName),
         body: flashcardsAsync.when(
           data: (flashcards) => flashcards.isEmpty
               ? const EmptyContainer(emptyType: EmptyType.card)
@@ -137,25 +136,24 @@ class _FlipStudyModeState extends ConsumerState<FlipStudyMode> {
     );
   }
 
-  AppBar _buildAppBar(BuildContext context, String setName) {
+  AppBar _buildAppBar(BuildContext context, String setId, String setName) {
     return AppBar(
-        title: DisplayText(text: setName, color: Colors.black, fontWeight: FontWeight.bold,),
+        title: DisplayText(
+          text: setName,
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-              onPressed: () {
-                showDialog(
-                context: context,
-                builder: (context) {
-                  return const DialogJoinGroup();
-                });
-              },
-              icon: const Icon(
-                Icons.message,
-                color: Colors.black,
-              ),
-              )
-        ]
-    );
+            onPressed: () {
+              context.push("/commentScreen/$setId");
+            },
+            icon: Icon(
+              Icons.question_answer,
+              color: Colors.blue.shade700,
+            ),
+          )
+        ]);
   }
 }

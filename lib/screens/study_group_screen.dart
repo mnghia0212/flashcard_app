@@ -25,7 +25,7 @@ class StudyGroupScreen extends ConsumerWidget {
     }
 
     return DefaultTabController(
-      length: isAdmin ? 5 : 4,
+      length: isAdmin ? 4 : 3,
       child: Scaffold(
           appBar: AppBar(
             title: DisplayText(
@@ -42,7 +42,6 @@ class StudyGroupScreen extends ConsumerWidget {
                     child: Icon(Icons.question_answer, size: 25),
                   ),
                   const Icon(Icons.group, size: 25),
-                  const Icon(Icons.notifications, size: 25),
                   if(isAdmin) const Icon(Icons.message),
                   const Icon(Icons.settings, size: 25),
                 ]),
@@ -50,11 +49,8 @@ class StudyGroupScreen extends ConsumerWidget {
           body: TabBarView(children: [
             DiscussTab(
                 groupId: group!.groupId, userId: userId, userName: userName),
-            DisplayListOfGroupMembersTab(groupId: group!.groupId),
-            const Icon(
-              Icons.notifications,
-              size: 100,
-            ),
+            DisplayListOfGroupMembersTab(groupId: group!.groupId, createdBy: group!.createdBy),
+           
             if(isAdmin) RequestJoinGroupTab(groupId: group!.groupId,),
             StudyGroupSettings(groupId: group!.groupId)
           ])),

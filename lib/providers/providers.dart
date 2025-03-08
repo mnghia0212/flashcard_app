@@ -9,6 +9,7 @@ export 'defaultCards/default_cards.dart';
 export 'groupMembers/group_members.dart';
 export 'study/study.dart';
 export 'requests/requests.dart';
+export 'comments/comment.dart';
 export 'displayed_flashcard_provider.dart';
 export 'displayed_default_flashcard_provider.dart';
 export 'is_loading_page_provider.dart';

@@ -29,7 +29,7 @@ class RequestSentScreen extends ConsumerWidget {
     return Scaffold(
       appBar: const CommonAppBar(title: "Yêu cầu đã gửi"),
       body: isLoading
-          ? const CircularProgressIndicator()
+          ? const Center(child: CircularProgressIndicator())
           : requestAsync.when(
               data: (requests) => requests.isEmpty
                   ? const Center(
@@ -67,10 +67,7 @@ class RequestSentScreen extends ConsumerWidget {
           height: 80,
           width: 200,
           child: ListTile(
-            leading: const CircleAvatar(
-              radius: 30,
-              backgroundImage: AssetImage('assets/images/ava2.jpg'),
-            ),
+            leading: Image.asset("assets/images/groups.png"),
             title: 
             FutureBuilder<String?>(
               future: GroupDatasource().getGroup(request.groupId),
@@ -95,7 +92,7 @@ class RequestSentScreen extends ConsumerWidget {
                 } else {
                   final String groupName = snapshot.data!;
                   return DisplayText(
-                    text: "nhóm: $groupName",
+                    text: "Nhóm: $groupName",
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                   );
@@ -103,7 +100,9 @@ class RequestSentScreen extends ConsumerWidget {
               },
             ),
             subtitle: DisplayText(
-              text: request.requestedAt,
+              text: "Gửi lúc: ${Helpers.stringToDateTime(request.requestedAt)}",
+              color: Colors.black,
+              fontSize: 13,
             ),
             trailing: _buildAnswerButton(
                 () => deleteRequest(request.requestId, context, ref),
@@ -131,7 +130,7 @@ class RequestSentScreen extends ConsumerWidget {
       child: Icon(
         icon,
         color: Colors.white,
-        size: 10,
+        size: 20,
       ),
     );
   }

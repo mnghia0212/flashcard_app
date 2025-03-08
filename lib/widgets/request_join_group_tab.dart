@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
+import 'package:flashcard_app/widgets/future_builder_get_user.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,10 +31,9 @@ class RequestJoinGroupTab extends ConsumerWidget {
                     ),
                   )
                 : SizedBox(
-                  height: sizes.height,
-                  width: sizes.width,
-                  child: _listViewRequests(requests, context, ref)
-                ),
+                    height: sizes.height,
+                    width: sizes.width,
+                    child: _listViewRequests(requests, context, ref)),
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, stack) => Center(child: Text('Error: $error')),
           );
@@ -41,7 +43,7 @@ class RequestJoinGroupTab extends ConsumerWidget {
       String requestId, BuildContext context, WidgetRef ref) async {
     ref.read(isLoadingPageProvider.notifier).state = true;
     await RequestDatasource().deleteRequest(requestId).then((value) {
-      ref.read(isLoadingPageProvider.notifier).state = true;
+      ref.read(isLoadingPageProvider.notifier).state = false;
       AppAlerts.showFlushBar(
           context, "Đã xóa yêu cầu tham gia nhóm", AlertType.success);
     });
@@ -62,7 +64,7 @@ class RequestJoinGroupTab extends ConsumerWidget {
 
     await GroupDatasource().joinGroup(newMember).then((value) async {
       await RequestDatasource().deleteRequest(request.requestId);
-      ref.read(isLoadingPageProvider.notifier).state = true;
+      ref.read(isLoadingPageProvider.notifier).state = false;
       AppAlerts.showFlushBar(
           context, "Đã duyệt yêu cầu tham gia nhóm", AlertType.success);
     });
@@ -85,48 +87,22 @@ class RequestJoinGroupTab extends ConsumerWidget {
               radius: 30,
               backgroundImage: AssetImage('assets/images/ava2.jpg'),
             ),
-            title: FutureBuilder<Users?>(
-              future: UserDatasource().getUser(request.userId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snapshot.hasError) {
-                  return const Center(
-                    child: DisplayText(
-                      text: "Lỗi khi tải tên người dùng",
-                      color: Colors.black,
-                    ),
-                  );
-                } else if (!snapshot.hasData) {
-                  return const Center(
-                      child: DisplayText(
-                    text: "Lỗi khi tải tên người dùng",
-                    color: Colors.black,
-                  ));
-                } else {
-                  final String userName = snapshot.data!.userName;
-                  return DisplayText(
-                    text: userName,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  );
-                }
-              },
-            ),
+            title: FutureBuilderGetUser(userId: request.userId),
             subtitle: DisplayText(
-              text: request.requestedAt,
+              text: Helpers.stringToDateTime(request.requestedAt),
+              color: Colors.black,
+              fontSize: 13,
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                _buildAnswerButton(() => acceptRequest(request, context, ref),
+                    Icons.check, Colors.green),
+                const Gap(5),
                 _buildAnswerButton(
                     () => deleteRequest(request.requestId, context, ref),
-                    Icons.check,
-                    Colors.green),
-                const Gap(5),
-                _buildAnswerButton(() {}, Icons.close, Colors.red)
+                    Icons.close,
+                    Colors.red)
               ],
             ),
           ),
@@ -138,19 +114,25 @@ class RequestJoinGroupTab extends ConsumerWidget {
     );
   }
 
-  ElevatedButton _buildAnswerButton(
+  Widget _buildAnswerButton(
       VoidCallback onPressed, IconData icon, Color color) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
+    return SizedBox(
+      width: 55,
+      height: 35,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          backgroundColor: color.withOpacity(0.3),
-          side: BorderSide(width: 1, color: color)),
-      child: Icon(
-        icon,
-        color: Colors.white,
+          backgroundColor: color.withOpacity(0.8),
+          // side: BorderSide(width: 1, color: color)
+        ),
+        child: Icon(
+          icon,
+          color: Colors.white,
+          size: 12,
+        ),
       ),
     );
   }

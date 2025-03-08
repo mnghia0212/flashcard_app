@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:another_flushbar/flushbar_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_app/auth/auth.dart';
 import 'package:flashcard_app/providers/providers.dart';
@@ -24,6 +25,7 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
   final supabase = Supabase.instance.client;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -41,150 +43,160 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Gap(30),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Gap(30),
 
-                  //Heading login page
-                  const DisplayHeading(text: "Chào mừng bạn trở lại !"),
-                  const Gap(30),
+                    //Heading login page
+                    const DisplayHeading(text: "Chào mừng bạn trở lại !"),
+                    const Gap(30),
 
-                  // Email field
-                  CommonTextFormField(
-                    labelText: "Địa chỉ Email",
-                    icon: const Icon(Icons.email_outlined),
-                    controller: emailController,
-                    type: TextInputType.emailAddress,
-                  ),
-                  const Gap(20),
-
-                  // Password field
-                  CommonTextFormField(
-                    labelText: "Mật khẩu",
-                    icon: const Icon(Icons.lock_outlined),
-                    controller: passwordController,
-                    isPassword: true,
-                  ),
-
-                  const Gap(10),
-
-                  RichText(
-                      text: TextSpan(
-                          style: const TextStyle(fontSize: 17),
-                          children: [
-                        const TextSpan(
-                            text: "Quên mật khẩu? ",
-                            style: TextStyle(color: Colors.black)),
-                        TextSpan(
-                            text: "Bấm vào đây",
-                            style: TextStyle(color: colorScheme.primary))
-                      ])),
-
-                  const Gap(20),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.all(16),
+                    // Email field
+                    CommonTextFormField(
+                      labelText: "Địa chỉ Email",
+                      icon: const Icon(Icons.email_outlined),
+                      controller: emailController,
+                      type: TextInputType.emailAddress,
+                      validator: (String? value) {
+                        final email = value!.trim();
+                        if (email.isEmpty) {
+                          return "Địa chỉ email trống";
+                        }
+                        return null;
+                      },
                     ),
-                    onPressed: () {
-                      login();
-                    },
-                    child: const DisplayText(
-                      text: "Đăng nhập",
-                    ),
-                  ),
+                    const Gap(20),
 
-                  const Gap(390),
-                  RichText(
-                    textAlign: TextAlign.left,
-                    text: TextSpan(
-                      style: const TextStyle(fontSize: 17),
-                      children: [
-                        const TextSpan(
-                          text: 'Bạn chưa có Tài khoản ? ',
-                          style: TextStyle(color: Colors.black),
+                    // Password field
+                    CommonTextFormField(
+                      labelText: "Mật khẩu",
+                      icon: const Icon(Icons.lock_outlined),
+                      controller: passwordController,
+                      isPassword: true,
+                      validator: (String? value) {
+                        final password = value!.trim();
+                        if (password.isEmpty) {
+                          return "Mật khẩu trống";
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const Gap(10),
+
+                    RichText(
+                        text: TextSpan(
+                            style: const TextStyle(fontSize: 17),
+                            children: [
+                          const TextSpan(
+                              text: "Quên mật khẩu? ",
+                              style: TextStyle(color: Colors.black)),
+                          TextSpan(
+                              text: "Bấm vào đây",
+                              style: TextStyle(color: colorScheme.primary))
+                        ])),
+
+                    const Gap(20),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorScheme.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        TextSpan(
-                            text: 'Đăng ký',
-                            style: const TextStyle(
-                              color: Colors.blue,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                context.push("/signUp");
-                              }),
-                      ],
+                        padding: const EdgeInsets.all(16),
+                      ),
+                      onPressed: () {
+                        login();
+                      },
+                      child: const DisplayText(
+                        text: "Đăng nhập",
+                      ),
                     ),
-                  ),
-                ],
+
+                    const Gap(390),
+                    RichText(
+                      textAlign: TextAlign.left,
+                      text: TextSpan(
+                        style: const TextStyle(fontSize: 17),
+                        children: [
+                          const TextSpan(
+                            text: 'Bạn chưa có Tài khoản ? ',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          TextSpan(
+                              text: 'Đăng ký',
+                              style: const TextStyle(
+                                color: Colors.blue,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  context.push("/signUp");
+                                }),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
     );
   }
 
   Future<void> login() async {
-    try {
+    if (formKey.currentState!.validate()) {
       ref.read(isLoadingPageProvider.notifier).state = true;
-      final response = await supabase.auth.signInWithPassword(
-          email: emailController.text, password: passwordController.text);
 
-      if (response.user == null) {
-        log("login failed.");
-        return;
-      }
+      try {
+        final response = await supabase.auth.signInWithPassword(
+            email: emailController.text, password: passwordController.text);
 
-      final userId = response.user!.id;
-
-      log("userId auth: $userId");
-
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get();
-
-      if (userDoc.exists) {
-        final userData = userDoc.data();
-        log("User data from Firestore: $userData");
-
-        if (userData != null) {
-          final userName = userData['userName'] as String?;
-          final email = userData['email'] as String?;
-
-          if (userName != null && email != null) {
-            log("username db: $userName");
-            log("email db: $email");
-
-            ref.read(userProvider.notifier).getUser();
-
-            ref.read(userIdProvider.notifier).state = userId;
-
-            ref.read(isLoadingPageProvider.notifier).state = false;
-
-            ref.read(flushbarMessageProvider.notifier).state =
-                "Đăng nhập thành công";
-
-            log("login success");
-
-            if (!mounted) {
-              return;
-            }
-
-            context.go('/bottomNavigator');
-          } else {
-            log("Missing fields in Firestore data");
-          }
-        } else {
-          log("No user data found in Firestore for userId: $userId");
+        if (response.user == null) {
+          // Trường hợp đăng nhập thất bại (email/mật khẩu sai)
+          ref.read(isLoadingPageProvider.notifier).state = false;
+          AppAlerts.showFlushBar(
+              context, "Tài khoản không tồn tại", AlertType.error);
+          log("login failed.");
+          return; // Thoát sớm
         }
-      } else {
-        log("User document does not exist for userId: $userId");
+
+        final userId = response.user!.id;
+        log("userId auth: $userId");
+
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .get();
+
+        if (userDoc.exists) {
+          // Trường hợp đăng nhập thành công
+          ref.read(userProvider.notifier).getUser();
+          ref.read(userIdProvider.notifier).state = userId;
+          ref.read(flushbarMessageProvider.notifier).state =
+              "Đăng nhập thành công";
+
+          log("login success");
+
+          if (!mounted) return;
+
+          ref.read(isLoadingPageProvider.notifier).state = false;
+          context.go('/bottomNavigator');
+        } else {
+          // Trường hợp user không tồn tại trong Firestore
+          ref.read(isLoadingPageProvider.notifier).state = false;
+          AppAlerts.showFlushBar(
+              context, "Tài khoản không tồn tại", AlertType.error);
+          log("User document does not exist for userId: $userId");
+        }
+      } catch (error) {
+        // Bắt lỗi nếu có sự cố ngoài mong đợi
+        ref.read(isLoadingPageProvider.notifier).state = false;
+        AppAlerts.showFlushBar(
+            context, "Đã xảy ra lỗi, vui lòng thử lại", AlertType.error);
+        log("Unexpected error: $error");
       }
-    } catch (e) {
-      log("login failed: $e");
     }
   }
 }

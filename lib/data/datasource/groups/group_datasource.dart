@@ -24,7 +24,7 @@ class GroupDatasource {
           groupMemberId: newMemberId,
           groupId: newGroupId,
           userId: createdBy,
-          joinedAt: Timestamp.now().toString(),
+          joinedAt: DateTime.now().toString(),
           isAdmin: true);
 
       await newMemberDoc.set(creatorMember.toMap());
@@ -58,6 +58,15 @@ class GroupDatasource {
       return null;
     } catch (e) {
        throw Exception("Failed to get group: $e");
+    }
+  }
+
+  Future<void> deleteMember(String memberId) async {
+    try {
+      await firestore.collection('groupMembers').doc(memberId).delete();
+      log("success delete request");
+    } catch (e) {
+      log("error delete request: $e");
     }
   }
 }

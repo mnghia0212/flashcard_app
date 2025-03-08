@@ -2,18 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final groupMembersStreamProvider =
-    StreamProvider.family<List<GroupMembers>, String>((ref, groupId) {
+final commentStreamProvider =
+    StreamProvider.family<List<Comments>, String>((ref, setId) {
   return FirebaseFirestore.instance
-      .collection('groupMembers')
-      .where('groupId', isEqualTo: groupId)
-      .orderBy('joinedAt', descending: true)
+      .collection('comments')
+      .orderBy('commentedAt', descending: true)
+      .where('setId', isEqualTo: setId)
       .snapshots()
       .asyncMap((snapshot) {
     return snapshot.docs.map((doc) {
       final data = doc.data();
 
-      return GroupMembers.fromMap(data);
+      return Comments.fromMap(data);
     }).toList();
   });
 });

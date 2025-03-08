@@ -22,15 +22,15 @@ class GroupScreen extends StatelessWidget {
         appBar: _buildAppBar(colors, context),
         floatingActionButton:
             const FloatingActionButtonCreate(dialogCreate: DialogCreateGroup()),
-        body: SafeArea(
+        body: const SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
             child: Column(
               children: [
-                const Gap(10),
-                rowTextFieldMenuDropDown(dropdownItems, selectedItem),
-                const Gap(15),
-                const DisplayListOfGroups(),
+                // const Gap(10),
+                // rowTextFieldMenuDropDown(dropdownItems, selectedItem),
+                Gap(15),
+                DisplayListOfGroups(),
               ],
             ),
           ),

@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:math';
+
+import '../../data/datasource/tests/test_card_datasource.dart';
 
 class StudyNotifier extends StateNotifier<StudyState> {
   final Ref ref;
@@ -25,8 +28,6 @@ class StudyNotifier extends StateNotifier<StudyState> {
           displayedFlashcard: flashcards[Random().nextInt(flashcards.length)],
           randomAnswer: null);
     }
-    // debugPrint("ini: ${state.remainBox.map((card) => card.backContent)}");
-    // debugPrint("selected card: ${state.displayedFlashcard}");
   }
 
   void setDisplayedCardState(StudyCards flashcard) {
@@ -64,6 +65,13 @@ class StudyNotifier extends StateNotifier<StudyState> {
         state.firstRightBox.add(flashcard);
       } else if (state.firstRightBox.remove(flashcard)) {
         state.secondRightBox.add(flashcard);
+        final cardId =
+            FirebaseFirestore.instance.collection("testCards").doc().id;
+        final newTestCard = TestCards(
+            testCardId: cardId,
+            frontSide: flashcard.frontContent,
+            backSide: flashcard.backContent);
+        TestCardDatasource().getTestCards(newTestCard);
       }
     } else {
       if (state.initialBox.remove(flashcard)) {
