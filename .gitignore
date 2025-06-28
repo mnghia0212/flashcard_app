@@ -10,7 +10,4 @@ build/
 *.mp3
 
 # ignore private files
-flashcard--app-firebase-adminsdk.json
-lib/services/get_server_key.dart
-google-services.json
-GoogleService-Info.plist
+flashcard--app-firebase-adminsdk-2rutk-836a942fa3.json
