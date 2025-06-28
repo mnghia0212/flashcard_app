@@ -1,7 +1,7 @@
+import 'package:flashcard_app/config/config.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
-import 'package:flashcard_app/widgets/future_builder_get_user.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +46,15 @@ class DisplayListOfGroupMembersTab extends ConsumerWidget {
                   radius: 30,
                   backgroundImage: AssetImage('assets/images/ava2.jpg'),
                 ),
-                title: FutureBuilderGetUser(userId: groupMember.userId),
+                title: GenericFutureBuilder<Users?>(
+                  future: UserDatasource().getUser(groupMember.userId), 
+                  onSuccess: (data) {
+                    return DisplayTitle(
+                      text: data?.userName ?? "Người dùng không xác định",
+                      color: AppColors.textPrimary,
+                    );
+                  }
+                ),
                 subtitle: DisplayText(
                   text: Helpers.stringToDateTime(groupMember.joinedAt),
                   color: Colors.black,

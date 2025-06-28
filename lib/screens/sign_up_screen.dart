@@ -139,14 +139,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
       //store user to firestore
       final userId = response.user!.id;
-      NotificationService notificationService = NotificationService();
-      final deviceToken = notificationService.getDeviceToken();
       final Users user = Users(
           userId: userId,
           userName: userNameController.text,
           email: emailController.text,
           password: passwordController.text,
-          deviceToken: await deviceToken);
+      );
       await ref.read(userProvider.notifier).createUser(user).then((value) {
         ref.read(userIdProvider.notifier).state = userId;
         ref.read(flushbarMessageProvider.notifier).state = "Đăng ký thành công";

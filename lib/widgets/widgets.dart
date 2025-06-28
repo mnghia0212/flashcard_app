@@ -25,3 +25,5 @@ export 'progress_bar.dart';
 export 'dialog_cancel_study_session.dart';
 export 'request_join_group_tab.dart';
 export 'dialog_delete_group_member.dart';
+
+export 'common_widgets/common_widgets.dart';

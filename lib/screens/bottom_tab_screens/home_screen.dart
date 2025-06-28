@@ -1,3 +1,4 @@
+import 'package:flashcard_app/config/theme/theme.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -14,32 +15,10 @@ class HomeScreen extends StatelessWidget {
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: FutureBuilder<List<DefaultSets>>(
-              future: DefaultSetsDatasource().fetchDefaultSets(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snapshot.hasError) {
-                  return const Center(
-                    child: DisplayText(
-                      text: "Lỗi khi tải các bộ thẻ mặc định",
-                      color: Colors.black,
-                    ),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: DisplayText(
-                    text: "Lỗi khi tải các bộ thẻ mặc định",
-                    color: Colors.black,
-                  ));
-                } else {
-                  final List<DefaultSets> flashcardSets = snapshot.data!;
-                  return _listViewCardSets(flashcardSets);
-                }
-              },
-            ),
+            child: GenericFutureBuilder<List<DefaultSets>>(
+              future: DefaultSetsDatasource().fetchDefaultSets(), 
+              onSuccess: (flashcardSets) => _listViewCardSets(flashcardSets),
+            )
           ),
         ));
   }
@@ -68,12 +47,12 @@ class HomeScreen extends StatelessWidget {
       },
       child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface,
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: AppColors.containerDefaultSetsBackground.withValues(alpha: 0.1),
                 offset: const Offset(0, 2),
                 blurRadius: 4,
                 spreadRadius: 1,
@@ -88,13 +67,13 @@ class HomeScreen extends StatelessWidget {
     return ListTile(
         title: DisplayText(
           text: flashcardSet.title,
-          color: Colors.black,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.bold,
           fontSize: 16,
         ),
         subtitle: const DisplayText(
           text: "",
-          color: Colors.black,
+          color: AppColors.textSecondary,
           fontSize: 16,
         ),
         leading: Image.asset("assets/images/textbook.png"),

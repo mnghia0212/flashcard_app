@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flashcard_app/config/theme/app_colors.dart';
 import 'package:flashcard_app/data/data.dart';
 import 'package:flashcard_app/providers/providers.dart';
 import 'package:flashcard_app/utils/utils.dart';
-import 'package:flashcard_app/widgets/future_builder_get_user.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -149,7 +149,15 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                   radius: 30,
                   backgroundImage: AssetImage('assets/images/ava2.jpg'),
                 ),
-                title: FutureBuilderGetUser(userId: comment.userId),
+                title: GenericFutureBuilder<Users?>(
+                  future: UserDatasource().getUser(comment.userId), 
+                  onSuccess: (data) {
+                    return DisplayTitle(
+                      text: data?.userName ?? "Người dùng không xác định",
+                      color: AppColors.textPrimary,
+                    );
+                  }
+                ),
                 subtitle: DisplayText(
                   text: comment.text,
                   color: Colors.black,

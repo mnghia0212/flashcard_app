@@ -1,0 +1,4 @@
+1. Thêm các tính năng cho Future Builder Widget:
+	- Thêm Retry Button
+	- Thêm Custom Loader
+	- Empty State

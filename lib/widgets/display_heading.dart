@@ -1,3 +1,4 @@
+import 'package:flashcard_app/config/config.dart';
 import 'package:flashcard_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,7 @@ class DisplayHeading extends StatelessWidget {
       required this.text,
       this.fontWeight = FontWeight.bold,
       this.fontSize = 27,
-      this.color = Colors.black, 
+      this.color = AppColors.textPrimary, 
       this.textAlign = TextAlign.left
     });
   final String text;

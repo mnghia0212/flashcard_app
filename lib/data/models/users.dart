@@ -8,7 +8,7 @@ class Users extends Equatable {
   final String userName;
   final String email;
   final String password;
-  final String deviceToken;
+  final String? deviceToken;
   final String? role;
   final String? createdAt;
   final String? profilePicture;
@@ -17,7 +17,7 @@ class Users extends Equatable {
     required this.userName,
     required this.email,
     required this.password,
-    required this.deviceToken,
+    this.deviceToken,
     this.role,
     this.createdAt,
     this.profilePicture,
@@ -25,7 +25,7 @@ class Users extends Equatable {
 
   @override
   List<Object> get props {
-    return [userName, email, password, deviceToken];
+    return [userName, email, password];
   }
 
   Users copyWith({

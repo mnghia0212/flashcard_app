@@ -1,3 +1,4 @@
+import 'package:flashcard_app/config/config.dart';
 import 'package:flashcard_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,7 @@ class DisplayText extends StatelessWidget {
       required this.text,
       this.fontWeight = FontWeight.normal,
       this.fontSize = 17,
-      this.color = Colors.white,
+      this.color = AppColors.textTertiary,
       this.textAlign = TextAlign.left,
       this.maxLines = 10,
     });
