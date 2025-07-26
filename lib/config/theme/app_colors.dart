@@ -22,6 +22,7 @@ class AppColors {
   static const Color surface = Color(0xFFFFFFFF);
   static const Color unselectedTabItem = Color(0xFF212121);
   static const Color containerDefaultSetsBackground = Color(0xFF212121);
+  static const Color homeScreenBackground = Color(0xFF539AEE);
 
   // borders and dividers
   static const Color divider = Color(0xFFBDBDBD);

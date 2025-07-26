@@ -70,7 +70,7 @@ class BottomNavigator extends ConsumerWidget {
           children: const [
             HomeScreen(),
             FlashcardSetsScreen(),
-            GroupScreen(),
+            // GroupScreen(),
             LearnScreen(),
             ProfileScreen()
           ],

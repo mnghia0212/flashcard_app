@@ -1,9 +1,8 @@
 import 'dart:developer';
 
-import 'package:another_flushbar/flushbar_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flashcard_app/auth/auth.dart';
 import 'package:flashcard_app/providers/providers.dart';
+import 'package:flashcard_app/services/services.dart';
 import 'package:flashcard_app/utils/utils.dart';
 import 'package:flashcard_app/widgets/widgets.dart';
 import 'package:flutter/gestures.dart';
@@ -116,7 +115,7 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
                       ),
                     ),
 
-                    const Gap(390),
+                    const Spacer(),
                     RichText(
                       textAlign: TextAlign.left,
                       text: TextSpan(
@@ -154,7 +153,6 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
             email: emailController.text, password: passwordController.text);
 
         if (response.user == null) {
-          // Trường hợp đăng nhập thất bại (email/mật khẩu sai)
           ref.read(isLoadingPageProvider.notifier).state = false;
           AppAlerts.showFlushBar(
               context, "Tài khoản không tồn tại", AlertType.error);

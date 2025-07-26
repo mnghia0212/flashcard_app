@@ -112,7 +112,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           ),
         ),
 
-        const Gap(200),
+        const Spacer(),
         richTextNavigateLogin(context),
       ],
     );
